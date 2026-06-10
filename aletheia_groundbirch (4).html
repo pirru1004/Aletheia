@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aletheia — Groundbirch · Integration &amp; interpretation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#0C1116; --panel:#131B22; --panel-2:#1A2430; --raise:#202C3A;
+    --line:#28323F; --line-soft:#1E2730;
+    --text:#EAF0F6; --muted:#93A1B1; --faint:#5E6C7B;
+    --green:#46C266; --amber:#F2B53B; --amber-soft:#FFC64D; --red:#FF5C57;
+    --reported:#5BA8FF; --verify:#54D2C4;
+    --slate:#8B98A8; --violet:#A78BFA; --teal:#4FB6C6; --rose:#F472B6;
+    --display:'Space Grotesk',system-ui,sans-serif;
+    --body:'IBM Plex Sans',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+    --r:14px;
+  }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{ background:
+      radial-gradient(1100px 600px at 78% -8%, rgba(242,181,59,.06), transparent 60%),
+      radial-gradient(900px 700px at -5% 110%, rgba(91,168,255,.05), transparent 55%), var(--ink);
+    color:var(--text); font-family:var(--body); line-height:1.45; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1240px; margin:0 auto; padding:26px 22px 56px;}
+
+  header.top{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:18px 24px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .brand{display:flex; align-items:center; gap:14px;}
+  .glyph{width:42px; height:42px; flex:none; border-radius:11px; border:1px solid var(--line); background:linear-gradient(160deg,var(--panel-2),var(--panel)); display:grid; place-items:center;}
+  .glyph svg{width:24px; height:24px;}
+  .brand h1{font-family:var(--display); font-weight:600; font-size:20px; letter-spacing:.14em; margin:0; text-transform:uppercase;}
+  .brand .tag{font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.05em; margin-top:2px;}
+  .sensors{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
+  .chip{font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:5px 11px; background:rgba(255,255,255,.012); white-space:nowrap; display:inline-flex; gap:7px; align-items:center;}
+  .chip i{width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block;}
+
+  .facility{display:flex; flex-wrap:wrap; gap:10px 26px; align-items:baseline; padding:16px 2px 0;}
+  .facility .name{font-family:var(--display); font-size:27px; font-weight:600;}
+  .attn{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; padding:4px 11px; border-radius:999px; border:1px solid var(--amber); color:var(--amber-soft); background:rgba(242,181,59,.08); transition:.3s;}
+  .facility .meta{font-family:var(--mono); font-size:12px; color:var(--muted);} .facility .meta b{color:var(--text); font-weight:500;}
+  .updated{font-family:var(--mono); font-size:11px; color:var(--faint); margin-left:auto;}
+
+  .lede{margin-top:22px; display:grid; grid-template-columns:auto 1fr; gap:24px;}
+  .badge{border-radius:var(--r); padding:18px 20px; min-width:212px; border:1px solid var(--line); background:var(--panel); display:flex; flex-direction:column; gap:10px; position:relative; overflow:hidden; transition:border-color .4s;}
+  #badgeBar{position:absolute; inset:0 auto 0 0; width:4px; background:var(--amber); transition:background .4s;}
+  .badge .lbl{font-family:var(--mono); font-size:10px; letter-spacing:.22em; color:var(--muted); text-transform:uppercase;}
+  .badge .state{display:flex; align-items:center; gap:12px;}
+  .dot{width:30px; height:30px; border-radius:50%; flex:none; position:relative; background:var(--amber); box-shadow:0 0 0 5px rgba(242,181,59,.12); transition:.4s;}
+  .dot::after{content:""; position:absolute; inset:0; border-radius:50%; animation:pulse 2.6s ease-out infinite; background:inherit; opacity:.5;}
+  @keyframes pulse{0%{transform:scale(1);opacity:.45}70%{transform:scale(2.1);opacity:0}100%{opacity:0}}
+  .badge .word{font-family:var(--display); font-size:25px; font-weight:600; line-height:1;}
+  .badge .sub{font-family:var(--mono); font-size:11.5px; color:var(--muted);} .badge .sub b{color:var(--text); font-weight:600;}
+  .headline{border-radius:var(--r); border:1px solid var(--line); background:var(--panel); padding:18px 22px; display:flex; flex-direction:column; justify-content:center; gap:10px;}
+  .headline .h-main{font-family:var(--display); font-size:23px; font-weight:500; line-height:1.34;} .headline .h-main .up{color:var(--amber-soft); font-weight:700;}
+  .headline .h-cap{font-family:var(--mono); font-size:11px; color:var(--faint);}
+
+  .card{border-radius:var(--r); border:1px solid var(--line); background:var(--panel);}
+  .card-h{display:flex; align-items:baseline; justify-content:space-between; gap:14px; padding:16px 20px 6px;}
+  .card-h .t{font-family:var(--display); font-size:14px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;}
+  .card-h .s{font-family:var(--mono); font-size:11px; color:var(--muted);}
+
+  /* ---- interpretation band (the 3 Step-3 outputs) ---- */
+  .interp{margin-top:24px;}
+  .interp-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 14px; padding:0 2px 13px;}
+  .interp-head .eyebrow{font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint);}
+  .interp-head h2{font-family:var(--display); font-size:19px; font-weight:600; margin:0;}
+  .interp-head .sub{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-left:auto;}
+  .icards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .icard{display:flex; flex-direction:column; gap:12px; padding:18px;}
+  .ic-eyebrow{display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint);}
+  .ic-eyebrow .n{width:18px;height:18px;border:1px solid var(--line);border-radius:6px;display:grid;place-items:center;color:var(--muted);font-size:9px;}
+  .ic-verdict{font-family:var(--display); font-size:17px; font-weight:500; line-height:1.3;}
+  .ic-verdict .em-red{color:var(--red);} .ic-verdict .em-amber{color:var(--amber-soft);} .ic-verdict .em-green{color:var(--green);}
+  .ic-sub{font-size:12.5px; color:var(--muted); line-height:1.5;}
+  .ic-foot{margin-top:auto;}
+  .expander{font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); background:transparent; border:0; padding:6px 0 0; cursor:pointer; display:inline-flex; align-items:center; gap:6px;}
+  .expander:hover{color:var(--muted);} .expander:focus-visible{outline:2px solid var(--amber-soft); outline-offset:2px;}
+  .chev{transition:transform .2s;} .chev.rot{transform:rotate(90deg);}
+  .ex-body{display:none; margin-top:8px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--muted); line-height:1.55;}
+  .ex-body.open{display:block;} .ex-body code{font-family:var(--mono); color:var(--text); font-size:11px;}
+  .ex-body ul{margin:6px 0 0; padding-left:16px;} .ex-body li{margin:3px 0;}
+
+  /* matrix */
+  .matrix{display:grid; grid-template-columns:54px 1fr 1fr; gap:6px;}
+  .mx-lbl{font-family:var(--mono); font-size:9.5px; letter-spacing:.05em; color:var(--faint); display:flex; align-items:center; justify-content:center; text-align:center;}
+  .mx-lbl.row{writing-mode:vertical-rl; transform:rotate(180deg);}
+  .cell{border-radius:9px; border:1px solid var(--line); padding:10px 9px; min-height:58px; display:flex; flex-direction:column; gap:3px; justify-content:center; position:relative;}
+  .cell .ct{font-size:11.5px; font-weight:600; line-height:1.2;} .cell .cd{font-family:var(--mono); font-size:9px; color:var(--muted); line-height:1.3;}
+  .cell.green{background:rgba(70,194,102,.07); border-color:rgba(70,194,102,.3);} .cell.green .ct{color:var(--green);}
+  .cell.amber{background:rgba(242,181,59,.06); border-color:rgba(242,181,59,.28);} .cell.amber .ct{color:var(--amber-soft);}
+  .cell.gray{background:rgba(139,152,168,.05);} .cell.gray .ct{color:var(--muted);}
+  .cell.red{background:rgba(255,92,87,.06); border-color:rgba(255,92,87,.3);} .cell.red .ct{color:var(--red);}
+  .cell.active{box-shadow:0 0 0 2px var(--red); border-color:var(--red);}
+  .cell .now{position:absolute; top:-9px; right:8px; font-family:var(--mono); font-size:8.5px; letter-spacing:.12em; background:var(--red); color:#1a0606; border-radius:4px; padding:2px 6px; font-weight:600;}
+
+  /* cross-indicator */
+  .xind{display:flex; flex-direction:column; gap:11px;}
+  .xrow{display:grid; grid-template-columns:48px 1fr auto; gap:10px; align-items:center;}
+  .xname{font-family:var(--mono); font-size:11.5px; color:var(--text);}
+  .bar{display:flex; gap:3px;}
+  .seg{height:7px; flex:1; border-radius:2px; background:rgba(255,255,255,.05);}
+  .seg.f-amber{background:var(--amber);} .seg.f-red{background:var(--red);} .seg.f-green{background:var(--green);} .seg.f-mute{background:var(--faint);}
+  .xstate{font-family:var(--mono); font-size:10px; color:var(--muted); white-space:nowrap;}
+  .xstate.na{color:var(--faint);}
+  .xconc{margin-top:3px; padding:9px 11px; border-radius:9px; background:var(--panel-2); border:1px solid var(--line); font-size:11.5px; color:var(--muted); line-height:1.45;}
+  .xconc b{color:var(--text); font-weight:500;}
+
+  /* ledger */
+  .ledger{display:flex; flex-direction:column; gap:0;}
+  .lrow{display:grid; grid-template-columns:1fr auto auto; gap:8px 12px; align-items:center; padding:9px 0; border-bottom:1px solid var(--line-soft);}
+  .lrow:first-child{padding-top:2px;}
+  .lname{font-size:12px;} .lname .obs{font-family:var(--mono); font-size:10px; color:var(--faint); display:block; margin-top:2px;}
+  .ld{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--amber-soft); text-align:right;}
+  .lc{font-family:var(--mono); font-size:9px; letter-spacing:.06em; text-transform:uppercase; padding:2px 7px; border-radius:999px; border:1px solid var(--line); white-space:nowrap;}
+  .lc.high{color:var(--green); border-color:rgba(70,194,102,.4);} .lc.med{color:var(--amber-soft); border-color:rgba(242,181,59,.4);} .lc.low{color:var(--faint);}
+  .lagg{display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; margin-top:11px; padding:12px 13px; border-radius:10px; background:rgba(242,181,59,.05); border:1px solid rgba(242,181,59,.25);}
+  .lagg .at{font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);} .lagg .av{font-family:var(--display); font-size:21px; font-weight:600; color:var(--amber-soft);} .lagg .as{font-family:var(--mono); font-size:10px; color:var(--faint); text-align:right;}
+
+  /* basis */
+  .basis{margin-top:18px;}
+  .basis-body{padding:8px 18px 16px; display:flex; flex-wrap:wrap; gap:10px;}
+  .bchip{display:flex; border:1px solid var(--line); border-radius:11px; overflow:hidden; background:var(--panel-2); transition:.2s;}
+  .bchip.primary{border-color:var(--text); box-shadow:0 0 0 1px var(--text);} .bchip.hidden-line{opacity:.5;}
+  .bchip-main{display:flex; align-items:center; gap:10px; padding:10px 12px; background:transparent; border:0; color:inherit; cursor:pointer; text-align:left; font-family:var(--body);}
+  .bchip-main:focus-visible{outline:2px solid var(--amber-soft); outline-offset:-2px;}
+  .bsw{width:11px; height:11px; border-radius:3px; flex:none;}
+  .bmeta{display:flex; flex-direction:column; gap:1px; line-height:1.15;}
+  .bname{font-size:13px; font-weight:500;} .bcat{font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--faint);}
+  .bend{font-family:var(--mono); font-size:13px; font-weight:600; padding-left:4px;}
+  .bprime{font-family:var(--mono); font-size:8.5px; letter-spacing:.14em; color:var(--ink); background:var(--text); border-radius:4px; padding:2px 5px;}
+  .bbtns{display:flex; flex-direction:column; border-left:1px solid var(--line);}
+  .bbtn{flex:1; width:30px; background:transparent; border:0; color:var(--faint); cursor:pointer; display:grid; place-items:center; transition:.15s;}
+  .bbtn:hover{color:var(--text); background:var(--raise);} .bbtn:focus-visible{outline:2px solid var(--amber-soft); outline-offset:-2px;}
+  .bbtn svg{width:14px;height:14px;} .bbtn.x{border-top:1px solid var(--line); font-size:15px;}
+  .badd{display:flex; align-items:center; gap:8px; border:1px dashed var(--line); border-radius:11px; padding:8px 12px; background:transparent; color:var(--muted); cursor:pointer; font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; transition:.2s;}
+  .badd:hover{color:var(--text); border-color:#3a4a5c;} .badd:focus-visible{outline:2px solid var(--amber-soft); outline-offset:2px;}
+  .addform{display:none; flex-wrap:wrap; gap:8px; align-items:center; border:1px solid var(--line); border-radius:11px; padding:9px 11px; background:var(--panel-2);}
+  .addform.open{display:flex;}
+  .addform input, .addform select{font-family:var(--mono); font-size:12px; background:var(--ink); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:7px 9px;}
+  .addform input.nm{width:148px;} .addform input.val{width:72px;} .addform select{cursor:pointer;}
+  .addform .go{background:var(--text); color:var(--ink); border:0; border-radius:8px; padding:7px 14px; font-weight:600; cursor:pointer; font-family:var(--mono); font-size:12px;}
+  .addform .go:focus-visible, .addform input:focus-visible, .addform select:focus-visible{outline:2px solid var(--amber-soft); outline-offset:1px;}
+
+  .grid{margin-top:18px; display:grid; grid-template-columns:1fr 348px; gap:18px; align-items:stretch;}
+  .chartwrap{padding:6px 16px 14px;}
+  .legend{display:flex; flex-wrap:wrap; gap:6px 18px; padding:4px 6px 12px; font-family:var(--mono); font-size:11px; color:var(--muted);}
+  .legend span{display:inline-flex; align-items:center; gap:7px;}
+  .legend .ln{width:18px; height:0; border-top:2px solid; display:inline-block;}
+  .legend .ln.rep{color:var(--reported);} .legend .ln.obs{color:var(--amber);} .legend .ln.tgt{border-top-style:dashed; color:var(--muted);}
+  .legend .gap{width:14px; height:10px; border-radius:2px; background:rgba(242,181,59,.18); border:1px solid rgba(242,181,59,.35); display:inline-block;}
+  #chartbox{position:relative; height:352px;}
+  .yend{margin:8px 6px 0; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--panel-2); display:flex; align-items:center; gap:13px; font-family:var(--mono); font-size:12px;}
+  .yend .k{color:var(--muted);} .yend .v{font-family:var(--display); font-size:20px; font-weight:600; color:var(--amber-soft); transition:color .4s;} .yend .note{color:var(--faint); margin-left:auto; font-size:11px; text-align:right;}
+
+  .ai{display:flex; flex-direction:column;}
+  .ai .grp{padding:4px 14px 2px; font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); display:flex; align-items:center; gap:8px; margin-top:6px;}
+  .ai .grp::after{content:""; flex:1; height:1px; background:var(--line);}
+  .ai .bd{padding:6px 14px; display:flex; flex-direction:column; gap:9px;}
+  .actioncard{text-align:left; width:100%; cursor:pointer; color:inherit; border:1px solid var(--line); background:var(--panel-2); border-radius:11px; padding:12px 13px; display:flex; flex-direction:column; gap:7px; transition:.2s; font-family:var(--body);}
+  .actioncard:hover{border-color:#3a4a5c; background:var(--raise);} .actioncard:active{transform:translateY(1px);}
+  .actioncard:focus-visible{outline:2px solid var(--amber-soft); outline-offset:2px;}
+  .ac-top{display:flex; align-items:flex-start; gap:9px;}
+  .ic2{width:26px;height:26px;flex:none;border-radius:7px;display:grid;place-items:center;border:1px solid var(--line);} .ic2 svg{width:15px;height:15px;}
+  .ac-title{font-size:13.5px; font-weight:500; line-height:1.3; flex:1;}
+  .ac-impact{font-family:var(--mono); font-size:12.5px; font-weight:600;}
+  .ac-row{display:flex; flex-wrap:wrap; gap:6px 12px; font-family:var(--mono); font-size:10.5px; color:var(--muted);} .ac-row .cf{padding:1px 7px; border-radius:999px; border:1px solid var(--line);}
+  .ac-src{font-family:var(--mono); font-size:10px; color:var(--faint);}
+  .actioncard.abate .ac-impact{color:var(--green);} .actioncard.abate .ic2{color:var(--green); background:rgba(70,194,102,.07);}
+  .actioncard.abate.active{border-color:var(--green); background:rgba(70,194,102,.07); box-shadow:inset 0 0 0 1px rgba(70,194,102,.25);}
+  .actioncard.verify .ic2{color:var(--verify); background:rgba(84,210,196,.07);} .actioncard.verify .ac-impact{color:var(--verify);}
+  .actioncard.verify.open{border-color:var(--verify); box-shadow:inset 0 0 0 1px rgba(84,210,196,.22);}
+  .ac-detail{display:none; flex-direction:column; gap:8px; margin-top:3px; padding-top:9px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); line-height:1.45;}
+  .actioncard.verify.open .ac-detail{display:flex;}
+  .ac-detail .out{display:flex; flex-wrap:wrap; gap:7px;}
+  .ac-detail a.link{font-family:var(--mono); font-size:11px; color:var(--verify); text-decoration:none; border:1px solid rgba(84,210,196,.4); border-radius:8px; padding:6px 10px; display:inline-flex; gap:6px; align-items:center; transition:.2s;}
+  .ac-detail a.link:hover{background:rgba(84,210,196,.1);} .ac-detail .stat{font-family:var(--mono); font-size:10.5px; color:var(--faint);}
+  .ai .foot{padding:10px 14px 14px;}
+  .reset{width:100%; font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); background:transparent; border:1px dashed var(--line); border-radius:9px; padding:9px; cursor:pointer; transition:.2s;}
+  .reset:hover{color:var(--text); border-color:#3a4a5c;} .reset:focus-visible{outline:2px solid var(--amber-soft); outline-offset:2px;}
+
+  .sechead{display:flex; align-items:baseline; gap:12px; margin-top:26px; padding-bottom:2px;}
+  .sechead .eyebrow{font-family:var(--mono); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint);}
+  .sechead h2{font-family:var(--display); font-size:19px; font-weight:600; margin:0;}
+  .sechead .sub{font-family:var(--mono); font-size:11.5px; color:var(--muted); margin-left:auto;}
+
+  footer{margin-top:24px; font-family:var(--mono); font-size:10.5px; color:var(--faint); line-height:1.6;} footer b{color:var(--muted); font-weight:500;}
+
+  @media (max-width:920px){ .grid,.lede,.icards{grid-template-columns:1fr;} #chartbox{height:300px;} }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-soft)" stroke-width="1.5"><circle cx="12" cy="12" r="3.2"/><path d="M12 1.6v3.2M12 19.2v3.2M1.6 12h3.2M19.2 12h3.2M4.7 4.7l2.3 2.3M17 17l2.3 2.3M19.3 4.7L17 7M7 17l-2.3 2.3"/></svg></div>
+      <div><h1>Aletheia</h1><div class="tag">Compliance verification · what disclosure conceals, satellites reveal</div></div>
+    </div>
+    <div class="sensors" aria-label="Observation sources">
+      <span class="chip"><i></i>TROPOMI · XCH₄</span><span class="chip"><i></i>TROPOMI · NO₂ / CO</span><span class="chip"><i></i>VIIRS · Nightfire</span><span class="chip"><i></i>ERA5 · wind</span>
+    </div>
+  </header>
+
+  <div class="facility">
+    <span class="name">Groundbirch</span>
+    <span class="attn" id="attn">Needs attention</span>
+    <span class="meta">Operator <b>Shell plc</b></span>
+    <span class="meta">Montney shale gas · NE British Columbia</span>
+    <span class="meta">AOI <b>55.5°N&nbsp;120.5°W</b></span>
+    <span class="updated">Last fused: 2026-06-09 · 14-day TROPOMI composite</span>
+  </div>
+
+  <!-- VERDICT -->
+  <section class="lede">
+    <div class="badge"><span id="badgeBar"></span>
+      <span class="lbl">Compliance status</span>
+      <div class="state"><span class="dot" id="badgeDot"></span><span class="word" id="badgeWord">Watch</span></div>
+      <span class="sub">Projected year-end <b id="badgeSub">vs Shell internal target</b></span>
+    </div>
+    <div class="headline">
+      <div class="h-main">Observed methane intensity at Groundbirch is <span class="up">8% higher</span> than Shell’s 2026 disclosure, with high confidence (±3%).</div>
+      <div class="h-cap">One-line takeaway. The three readings below show what’s happening, whether the signals agree, and how large the gap is.</div>
+    </div>
+  </section>
+
+  <!-- ===== STEP 3: three interpretation outputs in plain language ===== -->
+  <section class="interp">
+    <div class="interp-head">
+      <span class="eyebrow">Integration &amp; interpretation</span>
+      <h2>What the satellites are telling us</h2>
+      <span class="sub">three independent readings · reconciled</span>
+    </div>
+
+    <div class="icards">
+
+      <!-- OUTPUT 1 -->
+      <div class="card icard">
+        <div class="ic-eyebrow"><span class="n">1</span> What the site is doing</div>
+        <div class="ic-verdict">Likely <span class="em-red">venting or an unlit flare</span>.</div>
+        <div class="ic-sub">The satellites see little burning but high methane — gas is escaping without being combusted.</div>
+
+        <div class="matrix" role="img" aria-label="Flare versus methane interpretation matrix; current state is no-flare with high methane, indicating venting or unlit flare">
+          <div class="mx-lbl"></div>
+          <div class="mx-lbl">Low methane</div>
+          <div class="mx-lbl">High methane</div>
+          <div class="mx-lbl row">Flare lit</div>
+          <div class="cell green"><span class="ct">Burning cleanly</span><span class="cd">efficient combustion</span></div>
+          <div class="cell amber"><span class="ct">Poor combustion</span><span class="cd">incomplete burn</span></div>
+          <div class="mx-lbl row">No flare</div>
+          <div class="cell gray"><span class="ct">Site idle</span><span class="cd">genuinely inactive</span></div>
+          <div class="cell red active"><span class="now">NOW</span><span class="ct">Venting / leak</span><span class="cd">or unlit flare</span></div>
+        </div>
+
+        <div class="ic-foot">
+          <button class="expander" data-expand aria-expanded="false"><span class="chev">▸</span> How we read this</button>
+          <div class="ex-body">
+            Two signals, four outcomes:
+            <ul>
+              <li>Lit flare + low methane → operational, combusting efficiently.</li>
+              <li>Lit flare + high methane → operational, poor combustion.</li>
+              <li><b>No flare + high methane → venting, leak, or unlit flare.</b> ← current</li>
+              <li>No flare + no methane → site appears inactive.</li>
+            </ul>
+            Inputs: <code>VIIRS Nightfire</code> (flare) and <code>TROPOMI XCH₄</code> (methane column).
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTPUT 2 -->
+      <div class="card icard">
+        <div class="ic-eyebrow"><span class="n">2</span> Do the other signals agree?</div>
+        <div class="ic-verdict">Yes — combustion looks <span class="em-amber">incomplete</span>.</div>
+        <div class="ic-sub">The combustion by-products line up with the venting picture rather than contradicting it.</div>
+
+        <div class="xind">
+          <div class="xrow"><span class="xname">NO₂</span><span class="bar"><span class="seg f-amber"></span><span class="seg f-amber"></span><span class="seg"></span></span><span class="xstate">Slightly elevated</span></div>
+          <div class="xrow"><span class="xname">CO</span><span class="bar"><span class="seg f-red"></span><span class="seg f-red"></span><span class="seg f-red"></span></span><span class="xstate">Elevated</span></div>
+          <div class="xrow"><span class="xname">SAR</span><span class="bar"><span class="seg f-mute"></span><span class="seg"></span><span class="seg"></span></span><span class="xstate na">N/A · onshore</span></div>
+          <div class="xrow"><span class="xname">Reported</span><span class="bar"><span class="seg f-green"></span><span class="seg f-green"></span><span class="seg"></span></span><span class="xstate">Normal activity</span></div>
+        </div>
+        <div class="xconc">Near-normal NO₂ with <b>elevated CO</b> points to <b>incomplete, low-temperature combustion</b> — a possible upset condition, consistent with the venting signature.</div>
+
+        <div class="ic-foot">
+          <button class="expander" data-expand aria-expanded="false"><span class="chev">▸</span> How we read this</button>
+          <div class="ex-body">
+            Cross-indicator reconciliation rules:
+            <ul>
+              <li>NO₂↑ + CO↑ → active combustion, broad activity confirmed.</li>
+              <li>NO₂↑ + CO normal → lean (high-temp) combustion, well-tuned refinery.</li>
+              <li><b>NO₂ normal + CO↑ → incomplete / low-temp combustion, possible upset.</b> ← current</li>
+              <li>SAR slick + no incident report → candidate undisclosed release.</li>
+              <li>All atmospheric normal + reported high activity → candidate over-reporting.</li>
+            </ul>
+            SAR is not exercised here (onshore shale gas, no water).
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTPUT 3 -->
+      <div class="card icard">
+        <div class="ic-eyebrow"><span class="n">3</span> How far off are they?</div>
+        <div class="ic-verdict">Reported figures understate observed emissions by <span class="em-amber">~10%</span>.</div>
+        <div class="ic-sub">Weighted across every indicator we can measure for an upstream gas site.</div>
+
+        <div class="ledger">
+          <div class="lrow"><span class="lname">Methane intensity<span class="obs">obs 0.205% · rep 0.190%</span></span><span class="ld">+8%</span><span class="lc high">High</span></div>
+          <div class="lrow"><span class="lname">Flaring volume<span class="obs">obs 0.46 · rep 0.41 BCM/yr</span></span><span class="ld">+12%</span><span class="lc med">Medium</span></div>
+          <div class="lrow"><span class="lname">NO₂ column<span class="obs">vs Climate TRACE proxy</span></span><span class="ld">+6%</span><span class="lc med">Medium</span></div>
+          <div class="lrow"><span class="lname">CO column<span class="obs">vs Climate TRACE proxy</span></span><span class="ld">+9%</span><span class="lc med">Medium</span></div>
+        </div>
+        <div class="lagg"><div><span class="at">Facility aggregate</span></div><div style="text-align:right"><span class="av">+10%</span></div><div style="grid-column:1/3"><span class="as">understated · Medium–High confidence · methane &amp; flaring weighted high for upstream gas</span></div></div>
+
+        <div class="ic-foot">
+          <button class="expander" data-expand aria-expanded="false"><span class="chev">▸</span> How we read this</button>
+          <div class="ex-body">
+            For each indicator: <code>Dᵢ = (observed − reported) / reported × 100%</code>, with an uncertainty bound <code>σᵢ</code> combining sensor, attribution, temporal-sampling and disclosure-granularity error.
+            <ul>
+              <li><b>High</b> confidence: |Dᵢ| &gt; 3σᵢ</li>
+              <li><b>Medium</b>: σᵢ &lt; |Dᵢ| &lt; 3σᵢ</li>
+              <li><b>Low</b>: |Dᵢ| &lt; σᵢ (within the noise)</li>
+            </ul>
+            The facility aggregate is a reliability-weighted average — flaring and methane weighted high for upstream gas; NO₂ would lead for refineries.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Trajectory & decision layer ===== -->
+  <div class="sechead"><span class="eyebrow">Trajectory &amp; decision</span><h2>Where it’s heading, and what to do</h2><span class="sub">methane intensity · % of throughput</span></div>
+
+  <section class="basis card">
+    <div class="card-h"><span class="t">Basis for comparison</span><span class="s">status &amp; projection are measured against the <b style="color:var(--text)">primary</b> target — set any one as primary, toggle others on the chart</span></div>
+    <div class="basis-body" id="basisBody"></div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <div class="card-h"><span class="t">Trajectory</span><span class="s">rolling 12 mo + forward projection</span></div>
+      <div class="chartwrap">
+        <div class="legend">
+          <span><span class="ln rep"></span> Reported (Shell)</span><span><span class="ln obs"></span> Observed (satellite)</span><span><span class="gap"></span> Detected discrepancy</span><span><span class="ln tgt"></span> Comparison targets</span>
+        </div>
+        <div id="chartbox"><canvas id="chart"></canvas></div>
+        <div class="yend"><span class="k">Projected year-end</span><span class="v" id="yendVal">+12% vs target</span><span class="note" id="yendNote">no intervention · status-quo extrapolation</span></div>
+      </div>
+    </div>
+
+    <div class="card ai">
+      <div class="card-h"><span class="t">AI actions</span><span class="s">agent-surfaced</span></div>
+      <div class="grp">Investigate now · verify severity</div>
+      <div class="bd" id="verifyActions"></div>
+      <div class="grp">Project forward · abatement levers</div>
+      <div class="bd" id="abateActions"></div>
+      <div class="foot"><button class="reset" id="reset">Reset projection</button></div>
+    </div>
+  </section>
+
+  <footer>
+    <b>Mockup data.</b> Methane-intensity and discrepancy values are illustrative, grounded in Montney Basin observation literature (Chan et&nbsp;al. 2020 ES&amp;T; Tyner &amp; Johnson 2021). Interpretation logic, reconciliation rules and confidence categorisation follow the Aletheia Step-3 workflow.
+    Abatement efficacy ranges from <b>IEA Methane Abatement Cost Curves, OGMP 2.0, EPA Methane Challenge, World Bank GGFR</b>. Drone example output: L. Chris Euranie ISU photogrammetry pipeline (DJI Neo · 4.56 M-point cloud). Pre-computed for the workshop demo.
+  </footer>
+</div>
+
+<script>
+(function(){
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const C = { reported:css('--reported'), amber:css('--amber'), amberSoft:css('--amber-soft'), green:css('--green'), red:css('--red'), muted:css('--muted'), line:css('--line'), text:css('--text'), faint:css('--faint'), verify:css('--verify') };
+
+  const labels=['Jul’25','Aug','Sep','Oct','Nov','Dec','Jan’26','Feb','Mar','Apr','May','Jun','Jul’26','Aug','Sep','Oct','Nov','Dec’26'];
+  const N=labels.length, NOW=11, S0=0.205;
+  const glide = end => { const a=[]; for(let i=0;i<N;i++) a.push(+(S0-(S0-end)*(i/(N-1))).toFixed(4)); return a; };
+  const reportedBaseline=0.190;
+  const reported=Array(N).fill(null); reported[1]=0.196; reported[7]=0.190;
+  const repFill=Array(N).fill(null); for(let i=0;i<=NOW;i++) repFill[i]=reportedBaseline;
+  const obsHist=[0.214,0.219,0.222,0.229,0.236,0.238,0.241,0.235,0.226,0.217,0.210,0.205];
+  const observed=Array(N).fill(null); for(let i=0;i<=NOW;i++) observed[i]=obsHist[i];
+  const projBase=[0.205,0.201,0.198,0.197,0.196,0.193,0.190];
+  const projUnc = k => 0.007 + 0.0028*k;
+  const buildProjection = reduce => projBase.map((v,k)=> +(reduce? v*(1-reduce(k)) : v).toFixed(4));
+  const spread = s => { const a=Array(N).fill(null); s.forEach((v,k)=>a[NOW+k]=v); return a; };
+  const uncBand = s => { const up=Array(N).fill(null),lo=Array(N).fill(null); s.forEach((v,k)=>{up[NOW+k]=+(v+projUnc(k)).toFixed(4); lo[NOW+k]=+(v-projUnc(k)).toFixed(4);}); return {up,lo}; };
+  const gapPct = (e,b) => Math.round(((e-b)/b)*100);
+
+  let bases=[
+    {id:'shell', name:'Shell internal target', cat:'Company', end:0.170, color:css('--slate'), visible:true, removable:false},
+    {id:'ogmp',  name:'OGMP 2.0 (near-zero)',  cat:'Framework', end:0.150, color:css('--violet'), visible:false, removable:false},
+    {id:'gmp',   name:'Global Methane Pledge', cat:'Intergovernmental', end:0.160, color:css('--teal'), visible:false, removable:false},
+    {id:'iea',   name:'IEA Net-Zero pathway',  cat:'Scenario', end:0.130, color:css('--rose'), visible:false, removable:false}
+  ];
+  let primaryId='shell'; const palette=['#A78BFA','#4FB6C6','#F472B6','#E0A458','#7CC6FF','#C0CA33']; let addCount=0;
+  const primary = ()=> bases.find(b=>b.id===primaryId);
+
+  const levers=[
+    {n:'01', title:'Replace high-bleed pneumatic controllers', lo:4, hi:9, mid:6.5, lead:2, conf:'High', src:'OGMP 2.0 mitigation hierarchy · IEA'},
+    {n:'02', title:'Inspect & repair compressor seals — Train 2', lo:5, hi:12, mid:8.5, lead:1.5, conf:'Medium', src:'IEA Methane Abatement Cost Curve'},
+    {n:'03', title:'Vapour recovery units on condensate tanks', lo:8, hi:15, mid:11.5, lead:3.5, conf:'Med-High', src:'EPA Methane Challenge methodology'},
+    {n:'04', title:'Eliminate routine flaring (gas capture)', lo:3, hi:6, mid:4.5, lead:6, conf:'Medium', src:'World Bank GGFR · Zero Routine Flaring'}
+  ];
+  const rampFactor=(l,k)=> k<=0?0:Math.min(1,k/l.lead);
+
+  const ICON={
+    drone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="5" r="2.4"/><circle cx="19" cy="5" r="2.4"/><circle cx="5" cy="19" r="2.4"/><circle cx="19" cy="19" r="2.4"/><path d="M6.7 6.7l4 4M17.3 6.7l-4 4M6.7 17.3l4-4M17.3 17.3l-4-4"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/></svg>',
+    inspector:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="6"/><path d="M15.4 15.4L21 21"/><path d="M8.5 11h5M11 8.5v5"/></svg>',
+    spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="3.2"/></svg>',
+    ext:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="width:12px;height:12px"><path d="M14 4h6v6M20 4l-9 9M18 13v6H5V6h6"/></svg>'
+  };
+  const investigate=[
+    {id:'drone', icon:'drone', title:'Send drone — imagery + 3D point cloud', impact:'localise the source · quantify plume geometry', lead:'dispatch in 24–48 h',
+     detail:'A UAV photogrammetry run ground-truths severity before any abatement spend: a 2 cm/px orthomosaic plus a colored 3D point cloud pinpoint which tank, train, or unlit flare is leaking, and at what scale.',
+     stat:'Example prior survey: 47 DJI Neo frames · 4.56 M-point cloud · 2 cm/px',
+     links:[{label:'2D / orthomosaic viewer', url:'https://lceuranie.github.io/DroneImageProcessing/data/visualization/viewer.html'},{label:'3D point cloud', url:'https://lceuranie.github.io/DroneImageProcessing/data/visualization/pointcloud.html'},{label:'Method', url:'https://lceuranie.github.io/project-drone-photogrammetry.html'}]},
+    {id:'inspector', icon:'inspector', title:'Send field inspector — OGI survey', impact:'component-level leak detection · regulatory-grade evidence', lead:'dispatch in 3–5 days',
+     detail:'An optical-gas-imaging (OGI) camera survey walks the site to tag specific leaking components, producing the audit trail a regulator or OGMP 2.0 Level-5 report needs. Slower than a drone, but evidentiary.',
+     stat:'Pairs with the drone pass: drone localises, inspector confirms & tags', links:[]}
+  ];
+
+  const core=[
+    {_key:'repFill', label:'_repfill', data:repFill, borderWidth:0, pointRadius:0, fill:false, borderColor:'rgba(0,0,0,0)', tension:.35, order:9},
+    {_key:'gap', label:'_gap', data:observed.slice(), borderWidth:0, pointRadius:0, fill:'-1', backgroundColor:'rgba(242,181,59,.16)', tension:.35, order:8},
+    {_key:'uncUp', label:'_uncup', data:[], borderWidth:0, pointRadius:0, fill:false, borderColor:'rgba(0,0,0,0)', tension:.3, order:7},
+    {_key:'uncLo', label:'_unclo', data:[], borderWidth:0, pointRadius:0, fill:'-1', backgroundColor:'rgba(242,181,59,.10)', borderColor:'rgba(0,0,0,0)', tension:.3, order:7},
+    {_key:'reported', label:'Reported', data:reported, borderColor:C.reported, borderWidth:1.8, pointRadius:5, pointBackgroundColor:C.reported, pointBorderColor:'#0C1116', pointBorderWidth:2, spanGaps:true, tension:0, order:4},
+    {_key:'obs', label:'Observed', data:observed, borderColor:C.amber, borderWidth:2.6, pointRadius:2.4, pointBackgroundColor:C.amber, tension:.35, order:2},
+    {_key:'proj', label:'Projection', data:[], borderColor:C.amber, borderWidth:2.4, borderDash:[5,5], pointRadius:0, tension:.35, order:3},
+    {_key:'ghost', label:'_ghost', data:Array(N).fill(null), borderColor:'rgba(147,161,177,.45)', borderWidth:1.4, borderDash:[2,4], pointRadius:0, tension:.35, order:6}
+  ];
+  const nowLine={ id:'nowLine', afterDraw(chart){ const {ctx,chartArea:{top,bottom},scales:{x}}=chart; const xp=x.getPixelForValue(NOW);
+    ctx.save(); ctx.fillStyle='rgba(255,255,255,.018)'; ctx.fillRect(xp,top,x.getPixelForValue(N-1)-xp,bottom-top);
+    ctx.strokeStyle='rgba(234,240,246,.22)'; ctx.lineWidth=1; ctx.setLineDash([3,4]); ctx.beginPath(); ctx.moveTo(xp,top); ctx.lineTo(xp,bottom); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle=C.muted; ctx.font='10px "IBM Plex Mono", monospace'; ctx.textAlign='center'; ctx.fillText('NOW',xp,top-2); ctx.restore(); }};
+
+  const chart=new Chart(document.getElementById('chart'),{
+    type:'line', data:{labels, datasets:core.slice()}, plugins:[nowLine],
+    options:{ responsive:true, maintainAspectRatio:false, animation:{duration:650, easing:'easeOutCubic'}, interaction:{mode:'index', intersect:false}, layout:{padding:{top:14,right:6}},
+      scales:{ x:{grid:{color:'rgba(40,50,63,.5)', drawTicks:false}, ticks:{color:C.faint, font:{family:'IBM Plex Mono', size:10}, maxRotation:0, autoSkipPadding:8}, border:{color:C.line}},
+        y:{grid:{color:'rgba(40,50,63,.4)'}, ticks:{color:C.faint, font:{family:'IBM Plex Mono', size:10}, callback:v=>v.toFixed(2)+'%'}, border:{display:false}, suggestedMin:0.12, suggestedMax:0.26} },
+      plugins:{ legend:{display:false},
+        tooltip:{ backgroundColor:'#0C1116', borderColor:C.line, borderWidth:1, titleColor:C.text, bodyColor:C.muted, titleFont:{family:'IBM Plex Mono', size:11}, bodyFont:{family:'IBM Plex Mono', size:11}, padding:10, boxWidth:8, boxHeight:8,
+          filter:i=>!i.dataset.label.startsWith('_') && i.parsed.y!=null, callbacks:{ label:c=>` ${c.dataset.label}: ${c.parsed.y.toFixed(3)}%` } } }
+    }
+  });
+  const dset = key => chart.data.datasets.find(d=>d._key===key);
+
+  function syncBasisDatasets(){
+    chart.data.datasets = chart.data.datasets.filter(d=>!(d._key||'').startsWith('basis:'));
+    bases.filter(b=>b.visible).forEach(b=>{ const isP=b.id===primaryId;
+      chart.data.datasets.push({ _key:'basis:'+b.id, label:b.name, data:glide(b.end), borderColor:b.color, borderWidth:isP?2.4:1.3, borderDash:isP?[7,5]:[2,4], pointRadius:0, tension:0, order:5 }); });
+  }
+
+  let activeLever=-1;
+  const verifyWrap=document.getElementById('verifyActions');
+  investigate.forEach(a=>{ const b=document.createElement('button'); b.className='actioncard verify'; b.setAttribute('aria-expanded','false');
+    b.innerHTML=`<div class="ac-top"><span class="ic2">${ICON[a.icon]}</span><span class="ac-title">${a.title}</span></div>
+      <div class="ac-impact">${a.impact}</div><div class="ac-row"><span class="cf">${a.lead}</span><span>does not change projection</span></div>
+      <div class="ac-detail"><div>${a.detail}</div>${a.links.length?`<div class="out">${a.links.map(l=>`<a class="link" href="${l.url}" target="_blank" rel="noopener">${l.label} ${ICON.ext}</a>`).join('')}</div>`:''}<div class="stat">${a.stat}</div></div>`;
+    b.addEventListener('click',e=>{ if(e.target.closest('a')) return; const open=b.classList.toggle('open'); b.setAttribute('aria-expanded',open);}); verifyWrap.appendChild(b); });
+
+  const abateWrap=document.getElementById('abateActions');
+  levers.forEach((a,idx)=>{ const b=document.createElement('button'); b.className='actioncard abate'; b.setAttribute('aria-pressed','false');
+    b.innerHTML=`<div class="ac-top"><span class="ic2">${ICON.spark}</span><span class="ac-title">${a.title}</span></div>
+      <div class="ac-impact">−${a.lo}% to −${a.hi}% methane intensity</div><div class="ac-row"><span class="cf">${a.conf} confidence</span><span>~${a.lead<2?'1–2':a.lead<4?'3–4':'6+'} mo to effect</span></div><div class="ac-src">${a.src}</div>`;
+    b.addEventListener('click',()=>selectLever(idx)); abateWrap.appendChild(b); });
+
+  const yendVal=document.getElementById('yendVal'), yendNote=document.getElementById('yendNote');
+  const badgeDot=document.getElementById('badgeDot'), badgeWord=document.getElementById('badgeWord'), badgeSub=document.getElementById('badgeSub'), badgeBar=document.getElementById('badgeBar'), attn=document.getElementById('attn');
+  function statusFor(g){ if(g<=4) return {c:C.green,w:'On track',s:'meets target within band',a:'On track'}; if(g<=15) return {c:C.amber,w:'Watch',s:'within uncertainty band',a:'Needs attention'}; return {c:C.red,w:'Off target',s:'miss outside uncertainty band',a:'Off target'}; }
+  const currentProjEnd = ()=> dset('proj').data[N-1];
+  function recompute(note){ const p=primary(); const g=gapPct(currentProjEnd(), p.end); const st=statusFor(g);
+    badgeDot.style.background=st.c; badgeDot.style.boxShadow=`0 0 0 5px ${st.c}22`; badgeBar.style.background=st.c; badgeWord.textContent=st.w;
+    badgeSub.innerHTML=`vs ${p.name} <b>(${st.s})</b>`; yendVal.textContent=(g>=0?'+':'')+g+'% vs target'; yendVal.style.color=g<=4?C.green:(g<=15?C.amberSoft:C.red);
+    if(note!==undefined) yendNote.textContent=note; attn.textContent=st.a; attn.style.borderColor=st.c; attn.style.color=st.c; attn.style.background=st.c+'14';
+    dset('proj').borderColor = g<=4 ? C.green : (activeLever>=0?C.amberSoft:C.amber); }
+
+  function selectLever(idx){ if(activeLever===idx){ resetProjection(); return; } activeLever=idx;
+    [...abateWrap.children].forEach((el,i)=>{el.classList.toggle('active',i===idx); el.setAttribute('aria-pressed',i===idx?'true':'false');});
+    const a=levers[idx]; const proj=buildProjection(k=>(a.mid/100)*rampFactor(a,k)); const band=uncBand(proj);
+    dset('ghost').data=spread(buildProjection(null)); dset('proj').data=spread(proj); dset('uncUp').data=band.up; dset('uncLo').data=band.lo; chart.update();
+    recompute(`with “${a.title.toLowerCase()}” · ${a.conf.toLowerCase()} confidence`); }
+  function resetProjection(){ activeLever=-1; [...abateWrap.children].forEach(el=>{el.classList.remove('active'); el.setAttribute('aria-pressed','false');});
+    const proj=buildProjection(null); const band=uncBand(proj); dset('ghost').data=Array(N).fill(null); dset('proj').data=spread(proj); dset('proj').borderColor=C.amber; dset('uncUp').data=band.up; dset('uncLo').data=band.lo; chart.update();
+    recompute('no intervention · status-quo extrapolation'); }
+  document.getElementById('reset').addEventListener('click',resetProjection);
+
+  const body=document.getElementById('basisBody');
+  function renderBasis(){ body.innerHTML='';
+    bases.forEach(b=>{ const d=document.createElement('div'); d.className='bchip'+(b.id===primaryId?' primary':'')+(b.visible?'':' hidden-line');
+      d.innerHTML=`<button class="bchip-main" title="Set as primary basis"><span class="bsw" style="background:${b.color}"></span><span class="bmeta"><span class="bname">${b.name}</span><span class="bcat">${b.cat}</span></span><span class="bend" style="color:${b.color}">${b.end.toFixed(3)}%</span>${b.id===primaryId?'<span class="bprime">PRIMARY</span>':''}</button>
+        <div class="bbtns"><button class="bbtn eye" title="${b.visible?'Hide on chart':'Show on chart'}" aria-pressed="${b.visible}">${b.visible?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.6-6.5 10-6.5c1.6 0 3 .4 4.2 1M22 12s-3.6 6.5-10 6.5c-1.6 0-3-.4-4.2-1"/><path d="M4 4l16 16"/></svg>'}</button>${b.removable?'<button class="bbtn x" title="Remove">&times;</button>':''}</div>`;
+      d.querySelector('.bchip-main').addEventListener('click',()=>{ primaryId=b.id; b.visible=true; refresh(); });
+      d.querySelector('.eye').addEventListener('click',()=>{ if(b.id===primaryId) return; b.visible=!b.visible; refresh(); });
+      const x=d.querySelector('.x'); if(x) x.addEventListener('click',()=>{ bases=bases.filter(z=>z.id!==b.id); if(primaryId===b.id) primaryId=bases[0].id; refresh(); });
+      body.appendChild(d); });
+    const add=document.createElement('button'); add.className='badd'; add.textContent='+ ADD TARGET';
+    const form=document.createElement('div'); form.className='addform';
+    form.innerHTML=`<input class="nm" placeholder="Target name" maxlength="32"><select><option value="Company">Company</option><option value="Industry">Industry</option><option value="Framework">Framework</option><option value="NGO">NGO</option><option value="Regulatory">Regulatory</option></select><input class="val" type="number" step="0.005" min="0.05" max="0.4" placeholder="0.170"><span style="font-family:var(--mono);font-size:11px;color:var(--muted)">% year-end</span><button class="go">Add</button>`;
+    add.addEventListener('click',()=>{ form.classList.toggle('open'); if(form.classList.contains('open')) form.querySelector('.nm').focus(); });
+    form.querySelector('.go').addEventListener('click',()=>{ const nm=form.querySelector('.nm').value.trim(); const cat=form.querySelector('select').value; const val=parseFloat(form.querySelector('.val').value);
+      if(!nm || isNaN(val)){ form.querySelector('.nm').focus(); return; } const id='c'+(addCount++); bases.push({id, name:nm, cat, end:+val.toFixed(3), color:palette[addCount%palette.length], visible:true, removable:true}); primaryId=id; refresh(); });
+    body.appendChild(add); body.appendChild(form);
+  }
+  function refresh(){ renderBasis(); syncBasisDatasets(); chart.update(); recompute(); }
+
+  // expanders (interpretation cards)
+  document.querySelectorAll('[data-expand]').forEach(t=>{ t.addEventListener('click',()=>{ const b=t.nextElementSibling; const open=b.classList.toggle('open'); t.setAttribute('aria-expanded',open); const ch=t.querySelector('.chev'); if(ch) ch.classList.toggle('rot',open); }); });
+
+  resetProjection();
+  refresh();
+})();
+</script>
+</body>
+</html>

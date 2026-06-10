@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aletheia</title>
+  </head>
+  <body>
+    <div id="app">
+      
+      <!-- ==========================================
+           VIEW 1: HOMEPAGE 
+           ========================================== -->
+      <section id="view-home" class="view active">
+        <header class="dashboard-header transparent-header">
+          <h1>Aletheia</h1>
+          <button id="btn-goto-login" class="primary-btn">Login</button>
+        </header>
+        
+        <div class="hero-section">
+          <img src="/hero.png" alt="High-tech oil and gas facility at sunrise with wind turbines" class="hero-bg" />
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <h2>Aletheia</h2>
+            <p>Integrating Earth Observation data with AI-driven compliance verification to ensure a transparent, secure, and efficient energy transition.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 2: PILLARS DASHBOARD 
+           ========================================== -->
+      <section id="view-pillars" class="view hidden">
+        <header class="dashboard-header">
+          <div class="header-left">
+            <button class="back-btn btn-goto-home">🏠 Home</button>
+            <h1>Aletheia Dashboard</h1>
+          </div>
+          <div class="header-controls">
+            <span class="status-indicator online"></span>
+            <span>Authenticated</span>
+          </div>
+        </header>
+        
+        <div class="pillars-container">
+          <h2 class="section-title">Select Operational Pillar</h2>
+          
+          <div class="pillars-grid">
+            <div class="pillar-card disabled" title="Coming Soon">
+              <div class="icon">⚙️</div>
+              <h3>Operational Efficiency</h3>
+              <p>Monitor throughput, supply chain logistics, and refinery capacity utilization.</p>
+              <span class="badge">Coming Soon</span>
+            </div>
+            
+            <div class="pillar-card disabled" title="Coming Soon">
+              <div class="icon">🛡️</div>
+              <h3>Asset Security</h3>
+              <p>Identify physical incursions, dark vessels, and maritime sanctions circumvention.</p>
+              <span class="badge">Coming Soon</span>
+            </div>
+            
+            <div class="pillar-card active-card" id="btn-goto-map">
+              <div class="icon">🌍</div>
+              <h3>Sustainability & Compliance</h3>
+              <p>Verify reported emissions against independent satellite multi-sensor observations.</p>
+              <button class="primary-btn outline">Launch Map</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 4: MAP DASHBOARD (Current App)
+           ========================================== -->
+      <section id="view-map" class="view hidden">
+        <header class="dashboard-header">
+          <div class="header-left">
+            <button class="back-btn btn-goto-home">🏠 Home</button>
+            <button id="btn-back-pillars" class="back-btn">← Pillars</button>
+            <h1>Aletheia Compliance Map</h1>
+          </div>
+          <div class="header-controls">
+            <span class="status-indicator online"></span>
+            <span>Live Monitoring</span>
+          </div>
+        </header>
+        
+        <main id="map-container">
+          <div id="map"></div>
+          
+          <!-- Custom Opacity Control Panel -->
+          <div class="opacity-panel">
+            <h3>Layer Opacity</h3>
+            <div class="slider-group">
+              <label for="planet-opacity">Planet Satellite Imagery</label>
+              <input type="range" id="planet-opacity" min="0" max="100" value="100">
+            </div>
+            <div class="slider-group">
+              <label for="vnf-opacity">VIIRS Gas Flaring (VNF)</label>
+              <input type="range" id="vnf-opacity" min="0" max="100" value="100">
+            </div>
+            <div class="slider-group">
+              <label for="sar-opacity">Sentinel-1 SAR (Oil Spills)</label>
+              <input type="range" id="sar-opacity" min="0" max="100" value="100">
+            </div>
+            <div class="slider-group">
+              <label for="methane-opacity">TROPOMI Methane</label>
+              <input type="range" id="methane-opacity" min="0" max="100" value="70">
+            </div>
+          </div>
+          
+          <!-- TROPOMI Methane Legend (Hidden by default) -->
+          <div id="methane-legend" class="map-legend hidden">
+            <h4>TROPOMI Methane (CH₄)</h4>
+            <div class="legend-gradient"></div>
+            <div class="legend-labels">
+              <span>Background</span>
+              <span>High Concentration</span>
+            </div>
+            <div class="legend-note">Multi-year average column enhancement</div>
+          </div>
+        </main>
+        
+        <!-- Compliance Gap Side Panel -->
+        <aside id="compliance-panel" class="side-panel hidden">
+          <div class="panel-header">
+            <h2 id="cp-name">Groundbirch</h2>
+            <button id="cp-close" class="close-btn">&times;</button>
+          </div>
+          <div class="panel-content">
+            <div class="meta-info" style="margin-bottom: 20px;">
+              <span class="badge">Shell plc</span>
+              <span class="badge">Montney shale gas</span>
+            </div>
+            
+            <h3 style="color: var(--text-secondary); margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">AI Insight Summary</h3>
+            <div style="background: rgba(242,181,59,.1); border: 1px solid rgba(242,181,59,.3); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #F2B53B; display: inline-block;"></span>
+                <span style="font-weight: 600; font-size: 18px; color: #f8fafc;">Watch</span>
+              </div>
+              <p style="margin: 0; color: #cbd5e1; font-size: 14px; line-height: 1.5;">
+                Observed methane intensity is <strong style="color: #FFC64D;">8% higher</strong> than Shell’s 2026 disclosure, with high confidence (±3%).
+              </p>
+            </div>
+
+            <button id="btn-open-report" style="width: 100%; padding: 14px; background: var(--accent-color); color: #0f172a; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: background 0.2s;">
+              ⛶ View Full Analysis Report
+            </button>
+          </div>
+        </aside>
+
+      <!-- Floating Predictive Chart Panel -->
+      <div id="floating-chart-panel" class="floating-panel hidden">
+        <div class="panel-header">
+          <h3>Predictive Trend Analysis</h3>
+          <button id="btn-expand-chart" class="expand-btn">⛶ Expand</button>
+        </div>
+        <div class="chart-container">
+          <select id="metric-selector" class="modern-select">
+            <option value="methane">Methane Emissions (t/yr)</option>
+            <option value="flaring_bcm">Gas Flaring (BCM)</option>
+            <option value="co2_tonnes">CO2 Emissions (t/yr)</option>
+            <option value="no2_tonnes">NO2 Enhancements (t/yr)</option>
+          </select>
+          <div class="canvas-wrapper">
+            <canvas id="trend-chart"></canvas>
+          </div>
+        </div>
+      </div>
+      
+    </section>
+
+    </div>
+    
+    <!-- Leaflet Heatmap Plugin -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  
+  <!-- Full Screen Aletheia Report Modal -->
+  <div id="aletheia-report-modal">
+    <button id="btn-close-report" class="aletheia-close-btn">&times;</button>
+    <div id="aletheia-report-modal-content">
+      <div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber-soft)" stroke-width="1.5"><circle cx="12" cy="12" r="3.2"/><path d="M12 1.6v3.2M12 19.2v3.2M1.6 12h3.2M19.2 12h3.2M4.7 4.7l2.3 2.3M17 17l2.3 2.3M19.3 4.7L17 7M7 17l-2.3 2.3"/></svg></div>
+      <div><h1>Aletheia</h1><div class="tag">Compliance verification · what disclosure conceals, satellites reveal</div></div>
+    </div>
+    <div class="sensors" aria-label="Observation sources">
+      <span class="chip"><i></i>TROPOMI · XCH₄</span><span class="chip"><i></i>TROPOMI · NO₂ / CO</span><span class="chip"><i></i>VIIRS · Nightfire</span><span class="chip"><i></i>ERA5 · wind</span>
+    </div>
+  </header>
+
+  <div class="facility">
+    <span class="name">Groundbirch</span>
+    <span class="attn" id="attn">Needs attention</span>
+    <span class="meta">Operator <b>Shell plc</b></span>
+    <span class="meta">Montney shale gas · NE British Columbia</span>
+    <span class="meta">AOI <b>55.5°N&nbsp;120.5°W</b></span>
+    <span class="updated">Last fused: 2026-06-09 · 14-day TROPOMI composite</span>
+  </div>
+
+  <!-- VERDICT -->
+  <section class="lede">
+    <div class="badge"><span id="badgeBar"></span>
+      <span class="lbl">Compliance status</span>
+      <div class="state"><span class="dot" id="badgeDot"></span><span class="word" id="badgeWord">Watch</span></div>
+      <span class="sub">Projected year-end <b id="badgeSub">vs Shell internal target</b></span>
+    </div>
+    <div class="headline">
+      <div class="h-main">Observed methane intensity at Groundbirch is <span class="up">8% higher</span> than Shell’s 2026 disclosure, with high confidence (±3%).</div>
+      <div class="h-cap">One-line takeaway. The three readings below show what’s happening, whether the signals agree, and how large the gap is.</div>
+    </div>
+  </section>
+
+  <!-- ===== STEP 3: three interpretation outputs in plain language ===== -->
+  <section class="interp">
+    <div class="interp-head">
+      <span class="eyebrow">Integration &amp; interpretation</span>
+      <h2>What the satellites are telling us</h2>
+      <span class="sub">three independent readings · reconciled</span>
+    </div>
+
+    <div class="icards">
+
+      <!-- OUTPUT 1 -->
+      <div class="card icard">
+        <div class="ic-eyebrow"><span class="n">1</span> What the site is doing</div>
+        <div class="ic-verdict">Likely <span class="em-red">venting or an unlit flare</span>.</div>
+        <div class="ic-sub">The satellites see little burning but high methane — gas is escaping without being combusted.</div>
+
+        <div class="matrix" role="img" aria-label="Flare versus methane interpretation matrix; current state is no-flare with high methane, indicating venting or unlit flare">
+          <div class="mx-lbl"></div>
+          <div class="mx-lbl">Low methane</div>
+          <div class="mx-lbl">High methane</div>
+          <div class="mx-lbl row">Flare lit</div>
+          <div class="cell green"><span class="ct">Burning cleanly</span><span class="cd">efficient combustion</span></div>
+          <div class="cell amber"><span class="ct">Poor combustion</span><span class="cd">incomplete burn</span></div>
+          <div class="mx-lbl row">No flare</div>
+          <div class="cell gray"><span class="ct">Site idle</span><span class="cd">genuinely inactive</span></div>
+          <div class="cell red active"><span class="now">NOW</span><span class="ct">Venting / leak</span><span class="cd">or unlit flare</span></div>
+        </div>
+
+        <div class="ic-foot">
+          <button class="expander" data-expand aria-expanded="false"><span class="chev">▸</span> How we read this</button>
+          <div class="ex-body">
+            Two signals, four outcomes:
+            <ul>
+              <li>Lit flare + low methane → operational, combusting efficiently.</li>
+              <li>Lit flare + high methane → operational, poor combustion.</li>
+              <li><b>No flare + high methane → venting, leak, or unlit flare.</b> ← current</li>
+              <li>No flare + no methane → site appears inactive.</li>
+            </ul>
+            Inputs: <code>VIIRS Nightfire</code> (flare) and <code>TROPOMI XCH₄</code> (methane column).
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTPUT 2 -->
+      <div class="card icard">
+        <div class="ic-eyebrow"><span class="n">2</span> Do the other signals agree?</div>
+        <div class="ic-verdict">Yes — combustion looks <span class="em-amber">incomplete</span>.</div>
+        <div class="ic-sub">The combustion by-products line up with the venting picture rather than contradicting it.</div>
+
+        <div class="xind">
+          <div class="xrow"><span class="xname">NO₂</span><span class="bar"><span class="seg f-amber"></span><span class="seg f-amber"></span><span class="seg"></span></span><span class="xstate">Slightly elevated</span></div>
+          <div class="xrow"><span class="xname">CO</span><span class="bar"><span class="seg f-red"></span><span class="seg f-red"></span><span class="seg f-red"></span></span><span class="xstate">Elevated</span></div>
+          <div class="xrow"><span class="xname">SAR</span><span class="bar"><span class="seg f-mute"></span><span class="seg"></span><span class="seg"></span></span><span class="xstate na">N/A · onshore</span></div>
+          <div class="xrow"><span class="xname">Reported</span><span class="bar"><span class="seg f-green"></span><span class="seg f-green"></span><span class="seg"></span></span><span class="xstate">Normal activity</span></div>
+        </div>
+        <div class="xconc">Near-normal NO₂ with <b>elevated CO</b> points to <b>incomplete, low-temperature combustion</b> — a possible upset condition, consistent with the venting signature.</div>
+
+        <div class="ic-foot">
+          <button class="expander" data-expand aria-expanded="false"><span class="chev">▸</span> How we read this</button>
+          <div class="ex-body">
+            Cross-indicator reconciliation rules:
+            <ul>
+              <li>NO₂↑ + CO↑ → active combustion, broad activity confirmed.</li>
+              <li>NO₂↑ + CO normal → lean (high-temp) combustion, well-tuned refinery.</li>
+              <li><b>NO₂ normal + CO↑ → incomplete / low-temp combustion, possible upset.</b> ← current</li>
+              <li>SAR slick + no incident report → candidate undisclosed release.</li>
+              <li>All atmospheric normal + reported high activity → candidate over-reporting.</li>
+            </ul>
+            SAR is not exercised here (onshore shale gas, no water).
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTPUT 3 -->
+      <div class="card icard">
+        <div class="ic-eyebrow"><span class="n">3</span> How far off are they?</div>
+        <div class="ic-verdict">Reported figures understate observed emissions by <span class="em-amber">~10%</span>.</div>
+        <div class="ic-sub">Weighted across every indicator we can measure for an upstream gas site.</div>
+
+        <div class="ledger">
+          <div class="lrow"><span class="lname">Methane intensity<span class="obs">obs 0.205% · rep 0.190%</span></span><span class="ld">+8%</span><span class="lc high">High</span></div>
+          <div class="lrow"><span class="lname">Flaring volume<span class="obs">obs 0.46 · rep 0.41 BCM/yr</span></span><span class="ld">+12%</span><span class="lc med">Medium</span></div>
+          <div class="lrow"><span class="lname">NO₂ column<span class="obs">vs Climate TRACE proxy</span></span><span class="ld">+6%</span><span class="lc med">Medium</span></div>
+          <div class="lrow"><span class="lname">CO column<span class="obs">vs Climate TRACE proxy</span></span><span class="ld">+9%</span><span class="lc med">Medium</span></div>
+        </div>
+        <div class="lagg"><div><span class="at">Facility aggregate</span></div><div style="text-align:right"><span class="av">+10%</span></div><div style="grid-column:1/3"><span class="as">understated · Medium–High confidence · methane &amp; flaring weighted high for upstream gas</span></div></div>
+
+        <div class="ic-foot">
+          <button class="expander" data-expand aria-expanded="false"><span class="chev">▸</span> How we read this</button>
+          <div class="ex-body">
+            For each indicator: <code>Dᵢ = (observed − reported) / reported × 100%</code>, with an uncertainty bound <code>σᵢ</code> combining sensor, attribution, temporal-sampling and disclosure-granularity error.
+            <ul>
+              <li><b>High</b> confidence: |Dᵢ| &gt; 3σᵢ</li>
+              <li><b>Medium</b>: σᵢ &lt; |Dᵢ| &lt; 3σᵢ</li>
+              <li><b>Low</b>: |Dᵢ| &lt; σᵢ (within the noise)</li>
+            </ul>
+            The facility aggregate is a reliability-weighted average — flaring and methane weighted high for upstream gas; NO₂ would lead for refineries.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== Trajectory & decision layer ===== -->
+  <div class="sechead"><span class="eyebrow">Trajectory &amp; decision</span><h2>Where it’s heading, and what to do</h2><span class="sub">methane intensity · % of throughput</span></div>
+
+  <section class="basis card">
+    <div class="card-h"><span class="t">Basis for comparison</span><span class="s">status &amp; projection are measured against the <b style="color:var(--text)">primary</b> target — set any one as primary, toggle others on the chart</span></div>
+    <div class="basis-body" id="basisBody"></div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <div class="card-h"><span class="t">Trajectory</span><span class="s">rolling 12 mo + forward projection</span></div>
+      <div class="chartwrap">
+        <div class="legend">
+          <span><span class="ln rep"></span> Reported (Shell)</span><span><span class="ln obs"></span> Observed (satellite)</span><span><span class="gap"></span> Detected discrepancy</span><span><span class="ln tgt"></span> Comparison targets</span>
+        </div>
+        <div id="chartbox"><canvas id="chart"></canvas></div>
+        <div class="yend"><span class="k">Projected year-end</span><span class="v" id="yendVal">+12% vs target</span><span class="note" id="yendNote">no intervention · status-quo extrapolation</span></div>
+      </div>
+    </div>
+
+    <div class="card ai">
+      <div class="card-h"><span class="t">AI actions</span><span class="s">agent-surfaced</span></div>
+      <div class="grp">Investigate now · verify severity</div>
+      <div class="bd" id="verifyActions"></div>
+      <div class="grp">Project forward · abatement levers</div>
+      <div class="bd" id="abateActions"></div>
+      <div class="foot"><button class="reset" id="reset">Reset projection</button></div>
+    </div>
+  </section>
+
+  <footer>
+    <b>Mockup data.</b> Methane-intensity and discrepancy values are illustrative, grounded in Montney Basin observation literature (Chan et&nbsp;al. 2020 ES&amp;T; Tyner &amp; Johnson 2021). Interpretation logic, reconciliation rules and confidence categorisation follow the Aletheia Step-3 workflow.
+    Abatement efficacy ranges from <b>IEA Methane Abatement Cost Curves, OGMP 2.0, EPA Methane Challenge, World Bank GGFR</b>. Drone example output: L. Chris Euranie ISU photogrammetry pipeline (DJI Neo · 4.56 M-point cloud). Pre-computed for the workshop demo.
+  </footer>
+</div>
+
+
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1007 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<WMS_Capabilities version="1.3.0" xsi:schemaLocation="https:/inspire.ec.europa.eu/schemas/inspire_vs/1.0 https://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs.xsd" xmlns:inspire_common="https://inspire.ec.europa.eu/schemas/common/1.0" xmlns:inspire_vs="https://inspire.ec.europa.eu/schemas/inspire_vs/1.0" xmlns="http://www.opengis.net/wms" xmlns:sld="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">	<Service>
+		<Name>WMS</Name>
+		<Title>Sentinel Hub WMS service - Public Data (featured collections)</Title>
+		<Abstract>
+<![CDATA[The Copernicus project's Sentinel satellites are revolutionizing earth observation (EO). Its free, full and open access to data with very short revisit times, high spatial resolution, and good spectral resolution are crucial for many applications. The portfolio of possible products is vast - use-cases of such a service range from plant health monitoring, land and water body change, flood monitoring, disaster mapping and more.However the current gap between Sentinel source data and its end-users is large: ESA's complex Scientific Data Hub raster files are compressed with JPEG2000 (13 raster filesfor each product, one per spectral band) terabytes of data per week additional processing requirementsTackling the data in an old-fashioned way - offering individual derivative products simply does not work anymore, the associated time and costs are large and defeat most of the major benefits of the Sentinel project. Our approach combines cloud-based GIS technologies, parallel processing and fully automated procedures. To support the fast developing EO field we provide tools directly to end-users. on-the-fly processing and visualization make it possible to build new products (e.g. vegetation indices and similar) in a matter of minutes.]]>		</Abstract>
+<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="https://www.sentinel-hub.com" />
+<ContactInformation>
+  <ContactAddress>
+    <AddressType>postal</AddressType>
+    <Address>Cvetkova ulica 29</Address>
+    <City>Ljubljana</City>
+    <StateOrProvince/>
+    <PostCode>1000</PostCode>
+    <Country>Slovenia</Country>
+  </ContactAddress>
+  <ContactVoiceTelephone>+386 1 320-61-50</ContactVoiceTelephone>
+  <ContactFacsimileTelephone>+386 1 620-22-28</ContactFacsimileTelephone>
+  <ContactElectronicMailAddress>info@sinergise.com</ContactElectronicMailAddress>
+</ContactInformation>
+<Fees>https://www.sentinel-hub.com</Fees>     <AccessConstraints>
+     None
+     </AccessConstraints>
+     <Keyword>
+     humanGeographicViewer,thematicMultibandImageManipulationService,thematicProcessingService
+     </Keyword>
+	</Service>
+	<Capability>
+		<Request>
+			<GetCapabilities>
+				<Format>application/xml</Format>
+				<Format>text/xml</Format>
+				<Format>application/vnd.ogc.wms_xml</Format>
+<DCPType>
+	<HTTP>
+		<Get>
+			<OnlineResource xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?" />
+		</Get>
+	</HTTP>
+</DCPType>
+			</GetCapabilities>
+			<GetMap>
+				<Format>image/png</Format>
+				<Format>image/jpeg</Format>
+				<Format>image/jpg</Format>
+				<Format>image/webp</Format>
+				<Format>image/tiff</Format>
+				<Format>application/vnd.google-earth.kmz+xml</Format>
+				<Format>image/tiff;depth=8</Format>
+				<Format>image/tiff;depth=16</Format>
+				<Format>image/tiff;depth=32f</Format>
+				<Format>application/vnd.google-earth.kmz+xml;image_type=image/jpeg</Format>
+				<Format>application/vnd.google-earth.kmz+xml;image_type=image/png</Format>
+				<Format>application/x-esri-shape</Format>
+				<Format>application/json</Format>
+<DCPType>
+	<HTTP>
+		<Get>
+			<OnlineResource xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?" />
+		</Get>
+	</HTTP>
+</DCPType>
+			</GetMap>
+			<GetFeatureInfo>
+				<Format>application/xml</Format>
+				<Format>text/xml</Format>
+				<Format>application/vnd.ogc.wms_xml</Format>
+				<Format>application/vnd.ogc.gml</Format>
+				<Format>text/html</Format>
+				<Format>application/json</Format>
+				<Format>text/plain</Format>
+<DCPType>
+	<HTTP>
+		<Get>
+			<OnlineResource xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?" />
+		</Get>
+	</HTTP>
+</DCPType>
+			</GetFeatureInfo>
+		</Request>
+		<Exception>
+			<Format>XML</Format>
+		</Exception>
+        <inspire_vs:ExtendedCapabilities>
+            <inspire_common:ResourceLocator>
+                <inspire_common:URL>https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?REQUEST=GetCapabilities</inspire_common:URL>
+                <inspire_common:MediaType>text/xml</inspire_common:MediaType>
+            </inspire_common:ResourceLocator>
+            <inspire_common:ResourceType>service</inspire_common:ResourceType>
+            <inspire_common:TemporalReference>
+                <inspire_common:DateOfPublication>2015-11-30</inspire_common:DateOfPublication>
+            </inspire_common:TemporalReference>
+            <inspire_common:Conformity>
+                <inspire_common:Specification>
+                    <inspire_common:Title>COMMISSION REGULATION (EU) No 1089/2010 of 23 November 2010 implementing Directive 2007/2/EC of the European Parliament and of the Council as regards interoperability of spatial data sets and services</inspire_common:Title>
+                    <inspire_common:DateOfPublication>2010-12-08</inspire_common:DateOfPublication>
+                    <inspire_common:URI>OJ:L:2010:323:0011:0102:EN:PDF</inspire_common:URI>
+                    <inspire_common:ResourceLocator>
+                        <inspire_common:URL>https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2010:323:0011:0102:EN:PDF</inspire_common:URL>
+                        <inspire_common:MediaType>application/pdf</inspire_common:MediaType>
+                    </inspire_common:ResourceLocator>
+                </inspire_common:Specification>
+                <inspire_common:Degree>notEvaluated</inspire_common:Degree>
+            </inspire_common:Conformity>
+            <inspire_common:MetadataPointOfContact>
+<inspire_common:OrganisationName>Sinergise d.o.o.</inspire_common:OrganisationName>
+<inspire_common:EmailAddress>info@sentinel-hub.com</inspire_common:EmailAddress>            </inspire_common:MetadataPointOfContact>
+            <inspire_common:MetadataDate>2015-11-30</inspire_common:MetadataDate>
+            <inspire_common:SpatialDataServiceType>view</inspire_common:SpatialDataServiceType>
+            <inspire_common:MandatoryKeyword>
+                <inspire_common:KeywordValue>infoMapAccessService</inspire_common:KeywordValue>
+            </inspire_common:MandatoryKeyword>
+            <inspire_common:SupportedLanguages>
+                <inspire_common:DefaultLanguage>
+                    <inspire_common:Language>eng</inspire_common:Language>
+                </inspire_common:DefaultLanguage>
+            </inspire_common:SupportedLanguages>
+            <inspire_common:ResponseLanguage>
+                <inspire_common:Language>eng</inspire_common:Language>
+            </inspire_common:ResponseLanguage>
+        </inspire_vs:ExtendedCapabilities>
+		<Layer>
+			<Title>Sentinel Hub WMS</Title>
+			<Abstract>WMS layer</Abstract>
+			<CRS>EPSG:3857</CRS>
+			<CRS>CRS:84</CRS>
+			<CRS>EPSG:4326</CRS>
+			<CRS>EPSG:3035</CRS>
+			<CRS>EPSG:27700</CRS>
+			<CRS>EPSG:2157</CRS>
+			<CRS>EPSG:2154</CRS>
+			<CRS>EPSG:3912</CRS>
+			<CRS>EPSG:3794</CRS>
+			<CRS>EPSG:5514</CRS>
+			<CRS>EPSG:3765</CRS>
+			<CRS>EPSG:4026</CRS>
+			<CRS>SR-ORG:98739</CRS>
+			<CRS>EPSG:28992</CRS>
+			<CRS>EPSG:3003</CRS>
+			<CRS>EPSG:3004</CRS>
+			<CRS>EPSG:3844</CRS>
+			<CRS>EPSG:3346</CRS>
+			<CRS>EPSG:3301</CRS>
+			<CRS>EPSG:2180</CRS>
+			<CRS>EPSG:31287</CRS>
+			<CRS>EPSG:3416</CRS>
+			<CRS>EPSG:2193</CRS>
+			<CRS>EPSG:3006</CRS>
+			<CRS>EPSG:3005</CRS>
+			<CRS>EPSG:3578</CRS>
+			<CRS>EPSG:3161</CRS>
+			<CRS>EPSG:3580</CRS>
+			<CRS>EPSG:32184</CRS>
+			<CRS>EPSG:3413</CRS>
+			<CRS>EPSG:3995</CRS>
+			<CRS>EPSG:3031</CRS>
+			<CRS>EPSG:6933</CRS>
+			<CRS>EPSG:32601</CRS>
+			<CRS>EPSG:32701</CRS>
+			<CRS>EPSG:32602</CRS>
+			<CRS>EPSG:32702</CRS>
+			<CRS>EPSG:32603</CRS>
+			<CRS>EPSG:32703</CRS>
+			<CRS>EPSG:32604</CRS>
+			<CRS>EPSG:32704</CRS>
+			<CRS>EPSG:32605</CRS>
+			<CRS>EPSG:32705</CRS>
+			<CRS>EPSG:32606</CRS>
+			<CRS>EPSG:32706</CRS>
+			<CRS>EPSG:32607</CRS>
+			<CRS>EPSG:32707</CRS>
+			<CRS>EPSG:32608</CRS>
+			<CRS>EPSG:32708</CRS>
+			<CRS>EPSG:32609</CRS>
+			<CRS>EPSG:32709</CRS>
+			<CRS>EPSG:32610</CRS>
+			<CRS>EPSG:32710</CRS>
+			<CRS>EPSG:32611</CRS>
+			<CRS>EPSG:32711</CRS>
+			<CRS>EPSG:32612</CRS>
+			<CRS>EPSG:32712</CRS>
+			<CRS>EPSG:32613</CRS>
+			<CRS>EPSG:32713</CRS>
+			<CRS>EPSG:32614</CRS>
+			<CRS>EPSG:32714</CRS>
+			<CRS>EPSG:32615</CRS>
+			<CRS>EPSG:32715</CRS>
+			<CRS>EPSG:32616</CRS>
+			<CRS>EPSG:32716</CRS>
+			<CRS>EPSG:32617</CRS>
+			<CRS>EPSG:32717</CRS>
+			<CRS>EPSG:32618</CRS>
+			<CRS>EPSG:32718</CRS>
+			<CRS>EPSG:32619</CRS>
+			<CRS>EPSG:32719</CRS>
+			<CRS>EPSG:32620</CRS>
+			<CRS>EPSG:32720</CRS>
+			<CRS>EPSG:32621</CRS>
+			<CRS>EPSG:32721</CRS>
+			<CRS>EPSG:32622</CRS>
+			<CRS>EPSG:32722</CRS>
+			<CRS>EPSG:32623</CRS>
+			<CRS>EPSG:32723</CRS>
+			<CRS>EPSG:32624</CRS>
+			<CRS>EPSG:32724</CRS>
+			<CRS>EPSG:32625</CRS>
+			<CRS>EPSG:32725</CRS>
+			<CRS>EPSG:32626</CRS>
+			<CRS>EPSG:32726</CRS>
+			<CRS>EPSG:32627</CRS>
+			<CRS>EPSG:32727</CRS>
+			<CRS>EPSG:32628</CRS>
+			<CRS>EPSG:32728</CRS>
+			<CRS>EPSG:32629</CRS>
+			<CRS>EPSG:32729</CRS>
+			<CRS>EPSG:32630</CRS>
+			<CRS>EPSG:32730</CRS>
+			<CRS>EPSG:32631</CRS>
+			<CRS>EPSG:32731</CRS>
+			<CRS>EPSG:32632</CRS>
+			<CRS>EPSG:32732</CRS>
+			<CRS>EPSG:32633</CRS>
+			<CRS>EPSG:32733</CRS>
+			<CRS>EPSG:32634</CRS>
+			<CRS>EPSG:32734</CRS>
+			<CRS>EPSG:32635</CRS>
+			<CRS>EPSG:32735</CRS>
+			<CRS>EPSG:32636</CRS>
+			<CRS>EPSG:32736</CRS>
+			<CRS>EPSG:32637</CRS>
+			<CRS>EPSG:32737</CRS>
+			<CRS>EPSG:32638</CRS>
+			<CRS>EPSG:32738</CRS>
+			<CRS>EPSG:32639</CRS>
+			<CRS>EPSG:32739</CRS>
+			<CRS>EPSG:32640</CRS>
+			<CRS>EPSG:32740</CRS>
+			<CRS>EPSG:32641</CRS>
+			<CRS>EPSG:32741</CRS>
+			<CRS>EPSG:32642</CRS>
+			<CRS>EPSG:32742</CRS>
+			<CRS>EPSG:32643</CRS>
+			<CRS>EPSG:32743</CRS>
+			<CRS>EPSG:32644</CRS>
+			<CRS>EPSG:32744</CRS>
+			<CRS>EPSG:32645</CRS>
+			<CRS>EPSG:32745</CRS>
+			<CRS>EPSG:32646</CRS>
+			<CRS>EPSG:32746</CRS>
+			<CRS>EPSG:32647</CRS>
+			<CRS>EPSG:32747</CRS>
+			<CRS>EPSG:32648</CRS>
+			<CRS>EPSG:32748</CRS>
+			<CRS>EPSG:32649</CRS>
+			<CRS>EPSG:32749</CRS>
+			<CRS>EPSG:32650</CRS>
+			<CRS>EPSG:32750</CRS>
+			<CRS>EPSG:32651</CRS>
+			<CRS>EPSG:32751</CRS>
+			<CRS>EPSG:32652</CRS>
+			<CRS>EPSG:32752</CRS>
+			<CRS>EPSG:32653</CRS>
+			<CRS>EPSG:32753</CRS>
+			<CRS>EPSG:32654</CRS>
+			<CRS>EPSG:32754</CRS>
+			<CRS>EPSG:32655</CRS>
+			<CRS>EPSG:32755</CRS>
+			<CRS>EPSG:32656</CRS>
+			<CRS>EPSG:32756</CRS>
+			<CRS>EPSG:32657</CRS>
+			<CRS>EPSG:32757</CRS>
+			<CRS>EPSG:32658</CRS>
+			<CRS>EPSG:32758</CRS>
+			<CRS>EPSG:32659</CRS>
+			<CRS>EPSG:32759</CRS>
+			<CRS>EPSG:32660</CRS>
+			<CRS>EPSG:32760</CRS>
+			<CRS>EPSG:25828</CRS>
+			<CRS>EPSG:25829</CRS>
+			<CRS>EPSG:25830</CRS>
+			<CRS>EPSG:25831</CRS>
+			<CRS>EPSG:25832</CRS>
+			<CRS>EPSG:25833</CRS>
+			<CRS>EPSG:25834</CRS>
+			<CRS>EPSG:25835</CRS>
+			<CRS>EPSG:25836</CRS>
+			<CRS>EPSG:25837</CRS>
+			<EX_GeographicBoundingBox>
+				<westBoundLongitude>-180</westBoundLongitude>
+				<eastBoundLongitude>180</eastBoundLongitude>
+				<southBoundLatitude>-90</southBoundLatitude>
+				<northBoundLatitude>90</northBoundLatitude>
+			</EX_GeographicBoundingBox>
+			<BoundingBox CRS="EPSG:3857" maxx="20037508.342789" maxy="20037508.342789" minx="-20037508.342789" miny="-20037508.342789"/>
+			<BoundingBox CRS="CRS:84" maxx="180" maxy="90" minx="-180" miny="-90"/>
+			<BoundingBox CRS="EPSG:4326" maxx="90" maxy="180" minx="-90" miny="-180"/>
+			<BoundingBox CRS="EPSG:3035" maxx="6928130" maxy="7824930" minx="196460" miny="-146470"/>
+			<BoundingBox CRS="EPSG:27700" maxx="760000" maxy="1280000" minx="-120000" miny="-20000"/>
+			<BoundingBox CRS="EPSG:2157" maxx="785110" maxy="968020" minx="421840" miny="515250"/>
+			<BoundingBox CRS="EPSG:2154" maxx="1320650" maxy="7235613" minx="-378306" miny="6005280"/>
+			<BoundingBox CRS="EPSG:3912" maxx="650000" maxy="200000" minx="350000" miny="0"/>
+			<BoundingBox CRS="EPSG:3794" maxx="650000" maxy="200000" minx="350000" miny="0"/>
+			<BoundingBox CRS="EPSG:5514" maxx="-159500" maxy="-911100" minx="-951600" miny="-1353400"/>
+			<BoundingBox CRS="EPSG:3765" maxx="800000" maxy="5200000" minx="200000" miny="4650000"/>
+			<BoundingBox CRS="EPSG:4026" maxx="375300" maxy="335350" minx="33540" miny="61520"/>
+			<BoundingBox CRS="SR-ORG:98739" maxx="650000" maxy="1250000" minx="150000" miny="510000"/>
+			<BoundingBox CRS="EPSG:28992" maxx="284310" maxy="636990" minx="630" miny="306570"/>
+			<BoundingBox CRS="EPSG:3003" maxx="1868700" maxy="5214300" minx="1226000" miny="4042800"/>
+			<BoundingBox CRS="EPSG:3004" maxx="2885300" maxy="5224200" minx="2145300" miny="3846400"/>
+			<BoundingBox CRS="EPSG:3844" maxx="771870" maxy="1018810" minx="215530" miny="116260"/>
+			<BoundingBox CRS="EPSG:3346" maxx="6268600" maxy="685400" minx="5972400" miny="172700"/>
+			<BoundingBox CRS="EPSG:3301" maxx="6659000" maxy="751600" minx="6375000" miny="282500"/>
+			<BoundingBox CRS="EPSG:2180" maxx="908420" maxy="876510" minx="125800" miny="144600"/>
+			<BoundingBox CRS="EPSG:31287" maxx="575906" maxy="694886" minx="277747" miny="107674"/>
+			<BoundingBox CRS="EPSG:3416" maxx="575906" maxy="694886" minx="277747" miny="107674"/>
+			<BoundingBox CRS="EPSG:2193" maxx="6227000" maxy="2120000" minx="4736000" miny="987000"/>
+			<BoundingBox CRS="EPSG:3006" maxx="7700000" maxy="950000" minx="6100000" miny="150000"/>
+			<BoundingBox CRS="EPSG:3005" maxx="1884000" maxy="1737000" minx="34000" miny="359000"/>
+			<BoundingBox CRS="EPSG:3578" maxx="979000" maxy="1716000" minx="25000" miny="610000"/>
+			<BoundingBox CRS="EPSG:3161" maxx="1819000" maxy="13412000" minx="82000" miny="11672000"/>
+			<BoundingBox CRS="EPSG:3580" maxx="558000" maxy="10336000" minx="-1336000" miny="8119000"/>
+			<BoundingBox CRS="EPSG:32184" maxx="419000" maxy="6535000" minx="191000" miny="5224000"/>
+			<BoundingBox CRS="EPSG:3413" maxx="3323161" maxy="3323161" minx="-3323161" miny="-3323161"/>
+			<BoundingBox CRS="EPSG:3995" maxx="3333135" maxy="3333135" minx="-3333135" miny="-3333135"/>
+			<BoundingBox CRS="EPSG:3031" maxx="3333135" maxy="3333135" minx="-3333135" miny="-3333135"/>
+			<BoundingBox CRS="EPSG:6933" maxx="17367530" maxy="7324184" minx="-17367530" miny="-7324184"/>
+			<BoundingBox CRS="EPSG:32601" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32701" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32602" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32702" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32603" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32703" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32604" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32704" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32605" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32705" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32606" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32706" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32607" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32707" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32608" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32708" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32609" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32709" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32610" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32710" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32611" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32711" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32612" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32712" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32613" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32713" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32614" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32714" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32615" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32715" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32616" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32716" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32617" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32717" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32618" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32718" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32619" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32719" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32620" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32720" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32621" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32721" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32622" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32722" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32623" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32723" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32624" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32724" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32625" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32725" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32626" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32726" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32627" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32727" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32628" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32728" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32629" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32729" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32630" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32730" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32631" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32731" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32632" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32732" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32633" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32733" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32634" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32734" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32635" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32735" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32636" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32736" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32637" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32737" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32638" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32738" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32639" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32739" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32640" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32740" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32641" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32741" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32642" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32742" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32643" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32743" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32644" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32744" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32645" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32745" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32646" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32746" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32647" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32747" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32648" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32748" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32649" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32749" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32650" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32750" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32651" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32751" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32652" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32752" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32653" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32753" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32654" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32754" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32655" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32755" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32656" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32756" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32657" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32757" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32658" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32758" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32659" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32759" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:32660" maxx="850000" maxy="9350000" minx="150000" miny="0"/>
+			<BoundingBox CRS="EPSG:32760" maxx="850000" maxy="10000000" minx="150000" miny="1100000"/>
+			<BoundingBox CRS="EPSG:25828" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25829" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25830" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25831" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25832" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25833" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25834" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25835" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25836" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<BoundingBox CRS="EPSG:25837" maxx="850000" maxy="9350000" minx="150000" miny="3700000"/>
+			<Dimension name="time" units="ISO8601" />
+      <Extent name="time" default="2026-06-09">1984-03-01/2026-06-09/P1D</Extent>
+			<Layer queryable="1">
+				<Name>1_TRUE_COLOR</Name>
+				<Title>True color</Title>
+				<Abstract># True color composite
+
+Sensors carried by satellites can image Earth in different regions of the electromagnetic spectrum. Each region in the spectrum is referred to as a band. Sentinel-2 has 13 bands. True color composite uses visible light bands red, green and blue in the corresponding red, green and blue color channels, resulting in a natural colored product, that is a good representation of the Earth as humans would see it naturally.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/true_color/) and [here.](http://www.fis.uni-bonn.de/en/recherchetools/infobox/professionals/remote-sensing-systems/spectroscopy).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>2_FALSE_COLOR</Name>
+				<Title>False color</Title>
+				<Abstract># False color composite
+
+A false color composite uses at least one non-visible wavelength to image Earth. The false color composite using near infrared, red and green bands is very popular (a band is a region of the electromagnetic spectrum; a satellite sensor can image Earth in different bands). The false colour composite is most commonly used to assess plant density and health, since plants reflect near infrared and green light, while they absorb red. Cities and exposed ground are grey or tan, and water appears blue or black.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/false_color_infrared/) and [here.](https://earthobservatory.nasa.gov/features/FalseColor/page6.php)</Abstract>
+				<Style>
+					<Name>NORMALIZED</Name>
+					<Title>NORMALIZED</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>1_TRUE-COLOR-L1C</Name>
+				<Title>True Color</Title>
+				<Abstract># True color composite
+
+Sensors carried by satellites can image Earth in different regions of the electromagnetic spectrum. Each region in the spectrum is referred to as a band. Sentinel-2 has 13 bands. True color composite uses visible light bands red, green and blue in the corresponding red, green and blue color channels, resulting in a natural colored product, that is a good representation of the Earth as humans would see it naturally.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/true_color/) and [here.](http://www.fis.uni-bonn.de/en/recherchetools/infobox/professionals/remote-sensing-systems/spectroscopy).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>2_FALSE-COLOR-L1C</Name>
+				<Title>False Color</Title>
+				<Abstract># False color composite
+
+A false color composite uses at least one non-visible wavelength to image Earth. The false color composite using near infrared, red and green bands is very popular (a band is a region of the electromagnetic spectrum; a satellite sensor can image Earth in different bands). The false colour composite is most commonly used to assess plant density and health, since plants reflect near infrared and green light, while they absorb red. Cities and exposed ground are grey or tan, and water appears blue or black.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/false_color_infrared/) and [here.](https://earthobservatory.nasa.gov/features/FalseColor/page6.php)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>2_TONEMAPPED_NATURAL_COLOR</Name>
+				<Title>Highlight Optimized Natural Color</Title>
+				<Abstract># Highlight Optimized Natural Color
+
+This script aims to display the Earth in beautiful natural color images. It uses highlight optimization to avoid burnt out pixels and to even out the exposure.
+
+
+
+More info [here.](https://sentinel-hub.github.io/custom-scripts/sentinel-2/highlight_optimized_natural_color/#)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>9_SAR-URBAN-HH-HV</Name>
+				<Title>SAR Urban</Title>
+				<Abstract># SAR Urban
+
+The script is useful for locating urban areas and individual buildings. It uses the gamma0 of the VH polarization and the VV polarizations to highlight different buildings and topology orientations with purple and green colors. It can be used to track urban expansion, estimate building type, or locate buildings in risk areas (e.g., flooding).
+
+For snowy and icy areas, the visualization can vary from white to purple to dark blue or even black. In order not to confuse cryogenic features with non-cryogenic ones, some general information about the location is helpful to interpret the image. 
+
+ More info [here](https://custom-scripts.sentinel-hub.com/sentinel-1/urban_areas/).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>3_NDVI</Name>
+				<Title>NDVI</Title>
+				<Abstract># Normalized Difference Vegetation Index (NDVI)
+
+The normalized difference vegetation index is a simple, but effective index for quantifying green vegetation. It is a measure of the state of vegetation health based on how plants reflect light at certain wavelengths. The value range of the NDVI is -1 to 1. Negative values of NDVI (values approaching -1) correspond to water. Values close to zero (-0.1 to 0.1) generally correspond to barren areas of rock, sand, or snow. Low, positive values represent shrub and grassland (approximately 0.2 to 0.4), while high values indicate temperate and tropical rainforests (values approaching 1).
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/ndvi/) and [here.](https://eos.com/ndvi/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=3_NDVI&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>9_SAR-URBAN-VV-VH</Name>
+				<Title>SAR urban</Title>
+				<Abstract># SAR Urban
+
+The script is useful for locating urban areas and individual buildings. It uses the gamma0 of the VH polarization and the VV polarizations to highlight different buildings and topology orientations with purple and green colors. It can be used to track urban expansion, estimate building type, or locate buildings in risk areas (e.g., flooding).
+
+For snowy and icy areas, the visualization can vary from white to purple to dark blue or even black. In order not to confuse cryogenic features with non-cryogenic ones, some general information about the location is helpful to interpret the image. 
+
+ More info [here](https://custom-scripts.sentinel-hub.com/sentinel-1/urban_areas/).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>2_TONEMAPPED-NATURAL-COLOR-L1C</Name>
+				<Title>Highlight Optimized Natural Color</Title>
+				<Abstract># Highlight Optimized Natural Color
+
+This script aims to display the Earth in beautiful natural color images. It uses highlight optimization to avoid burnt out pixels and to even out the exposure.
+
+
+
+More info [here.](https://sentinel-hub.github.io/custom-scripts/sentinel-2/highlight_optimized_natural_color/#)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>4_FALSE-COLOR-URBAN</Name>
+				<Title>False color (urban)</Title>
+				<Abstract># False Color Urban composite
+
+This composite is used to visualize urbanized areas more clearly. Vegetation is visible in shades of green, while urbanized areas are represented by white, grey, or purple. Soils, sand, and minerals are shown in a variety of colors. Snow and ice appear as dark blue, and water as black or blue. Flooded areas are very dark blue and almost black. The composite is useful for detecting wildfires and calderas of volcanoes, as they are displayed in shades of red and yellow.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/false-color-urban-rgb/) and [here.](https://eos.com/false-color/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>8_RGB-RATIO-HH-HV</Name>
+				<Title>RGB ratio</Title>
+				<Abstract># RGB ratio
+
+This script combines the gamma0 of the VV and VH polarizations into a false color visualization. It uses the VV polarization in the red channel, the VH polarization in the green channel, and a ratio of VH/VV in the blue channel. It shows water areas in dark red (black), urban areas in yellow, vegetated areas in turquoise, and bare ground in dark purple.
+
+For snowy and icy areas, the visualization can vary from light yellow to blue to red. In order not to confuse cryogenic features with non-cryogenic ones, some general information about the location is helpful in interpreting the image.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>3_NDVI-L1C</Name>
+				<Title>NDVI</Title>
+				<Abstract># Normalized Difference Vegetation Index (NDVI)
+
+The normalized difference vegetation index is a simple, but effective index for quantifying green vegetation. It is a measure of the state of vegetation health based on how plants reflect light at certain wavelengths. The value range of the NDVI is -1 to 1. Negative values of NDVI (values approaching -1) correspond to water. Values close to zero (-0.1 to 0.1) generally correspond to barren areas of rock, sand, or snow. Low, positive values represent shrub and grassland (approximately 0.2 to 0.4), while high values indicate temperate and tropical rainforests (values approaching 1).
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/ndvi/) and [here.](https://eos.com/ndvi/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=3_NDVI-L1C&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>4_FALSE-COLOR-URBAN-L1C</Name>
+				<Title>False Color (urban)</Title>
+				<Abstract># False Color Urban composite
+
+This composite is used to visualize urbanized areas more clearly. Vegetation is visible in shades of green, while urbanized areas are represented by white, grey, or purple. Soils, sand, and minerals are shown in a variety of colors. Snow and ice appear as dark blue, and water as black or blue. Flooded areas are very dark blue and almost black. The composite is useful for detecting wildfires and calderas of volcanoes, as they are displayed in shades of red and yellow.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/false-color-urban-rgb/) and [here.](https://eos.com/false-color/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>8_RGB-RATIO-VV-VH</Name>
+				<Title>RGB ratio</Title>
+				<Abstract># RGB ratio
+
+This script combines the gamma0 of the VV and VH polarizations into a false color visualization. It uses the VV polarization in the red channel, the VH polarization in the green channel, and a ratio of VH/VV in the blue channel. It shows water areas in dark red (black), urban areas in yellow, vegetated areas in turquoise, and bare ground in dark purple.
+
+For snowy and icy areas, the visualization can vary from light yellow to blue to red. In order not to confuse cryogenic features with non-cryogenic ones, some general information about the location is helpful in interpreting the image.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>5_MOISTURE-INDEX</Name>
+				<Title>Moisture index</Title>
+				<Abstract># Normalized Difference Moisture Index (NDMI)
+
+The normalized difference moisture Index (NDMI) is used to determine vegetation water content and monitor droughts. The value range of the NDMI is -1 to 1. Negative values of NDMI (values approaching -1) correspond to barren soil. Values around zero (-0.2 to 0.4) generally correspond to water stress. High, positive values represent high canopy without water stress (approximately 0.4 to 1).
+
+
+
+More info [here.](https://custom-scripts.sentinel-hub.com/sentinel-2/ndmi/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=5_MOISTURE-INDEX&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>ENHANCED-VISUALIZATION-ORTHORECTIFIED-HH-HV</Name>
+				<Title>Enhanced visualization</Title>
+				<Abstract># Enhanced visualization
+
+This script combines the gamma0 of the VV and VH polarizations into a false color visualization. It displays water areas in blue (partially black) and land in different shades of yellow/green. Urban areas are displayed in a light green-yellow (towards white), vegetated areas in mustard green and bare ground in a darker green.
+
+For snowy and icy areas, the visualization can vary from light green-yellow over brighter green to dark brown or even black. In order not to confuse cryogenic features with non-cryogenic ones, some general information about the location is helpful in interpreting the image.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>5_MOISTURE-INDEX-L1C</Name>
+				<Title>Moisture Index</Title>
+				<Abstract># Normalized Difference Moisture Index (NDMI)
+
+The normalized difference moisture Index (NDMI) is used to determine vegetation water content and monitor droughts. The value range of the NDMI is -1 to 1. Negative values of NDMI (values approaching -1) correspond to barren soil. Values around zero (-0.2 to 0.4) generally correspond to water stress. High, positive values represent high canopy without water stress (approximately 0.4 to 1).
+
+
+
+More info [here.](https://custom-scripts.sentinel-hub.com/sentinel-2/ndmi/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=5_MOISTURE-INDEX-L1C&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>6_SWIR</Name>
+				<Title>SWIR</Title>
+				<Abstract># Short wave infrared composite (SWIR)
+
+Short wave infrared (SWIR) measurements can help scientists estimate how much water is present in plants and soil, as water absorbs SWIR wavelengths. Short wave infrared bands (a band is a region of the electromagnetic spectrum; a satellite sensor can image Earth in different bands) are also useful for distinguishing between cloud types (water clouds versus ice clouds), snow and ice, all of which appear white in visible light. In this composite vegetation appears in shades of green, soils and built-up areas are in various shades of brown, and water appears black. Newly burned land reflects strongly in SWIR bands, making them valuable for mapping fire damages. Each rock type reflects shortwave infrared light differently, making it possible to map out geology by comparing reflected SWIR light.
+
+
+
+More info [here.](https://custom-scripts.sentinel-hub.com/sentinel-2/swir-rgb/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>ENHANCED-VISUALIZATION-ORTHORECTIFIED-VV-VH</Name>
+				<Title>Enhanced visualization</Title>
+				<Abstract># Enhanced visualization
+
+This script combines the gamma0 of the VV and VH polarizations into a false color visualization. It displays water areas in blue (partially black) and land in different shades of yellow/green. Urban areas are displayed in a light green-yellow (towards white), vegetated areas in mustard green and bare ground in a darker green.
+
+For snowy and icy areas, the visualization can vary from light green-yellow over brighter green to dark brown or even black. In order not to confuse cryogenic features with non-cryogenic ones, some general information about the location is helpful in interpreting the image.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>6_SWIR-L1C</Name>
+				<Title>SWIR</Title>
+				<Abstract># Short wave infrared composite (SWIR)
+
+Short wave infrared (SWIR) measurements can help scientists estimate how much water is present in plants and soil, as water absorbs SWIR wavelengths. Short wave infrared bands (a band is a region of the electromagnetic spectrum; a satellite sensor can image Earth in different bands) are also useful for distinguishing between cloud types (water clouds versus ice clouds), snow and ice, all of which appear white in visible light. In this composite vegetation appears in shades of green, soils and built-up areas are in various shades of brown, and water appears black. Newly burned land reflects strongly in SWIR bands, making them valuable for mapping fire damages. Each rock type reflects shortwave infrared light differently, making it possible to map out geology by comparing reflected SWIR light.
+
+
+
+More info [here.](https://custom-scripts.sentinel-hub.com/sentinel-2/swir-rgb/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>7_NDWI</Name>
+				<Title>NDWI</Title>
+				<Abstract># Normalized Difference Water Index (NDWI)
+
+The normalized difference water index is most appropriate for water body mapping. Values of water bodies are larger than 0.5. Vegetation has smaller values. Built-up features have positive values between 0 and 0.2.
+
+
+
+More info [here.](https://custom-scripts.sentinel-hub.com/sentinel-2/ndwi/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=7_NDWI&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>8_NDSI</Name>
+				<Title>NDSI</Title>
+				<Abstract># Normalised Difference Snow Index (NDSI)
+
+The Sentinel-2 normalised difference snow index can be used to differentiate between cloud and snow cover as snow absorbs in the short-wave infrared light, but reflects the visible light, whereas cloud is generally reflective in both wavelengths. Snow cover is represented in bright vivid blue.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/ndsi-visualized/).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=8_NDSI&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>EW-SH-HH-DECIBEL-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>HH - decibel gamma0</Title>
+				<Abstract># HH - decibel gamma0
+
+This script displays a grayscale visualization of the gamma0 of the HH polarization. The HH polarization is less sensitive to surface roughness compared to the VV polarization and is therefore used for detecting objects and hard targets such as ships. It provides good contrast between water and land surfaces. Compared to the linear gamma0 visualization, the decibel gamma0 visualization includes a logarithmic scaling of the data.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>7_NDWI-L1C</Name>
+				<Title>NDWI</Title>
+				<Abstract># Normalized Difference Water Index (NDWI)
+
+The normalized difference water index is most appropriate for water body mapping. Values of water bodies are larger than 0.5. Vegetation has smaller values. Built-up features have positive values between 0 and 0.2.
+
+
+
+More info [here.](https://custom-scripts.sentinel-hub.com/sentinel-2/ndwi/)</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=7_NDWI-L1C&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>8_NDSI-L1C</Name>
+				<Title>NDSI</Title>
+				<Abstract># Normalised Difference Snow Index (NDSI)
+
+The Sentinel-2 normalised difference snow index can be used to differentiate between cloud and snow cover as snow absorbs in the short-wave infrared light, but reflects the visible light, whereas cloud is generally reflective in both wavelengths. Snow cover is represented in bright vivid blue.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/ndsi-visualized/).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=8_NDSI-L1C&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>EW-DH-HH-DECIBEL-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>HH - decibel gamma0</Title>
+				<Abstract># HH - decibel gamma0
+
+This script displays a grayscale visualization of the gamma0 of the HH polarization. The HH polarization is less sensitive to surface roughness compared to the VV polarization and is therefore used for detecting objects and hard targets such as ships. It provides good contrast between water and land surfaces. Compared to the linear gamma0 visualization, the decibel gamma0 visualization includes a logarithmic scaling of the data.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>SCENE-CLASSIFICATION</Name>
+				<Title>Scene classification map</Title>
+				<Abstract># Scene classification
+
+
+
+Scene classification was developed to distinguish between cloudy pixels, clear pixels and water pixels of Sentinel-2 data and is a result of ESA&apos;s Scene classification algorithm. Twelve different classifications are provided including classes of clouds, vegetation, soils/desert, water and snow. It does not constitute a land cover classification map in a strict sense.
+
+
+
+More info [here](https://custom-scripts.sentinel-hub.com/sentinel-2/scene-classification/).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+						<LegendURL>
+							<Format>image/png</Format>
+							<OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="https://services.sentinel-hub.com/ogc/wms/60de79ca-16a7-4afd-bcbd-0261bf0156fa?request=GetLegendGraphic&amp;service=WMS&amp;layer=SCENE-CLASSIFICATION&amp;style=default"/>
+						</LegendURL>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>IW-DV-VH-DECIBEL-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>VH - decibel gamma0</Title>
+				<Abstract># VH - decibel gamma0
+
+This script displays a grayscale visualization of the gamma0 of the VH polarization. The values for the cross polarization (VH) are generally lower (darker visualization) than for the co-polarization (HH, VV). The VH polarization has higher values for surfaces characterized by volume scattering, e.g., branches, dry coil bodies, or canopies (lighter color in the visualization) and lower for surfaces with little to no scattering (darker color in the visualization). Compared to the linear gamma0 visualization, the decibel gamma0 visualization includes a logarithmic scaling of the data.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>EW-SH-HH-LINEAR-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>HH - linear gamma0</Title>
+				<Abstract># HH - linear gamma0
+
+This script displays a grayscale visualization of the gamma0 of the HH polarization. The HH polarization is less sensitive to surface roughness compared to the VV polarization and is therefore used for detecting objects and hard targets such as ships.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>EW-DH-HH-LINEAR-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>HH - linear gamma0</Title>
+				<Abstract># HH - linear gamma0
+
+This script displays a grayscale visualization of the gamma0 of the HH polarization. The HH polarization is less sensitive to surface roughness compared to the VV polarization and is therefore used for detecting objects and hard targets such as ships.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>IW-DV-VH-LINEAR-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>VH - linear gamma0</Title>
+				<Abstract># VH - linear gamma0
+
+This script displays a grayscale visualization of the gamma0 of the VH polarization. The values for the cross polarization (VH) are generally lower (darker visualization) than for the co-polarization (HH, VV).  The VH polarization has higher values for surfaces characterized by volume scattering, e.g., branches, dry coil bodies, or canopies (lighter color in the visualization) and lower for surfaces with little to no scattering (darker color in the visualization).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>EW-DH-HV-DECIBEL-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>HV - decibel gamma0</Title>
+				<Abstract># HV - decibel gamma0
+
+This script displays a grayscale visualization of the gamma0 of the HV polarization. The values for the cross polarization (HV) are generally lower (darker visualization) than for the co-polarization (HH, VV). The HV polarization has higher values for surfaces characterized by volume scattering, e.g., branches, dry coil bodies, or canopies (lighter color in the visualization) and lower for surfaces with little to no scattering (darker color in the visualization). Compared to the linear gamma0 visualization, the decibel gamma0 visualization includes a logarithmic scaling of the data.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>IW-DV-VV-DECIBEL-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>VV - decibel gamma0</Title>
+				<Abstract># VV - decibel gamma0
+
+This script displays a grayscale visualization of the gamma0 of the VV polarization. Compared to the HH polarization, the VV polarization is more sensitive to surface roughness and is therefore often used in the detection of oil contamination or wake detection. Compared to the linear gamma0 visualization, the decibel gamma0 visualization includes a logarithmic scaling of the data.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>EW-DH-HV-LINEAR-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>HV - linear gamma0</Title>
+				<Abstract># HV - linear gamma0
+
+This script displays a grayscale visualization of the gamma0 of the HV polarization. The values for the cross polarization (HV) are generally lower (darker visualization) than for the co-polarization (HH, VV). The HV polarization has higher values for surfaces characterized by volume scattering, e.g., branches, dry coil bodies, or canopies (lighter color in the visualization) and lower for surfaces with little to no scattering (darker color in the visualization).</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+			<Layer queryable="1">
+				<Name>IW-DV-VV-LINEAR-GAMMA0-ORTHORECTIFIED</Name>
+				<Title>VV - linear gamma0</Title>
+				<Abstract># VV - linear gamma0
+
+This script displays a grayscale visualization of the gamma0 of the VV polarization. Compared to the HH polarization, the VV polarization is more sensitive to surface roughness and is therefore often used in the detection of oil contamination or wake detection.</Abstract>
+				<Style>
+					<Name>default</Name>
+					<Title>default</Title>
+					<Abstract>Default layer style</Abstract>
+				</Style>
+			</Layer>
+		</Layer>
+	</Capability>
+</WMS_Capabilities>

@@ -1,0 +1,25 @@
+{
+  "name": "satdat",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:frontend": "vite",
+    "dev:backend": "node server/index.js",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^8.0.12"
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "concurrently": "^10.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "leaflet": "^1.9.4",
+    "leaflet.heat": "^0.2.0"
+  }
+}
