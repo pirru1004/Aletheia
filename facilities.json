@@ -1,0 +1,217 @@
+[
+  {
+    "name": "Groundbirch",
+    "operator": "Shell plc",
+    "region": "Montney, Canada",
+    "method": "facility",
+    "is_reference_site": true,
+    "snapshot": {
+      "lat": 55.962807,
+      "lon": -121.077735,
+      "methane_site_ppb": 1862.95,
+      "methane_bkgd_ppb": 1864.99,
+      "methane_excess_pct": -0.109,
+      "no2_mol_m2": 1.1528536208611025e-05,
+      "co_mol_m2": 0.02796838491574994
+    },
+    "methane_excess_pct": -0.109,
+    "flaring_bcm_yr": 0.0,
+    "trajectory": [
+      {
+        "month": "2025-05",
+        "methane_ppb": 1875.04
+      },
+      {
+        "month": "2025-06",
+        "methane_ppb": 1839.25
+      },
+      {
+        "month": "2025-07",
+        "methane_ppb": 1855.54
+      },
+      {
+        "month": "2025-08",
+        "methane_ppb": 1871.21
+      },
+      {
+        "month": "2025-09",
+        "methane_ppb": 1861.21
+      },
+      {
+        "month": "2025-10",
+        "methane_ppb": 1901.32
+      },
+      {
+        "month": "2025-11",
+        "methane_ppb": null
+      },
+      {
+        "month": "2025-12",
+        "methane_ppb": null
+      },
+      {
+        "month": "2026-01",
+        "methane_ppb": null
+      },
+      {
+        "month": "2026-02",
+        "methane_ppb": 1900.01
+      },
+      {
+        "month": "2026-03",
+        "methane_ppb": 1865.24
+      },
+      {
+        "month": "2026-05",
+        "methane_ppb": 1862.5
+      }
+    ],
+    "verdict": "performant",
+    "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
+    "generated": "2026-06-11",
+    "note": "Public satellite data. Reference/benchmark sites, not a specific operator's assets."
+  },
+  {
+    "name": "Korpezhe",
+    "operator": "State (Turkmengaz)",
+    "region": "W. Turkmenistan",
+    "method": "facility",
+    "is_reference_site": true,
+    "snapshot": {
+      "lat": 38.499,
+      "lon": 54.199,
+      "methane_site_ppb": 1972.22,
+      "methane_bkgd_ppb": 1960.0,
+      "methane_excess_pct": 0.624,
+      "no2_mol_m2": 1.686045977798825e-05,
+      "co_mol_m2": 0.03188264804535826
+    },
+    "methane_excess_pct": 0.624,
+    "flaring_bcm_yr": 0.0093,
+    "trajectory": [
+      {
+        "month": "2025-05",
+        "methane_ppb": 1970.4
+      },
+      {
+        "month": "2025-06",
+        "methane_ppb": 1968.79
+      },
+      {
+        "month": "2025-07",
+        "methane_ppb": 1990.75
+      },
+      {
+        "month": "2025-08",
+        "methane_ppb": 2000.84
+      },
+      {
+        "month": "2025-09",
+        "methane_ppb": 2014.04
+      },
+      {
+        "month": "2025-10",
+        "methane_ppb": 1996.91
+      },
+      {
+        "month": "2025-11",
+        "methane_ppb": 2002.79
+      },
+      {
+        "month": "2025-12",
+        "methane_ppb": 2013.87
+      },
+      {
+        "month": "2026-01",
+        "methane_ppb": 1967.31
+      },
+      {
+        "month": "2026-02",
+        "methane_ppb": 1963.88
+      },
+      {
+        "month": "2026-03",
+        "methane_ppb": 1977.27
+      },
+      {
+        "month": "2026-05",
+        "methane_ppb": 1977.92
+      }
+    ],
+    "verdict": "progress",
+    "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
+    "generated": "2026-06-11",
+    "note": "Public satellite data. Reference/benchmark sites, not a specific operator's assets."
+  },
+  {
+    "name": "Permian Basin (Delaware)",
+    "operator": "Multiple operators",
+    "region": "Texas/New Mexico, USA",
+    "method": "basin",
+    "is_reference_site": true,
+    "snapshot": {
+      "name": "Permian Basin (Delaware)",
+      "lat": 31.9,
+      "lon": -103.9,
+      "target_ch4_ppb": 1929.64,
+      "reference_ch4_ppb": 1884.22,
+      "enhancement_pct": 2.411
+    },
+    "methane_excess_pct": 2.411,
+    "flaring_bcm_yr": 0.08877,
+    "trajectory": [
+      {
+        "month": "2025-05",
+        "methane_ppb": 1929.38
+      },
+      {
+        "month": "2025-06",
+        "methane_ppb": 1920.89
+      },
+      {
+        "month": "2025-07",
+        "methane_ppb": 1916.76
+      },
+      {
+        "month": "2025-08",
+        "methane_ppb": 1933.97
+      },
+      {
+        "month": "2025-09",
+        "methane_ppb": 1953.19
+      },
+      {
+        "month": "2025-10",
+        "methane_ppb": 1952.93
+      },
+      {
+        "month": "2025-11",
+        "methane_ppb": 1954.13
+      },
+      {
+        "month": "2025-12",
+        "methane_ppb": 1948.06
+      },
+      {
+        "month": "2026-01",
+        "methane_ppb": 1933.72
+      },
+      {
+        "month": "2026-02",
+        "methane_ppb": 1930.16
+      },
+      {
+        "month": "2026-03",
+        "methane_ppb": 1926.03
+      },
+      {
+        "month": "2026-05",
+        "methane_ppb": 1932.69
+      }
+    ],
+    "verdict": "progress",
+    "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
+    "generated": "2026-06-11",
+    "note": "Public satellite data. Reference/benchmark sites, not a specific operator's assets."
+  }
+]
