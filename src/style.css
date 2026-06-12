@@ -1,17 +1,20 @@
 @import 'leaflet/dist/leaflet.css';
 @import './aletheia.css';
 
+/* The canonical light token set lives in aletheia.css :root (loaded first).
+   Here we remap the shell's legacy variable names onto that shared set, so the
+   outer shell and the dashboard are visibly one product (ALETHEIA_HANDOFF §4). */
 :root {
-  --bg-color: #0C1116;
-  --header-bg: #131B22;
-  --text-primary: #EAF0F6;
-  --text-secondary: #93A1B1;
-  --accent-color: #F2B53B;
-  --accent-hover: #FFC64D;
-  --border-color: #28323F;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --bg-color: var(--paper);
+  --header-bg: var(--surface);
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-2);
+  --accent-color: var(--accent);
+  --accent-hover: var(--accent);
+  --border-color: var(--hairline);
+  --shadow-sm: 0 1px 2px rgba(34,40,38,.04);
+  --shadow-md: 0 4px 10px rgba(34,40,38,.06);
+  --shadow-lg: 0 14px 32px rgba(34,40,38,.10);
 }
 
 * {
@@ -49,11 +52,10 @@ html, body {
 
 .dashboard-header h1 {
   margin: 0;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 1.25rem;
+  font-family: var(--serif, 'IBM Plex Serif', Georgia, serif);
+  font-size: 1.4rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.005em;
   color: var(--text-primary);
 }
 
@@ -61,13 +63,15 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
   font-weight: 500;
-  background-color: rgba(15, 23, 42, 0.5);
-  padding: 0.5rem 1rem;
+  background-color: var(--inset);
+  padding: 0.45rem 0.9rem;
   border-radius: 9999px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--hairline);
 }
 
 .status-indicator {
@@ -98,7 +102,12 @@ html, body {
 #map {
   width: 100%;
   height: 100%;
-  background-color: #0f172a; /* Fallback for dark map loading */
+  background-color: #E9E6E0; /* Fallback while the light basemap loads */
+}
+
+/* AOI markers: soft shadow under the white halo so deeper fills read on Positron. */
+.aoi-pin {
+  filter: drop-shadow(0 1px 2px rgba(34, 40, 38, 0.35));
 }
 
 /* Customizing Leaflet Controls for Dark Mode */
@@ -114,8 +123,8 @@ html, body {
 }
 
 .leaflet-control-attribution {
-  background-color: rgba(30, 41, 59, 0.8) !important;
-  color: var(--text-secondary) !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  color: var(--ink-2) !important;
 }
 
 .leaflet-control-attribution a {
@@ -415,31 +424,32 @@ html, body {
    BUTTONS & FORMS
    ========================================== */
 .primary-btn {
-  background: linear-gradient(to right, var(--accent-color), #818cf8);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  padding: 0.6rem 1.3rem;
+  border-radius: 8px;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
   font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  font-size: 0.875rem;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .primary-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+  background: #1A5F5B;
+  border-color: #1A5F5B;
 }
 
 .primary-btn.outline {
   background: transparent;
-  border: 1px solid var(--accent-color);
-  color: var(--accent-color);
+  border: 1px solid var(--accent);
+  color: var(--accent);
 }
 
 .primary-btn.outline:hover {
-  background: rgba(56, 189, 248, 0.1);
-  box-shadow: none;
+  background: var(--accent-bg);
 }
 
 .full-width {
@@ -465,7 +475,7 @@ html, body {
 }
 
 /* ==========================================
-   HOMEPAGE
+   HOMEPAGE — typographic hero on paper
    ========================================== */
 .transparent-header {
   position: absolute;
@@ -478,100 +488,79 @@ html, body {
 
 .hero-section {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  padding: 6rem 8vw 4rem;
+  background: var(--paper);
 }
 
-.hero-bg {
+/* Faint single-accent wash, no glossy photo — keeps it white-label-neutral. */
+.hero-section::after {
+  content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-  transform-origin: center center;
-  transition: transform-origin 0.4s ease-out;
-  animation: kenBurns 25s ease-in-out infinite alternate;
-}
-
-@keyframes kenBurns {
-  0% {
-    transform: scale(1) translate(0, 0);
-  }
-  100% {
-    transform: scale(1.1) translate(-15px, 10px);
-  }
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9));
-  z-index: 1;
-  animation: pulseLighting 12s ease-in-out infinite alternate;
-}
-
-@keyframes pulseLighting {
-  0% {
-    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.85));
-  }
-  100% {
-    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95));
-  }
+  inset: 0;
+  background: radial-gradient(900px 520px at 88% 12%, var(--accent-bg), transparent 60%);
+  pointer-events: none;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: 800px;
-  padding: 2rem;
-  animation: floatText 10s ease-in-out infinite alternate;
+  max-width: 780px;
 }
 
-@keyframes floatText {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-8px);
-  }
+.hero-eyebrow {
+  display: block;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 1.75rem;
 }
 
 .hero-content h2 {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  letter-spacing: 0.05em;
+  font-family: var(--serif, 'IBM Plex Serif', Georgia, serif);
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 0.98;
+  margin: 0;
+  color: var(--ink);
+}
+
+.hero-tagline {
+  font-family: var(--serif, 'IBM Plex Serif', Georgia, serif);
+  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+  font-weight: 500;
+  color: var(--accent);
+  margin: 1.25rem 0 0;
+}
+
+.hero-lede {
+  font-size: 1.05rem;
+  color: var(--ink-2);
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 1.5rem 0 0;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 2.5rem;
+}
+
+.hero-meta {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: linear-gradient(to right, #ffffff, #94a3b8, #ffffff);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 8s linear infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 0% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
-}
-
-.hero-content p {
-  font-size: 1.25rem;
-  color: #cbd5e1;
-  line-height: 1.8;
+  color: var(--ink-3);
 }
 
 /* ==========================================
@@ -645,115 +634,121 @@ html, body {
 .pillars-container {
   flex-grow: 1;
   padding: 5rem 2rem;
-  max-width: 1400px;
+  max-width: 1240px;
   margin: 0 auto;
   width: 100%;
+  overflow-y: auto;
 }
 
+/* Mono numbered eyebrow + editorial heading, matching the dashboard language. */
 .section-title {
-  font-size: 2.5rem;
-  margin-bottom: 4rem;
-  text-align: center;
-  color: var(--text-primary);
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  font-family: var(--serif, 'IBM Plex Serif', Georgia, serif);
+  font-size: 1.9rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem 0;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.section-title::before {
+  content: '02 — Operational pillars';
+  display: block;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
 }
 
 .pillars-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
 }
 
+/* Flat calm cards: thin hairline, no glow, single accent on the active one. */
 .pillar-card {
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  border-radius: 16px;
-  padding: 3.5rem 2.5rem;
-  text-align: center;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  padding: 1.75rem 1.75rem 1.5rem;
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  counter-increment: pillar;
 }
 
-.pillar-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.1), transparent 70%);
-  pointer-events: none;
-  transition: opacity 0.4s;
-  opacity: 0;
+/* Numbered cards (01 / 02 / 03) replace the emoji icons. */
+.pillar-card .icon {
+  font-size: 0;            /* hide the emoji glyph */
+  display: block;
+  margin-bottom: 1.25rem;
 }
+
+.pillar-card .icon::before {
+  content: '0' counter(pillar);
+  font-family: var(--serif, 'IBM Plex Serif', Georgia, serif);
+  font-size: 1.7rem;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.pillars-grid { counter-reset: pillar; }
 
 .pillar-card.active-card {
   cursor: pointer;
-  border-color: rgba(56, 189, 248, 0.5);
 }
 
 .pillar-card.active-card:hover {
-  transform: translateY(-15px) scale(1.03);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 
-              0 0 20px rgba(56, 189, 248, 0.4), 
-              0 0 40px rgba(56, 189, 248, 0.2) inset;
-  border-color: var(--accent-color);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(34, 40, 38, 0.07);
+  transform: translateY(-2px);
 }
 
-.pillar-card.active-card:hover::before {
-  opacity: 1;
+.pillar-card.active-card:hover .icon::before {
+  color: var(--accent);
 }
 
 .pillar-card.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  filter: grayscale(80%);
-}
-
-.pillar-card .icon {
-  font-size: 4rem;
-  margin-bottom: 2rem;
-  display: inline-block;
-  transition: transform 0.4s ease, text-shadow 0.4s ease;
-}
-
-.pillar-card.active-card:hover .icon {
-  transform: scale(1.1);
-  text-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+  opacity: 0.72;
 }
 
 .pillar-card h3 {
-  font-size: 1.5rem;
-  margin: 0 0 1rem 0;
-  color: var(--text-primary);
-  font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-.pillar-card.active-card:hover h3 {
-  color: #fff;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 1.2rem;
+  margin: 0 0 0.6rem 0;
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .pillar-card p {
-  color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.7;
-  margin-bottom: 2.5rem;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
 }
 
+.pillar-card .active-card,
+.pillar-card .primary-btn { margin-top: auto; }
+
+/* COMING SOON as a quiet mono chip, not a glowing pill. */
 .pillar-card .badge {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  background-color: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.4rem 0.8rem;
-  font-size: 0.75rem;
-  letter-spacing: 1px;
+  background-color: var(--inset);
+  border: 1px solid var(--hairline);
+  color: var(--ink-3);
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 

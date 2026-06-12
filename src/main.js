@@ -30,7 +30,8 @@ function navigateTo(viewId) {
 }
 
 // Bind Navigation Buttons
-document.getElementById('btn-goto-login')?.addEventListener('click', () => navigateTo('view-pillars'));
+document.querySelectorAll('.js-goto-pillars').forEach(btn =>
+  btn.addEventListener('click', () => navigateTo('view-pillars')));
 
 document.querySelectorAll('.btn-goto-home').forEach(btn => {
   btn.addEventListener('click', () => navigateTo('view-home'));
@@ -76,9 +77,8 @@ const map = L.map('map', {
   zoomControl: false // We will add a custom-positioned zoom control
 });
 
-// Add a modern dark-themed base map using CartoDB Dark Matter
-// This fits the premium "dashboard" look requested by the user
-const darkBasemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+// Light CARTO Positron basemap — matches the light "paper" theme (Workstream B).
+const lightBasemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   subdomains: 'abcd',
   maxZoom: 20
@@ -88,8 +88,9 @@ const darkBasemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/
 const panel = document.getElementById('compliance-panel');
 const closeBtn = document.getElementById('cp-close');
 
-// Status -> hex, mirroring the verdict colours used for the map pins.
-const STATUS_COLOR = { green: '#46C266', amber: '#F2B53B' };
+// Status -> hex, mirroring the desaturated verdict colours (shared token set,
+// ALETHEIA_HANDOFF §4: --good / --watch). Used for map pins and the report badge.
+const STATUS_COLOR = { green: '#3F7E5E', amber: '#B5863C' };
 
 let selectedFacility = facilities[0] || null;
 
@@ -131,11 +132,15 @@ document.getElementById('btn-close-report')?.addEventListener('click', () => {
   if (modal) modal.classList.remove('open');
 });
 
+// Deeper verdict fills for the markers so they stay legible on the light Positron
+// basemap, each ringed by a subtle white halo (ALETHEIA_HANDOFF §4 / map request).
+const PIN_COLOR = { green: '#2E5C45', amber: '#7A5A1E' };
+
 // --- Map markers: the three real AOIs from facilities.json, coloured by verdict ---
 facilities.forEach(f => {
-  const color = STATUS_COLOR[statusFor(f.verdict).tone] || '#F2B53B';
+  const fill = PIN_COLOR[statusFor(f.verdict).tone] || '#7A5A1E';
   const marker = L.circleMarker([f.lat, f.lon], {
-    radius: 9, color: '#0C1116', weight: 2, fillColor: color, fillOpacity: 0.95
+    radius: 9, color: '#FFFFFF', weight: 3, fillColor: fill, fillOpacity: 1, className: 'aoi-pin'
   }).addTo(map);
   marker.bindTooltip(`<b>${f.name}</b><br>${f.basisLabel}`);
   marker.on('click', () => {
@@ -144,8 +149,8 @@ facilities.forEach(f => {
   });
 });
 
-// Start with the dark basemap active
-darkBasemap.addTo(map);
+// Start with the light Positron basemap active
+lightBasemap.addTo(map);
 
 // Add Planet Labs Satellite layer (via secure backend proxy)
 // NOTE: The mosaic name must match one that your Planet subscription grants access to.
@@ -202,7 +207,7 @@ const sarLayer = L.tileLayer.wms('/api/sar-wms', {
 
 // Set up Layer Control (Checkbox/Radio toggle)
 const baseMaps = {
-  "Dark Dashboard": darkBasemap
+  "Light (Positron)": lightBasemap
 };
 
 // We will add Planet, NASA, and SAR as overlays so you can toggle them on/off
@@ -370,7 +375,7 @@ function renderReport(f) {
   attn.textContent = status.word; attn.style.borderColor = color; attn.style.color = color; attn.style.background = color + '14';
   document.getElementById('rep-operator').innerHTML = `Operator <b>${f.operator}</b>`;
   document.getElementById('rep-region').textContent = f.region;
-  document.getElementById('rep-aoi').innerHTML = `AOI <b>${f.lat.toFixed(3)}°, ${f.lon.toFixed(3)}°</b>`;
+  document.getElementById('rep-aoi').innerHTML = `AOI <b class="num">${f.lat.toFixed(3)}°, ${f.lon.toFixed(3)}°</b>`;
   document.getElementById('rep-updated').textContent = `Last fused: ${f.generated} · ${f.basisLabel}`;
 
   // --- verdict badge ---
