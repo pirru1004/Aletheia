@@ -16,24 +16,131 @@
       <!-- ==========================================
            VIEW 1: HOMEPAGE 
            ========================================== -->
-      <section id="view-home" class="view active">
-        <header class="dashboard-header transparent-header">
-          <h1>Aletheia</h1>
-          <button id="btn-goto-login" class="primary-btn outline js-goto-pillars">Login</button>
-        </header>
+      <!-- LANDING is dark / cinematic (ICEYE pattern): a full-viewport 4-slide
+           CAROUSEL with NO page scroll. Everything AFTER login (pillars, map,
+           dashboard) stays the light/neutral theme. -->
+      <section id="view-home" class="view active landing">
 
-        <div class="hero-section">
-          <div class="hero-content">
-            <span class="hero-eyebrow">01 — Satellite compliance verification</span>
-            <h2>Aletheia</h2>
-            <p class="hero-tagline">what disclosure conceals, satellites reveal.</p>
-            <p class="hero-lede">Independent, satellite-based emissions verification — fusing public Earth-observation sources to check methane and flaring at industrial facilities, against what operators disclose.</p>
-            <div class="hero-actions">
-              <button class="primary-btn js-goto-pillars">Enter platform</button>
-              <span class="hero-meta">rev. 2026.06 · proof of concept</span>
-            </div>
+        <!-- Persistent top nav: wordmark + Login (enters the platform) -->
+        <nav class="landing-nav">
+          <span class="landing-nav-mark">ALETHEIA</span>
+          <button class="primary-btn outline js-goto-pillars landing-login">Login</button>
+        </nav>
+
+        <div class="carousel" id="carousel">
+          <div class="carousel-track" id="carousel-track">
+
+            <!-- ============ SLIDE 1 — INTRO / TITLE CARD ============ -->
+            <section class="lslide lslide--intro" aria-roledescription="slide" aria-label="Intro — Aletheia">
+              <div class="lslide-inner lslide-inner--intro">
+                <!-- SWAPPABLE logo container: replace the inner wordmark with a Lottie
+                     JSON, an animated SVG, or a short video later — same box, object-fit,
+                     NO layout change. The on-load intro animation is already wired. -->
+                <div class="intro-logo" data-swappable>
+                  <h1 class="intro-mark" aria-label="Aletheia"><span style="--i:0">A</span><span style="--i:1">L</span><span style="--i:2">E</span><span style="--i:3">T</span><span style="--i:4">H</span><span style="--i:5">E</span><span style="--i:6">I</span><span style="--i:7">A</span></h1>
+                </div>
+                <p class="intro-tagline">what disclosure conceals, satellites reveal.</p>
+                <div class="intro-actions">
+                  <button class="primary-btn js-goto-pillars">Enter platform</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- ============ SLIDE 2 — Operational Efficiency (coming soon) ============ -->
+            <section class="lslide lslide--panel" aria-roledescription="slide" aria-label="Operational Efficiency">
+              <!-- Swappable background: dusk refinery + wind-farm image now; replace with
+                   a looping <video class="lslide-media" autoplay muted loop playsinline>
+                   later — same class + object-fit, NO layout change. -->
+              <div class="lslide-bg" data-swappable>
+                <img class="lslide-media" src="/hero.png" alt="Refinery at dusk with an adjacent wind farm" />
+              </div>
+              <div class="lslide-fx" aria-hidden="true">
+                <div class="fx-wash"></div>
+                <div class="fx-haze"></div>
+                <div class="fx-vignette"></div>
+              </div>
+              <div class="lslide-inner">
+                <span class="lblock-tag">coming soon</span>
+                <h2 class="lblock-title">Operational Efficiency</h2>
+                <p class="lblock-line">Throughput, supply-chain logistics, and refinery-capacity utilisation — monitored from orbit.</p>
+                <!-- FUTURE (not wired): optional per-panel "View example project" link →
+                     a case-study page, NEVER the app.
+                <a class="lblock-example" href="#">View example project →</a> -->
+              </div>
+            </section>
+
+            <!-- ============ SLIDE 3 — Asset Security (coming soon) ============ -->
+            <section class="lslide lslide--panel lslide--black" aria-roledescription="slide" aria-label="Asset Security">
+              <!-- Swappable background: solid black now; vessel-detection / site-change
+                   video drops into this container later — NO layout change. -->
+              <div class="lslide-bg" data-swappable>
+                <!-- video later: <video class="lslide-media" autoplay muted loop playsinline></video> -->
+              </div>
+              <div class="lslide-fx" aria-hidden="true"><div class="fx-vignette"></div></div>
+              <div class="lslide-inner">
+                <span class="lblock-tag">coming soon</span>
+                <h2 class="lblock-title">Asset Security</h2>
+                <p class="lblock-line">Site-change analysis, maritime activity, and vessel detection around critical assets.</p>
+                <!-- FUTURE (not wired): optional "View example project" link → case-study page, NEVER the app. -->
+              </div>
+            </section>
+
+            <!-- ============ SLIDE 4 — Sustainability & Compliance (LIVE) ============ -->
+            <section class="lslide lslide--panel lslide--esg" aria-roledescription="slide" aria-label="Sustainability and Compliance — live">
+              <!-- Swappable container: animated globe now (ported, not rebuilt); replace
+                   with a looping video later — NO layout change. -->
+              <div class="lslide-bg" data-swappable>
+                <div class="globe-wrap">
+                  <svg class="globe" viewBox="0 0 400 400" role="img" aria-label="Stylised globe with three monitored reference sites">
+                    <defs>
+                      <radialGradient id="globeSphere" cx="38%" cy="32%" r="72%">
+                        <stop offset="0%" stop-color="#1c3b44"/>
+                        <stop offset="55%" stop-color="#112a32"/>
+                        <stop offset="100%" stop-color="#0a1a20"/>
+                      </radialGradient>
+                      <radialGradient id="globeGlow" cx="50%" cy="50%" r="50%">
+                        <stop offset="78%" stop-color="rgba(31,111,107,0)"/>
+                        <stop offset="92%" stop-color="rgba(31,111,107,.22)"/>
+                        <stop offset="100%" stop-color="rgba(31,111,107,0)"/>
+                      </radialGradient>
+                    </defs>
+                    <circle cx="200" cy="200" r="184" fill="url(#globeGlow)"/>
+                    <circle class="globe-sphere" cx="200" cy="200" r="150" fill="url(#globeSphere)" stroke="rgba(140,180,185,.18)" stroke-width="1"/>
+                    <g class="globe-grat" fill="none" stroke="rgba(150,185,190,.14)" stroke-width="1">
+                      <ellipse cx="200" cy="200" rx="150" ry="50"/>
+                      <ellipse cx="200" cy="200" rx="150" ry="100"/>
+                      <ellipse cx="200" cy="200" rx="50"  ry="150"/>
+                      <ellipse cx="200" cy="200" rx="100" ry="150"/>
+                      <line x1="50" y1="200" x2="350" y2="200"/>
+                      <line x1="200" y1="50" x2="200" y2="350"/>
+                    </g>
+                    <!-- pins injected from facilities.json by main.js -->
+                    <g id="globe-pins"></g>
+                  </svg>
+                </div>
+              </div>
+              <div class="lslide-fx" aria-hidden="true"><div class="fx-vignette"></div></div>
+              <div class="lslide-inner">
+                <span class="lblock-tag lblock-tag--live">live</span>
+                <h2 class="lblock-title">Sustainability &amp; Compliance</h2>
+                <p class="lblock-line">Independent satellite verification of methane and flaring — measured against what operators disclose.</p>
+                <!-- FUTURE (not wired): optional "View example project" link → case-study page, NEVER the app. -->
+              </div>
+            </section>
+
+          </div>
+
+          <!-- carousel controls -->
+          <button class="carousel-arrow prev" id="car-prev" aria-label="Previous slide">&#8249;</button>
+          <button class="carousel-arrow next" id="car-next" aria-label="Next slide">&#8250;</button>
+          <div class="carousel-dots" id="carousel-dots" role="tablist" aria-label="Slides">
+            <button class="cdot" data-i="0" aria-label="Intro"></button>
+            <button class="cdot" data-i="1" aria-label="Operational Efficiency"></button>
+            <button class="cdot" data-i="2" aria-label="Asset Security"></button>
+            <button class="cdot" data-i="3" aria-label="Sustainability & Compliance — live"></button>
           </div>
         </div>
+
       </section>
 
       <!-- ==========================================
@@ -52,29 +159,65 @@
         </header>
         
         <div class="pillars-container">
-          <h2 class="section-title">Select Operational Pillar</h2>
-          
+          <div class="pillars-head">
+            <span class="pillars-eyebrow">Authenticated launchpad</span>
+            <h2 class="section-title">Select a pillar</h2>
+            <p class="pillars-sub">Your workspace access determines which pillars are available.</p>
+          </div>
+
+          <!-- Access state is VISUAL ONLY for now (no real auth):
+               available (clickable) · coming-soon (visible, inert) · locked (no access). -->
           <div class="pillars-grid">
-            <div class="pillar-card disabled" title="Coming Soon">
-              <div class="icon">⚙️</div>
+
+            <div class="pillar-card is-soon" aria-disabled="true">
+              <div class="pillar-num">01</div>
               <h3>Operational Efficiency</h3>
-              <p>Monitor throughput, supply chain logistics, and refinery capacity utilization.</p>
-              <span class="badge">Coming Soon</span>
+              <p>Throughput, supply-chain logistics, and refinery-capacity utilisation.</p>
+              <span class="pillar-state state-soon">Coming soon</span>
             </div>
-            
-            <div class="pillar-card disabled" title="Coming Soon">
-              <div class="icon">🛡️</div>
+
+            <div class="pillar-card is-locked" aria-disabled="true">
+              <div class="pillar-num">02</div>
               <h3>Asset Security</h3>
-              <p>Identify physical incursions, dark vessels, and maritime sanctions circumvention.</p>
-              <span class="badge">Coming Soon</span>
+              <p>Site-change analysis, maritime activity, and vessel detection around critical assets.</p>
+              <span class="pillar-state state-locked">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+                No access
+              </span>
             </div>
-            
-            <div class="pillar-card active-card" id="btn-goto-map">
-              <div class="icon">🌍</div>
-              <h3>Sustainability & Compliance</h3>
-              <p>Verify reported emissions against independent satellite multi-sensor observations.</p>
-              <button class="primary-btn outline">Launch Map</button>
-            </div>
+
+            <button class="pillar-card is-available" id="btn-goto-map">
+              <div class="pillar-num">03</div>
+              <h3>Sustainability &amp; Compliance</h3>
+              <p>Independent satellite verification of methane and flaring at industrial facilities.</p>
+              <span class="pillar-state state-available">Open workspace →</span>
+            </button>
+
+          </div>
+
+          <!-- How Aletheia works -->
+          <div class="works">
+            <h3 class="works-title">How Aletheia works</h3>
+            <ol class="works-steps">
+              <li>
+                <span class="works-n">1</span>
+                <div class="works-body"><b>Screen</b><span>Global TROPOMI methane screening</span></div>
+              </li>
+              <li>
+                <span class="works-n">2</span>
+                <div class="works-body"><b>Confirm</b><span>Fine sensors, drone &amp; inspector verification</span></div>
+              </li>
+              <li>
+                <span class="works-n">3</span>
+                <div class="works-body"><b>Act</b><span>Escalate or stand down</span></div>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Data-provenance strip -->
+          <div class="provenance">
+            <span class="prov-label">Data sources</span>
+            <span class="prov-items"><span>TROPOMI</span><span>VIIRS</span><span>Sentinel</span><span>ERA5</span></span>
           </div>
         </div>
       </section>

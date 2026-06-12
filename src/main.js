@@ -41,20 +41,117 @@ document.getElementById('btn-goto-map')?.addEventListener('click', () => navigat
 
 document.getElementById('btn-back-pillars')?.addEventListener('click', () => navigateTo('view-pillars'));
 
-// --- HERO MOUSE PARALLAX ---
-const heroSection = document.querySelector('.hero-section');
-const heroBg = document.querySelector('.hero-bg');
+// --- Landing globe (ESG block): project the three real AOIs from facilities.json
+// onto a stylised orthographic globe and drop a gently-pulsing pin on each.
+// Lightweight SVG — no 3D engine. Centre chosen so all three sites face us. ---
+(function buildLandingGlobe() {
+  const host = document.getElementById('globe-pins');
+  if (!host) return;
+  const R = 150, cx = 200, cy = 200;
+  const lon0 = -34 * Math.PI / 180, lat0 = 18 * Math.PI / 180;
+  const sinLat0 = Math.sin(lat0), cosLat0 = Math.cos(lat0);
+  const GLOBE_PIN = { green: '#5FBE8A', amber: '#E0AE5A' };
+  const NS = 'http://www.w3.org/2000/svg';
 
-if (heroSection && heroBg) {
-  heroSection.addEventListener('mousemove', (e) => {
-    // Calculate mouse position as a percentage of the screen
-    const x = (e.clientX / window.innerWidth) * 100;
-    const y = (e.clientY / window.innerHeight) * 100;
-    
-    // Smoothly update the transform origin so the scale animation zooms towards the mouse
-    heroBg.style.transformOrigin = `${x}% ${y}%`;
+  facilities.forEach(f => {
+    const lat = f.lat * Math.PI / 180, dlon = (f.lon * Math.PI / 180) - lon0;
+    const cosc = sinLat0 * Math.sin(lat) + cosLat0 * Math.cos(lat) * Math.cos(dlon);
+    if (cosc < 0) return; // site is on the far side of the globe
+    const x = cx + R * Math.cos(lat) * Math.sin(dlon);
+    const y = cy - R * (cosLat0 * Math.sin(lat) - sinLat0 * Math.cos(lat) * Math.cos(dlon));
+    const color = GLOBE_PIN[statusFor(f.verdict).tone] || GLOBE_PIN.amber;
+
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'globe-pin');
+    g.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)})`);
+
+    const pulse = document.createElementNS(NS, 'circle');
+    pulse.setAttribute('class', 'pin-pulse');
+    pulse.setAttribute('r', '4'); pulse.setAttribute('fill', 'none');
+    pulse.setAttribute('stroke', color); pulse.setAttribute('stroke-width', '2');
+
+    const dot = document.createElementNS(NS, 'circle');
+    dot.setAttribute('r', '4.5'); dot.setAttribute('fill', color);
+    dot.setAttribute('stroke', '#08171C'); dot.setAttribute('stroke-width', '1.2');
+
+    const title = document.createElementNS(NS, 'title');
+    title.textContent = `${f.name} — ${f.verdict}`;
+
+    g.append(pulse, dot, title);
+    host.appendChild(g);
   });
-}
+})();
+
+// --- LANDING CAROUSEL ---
+// Full-viewport 4-slide carousel (no page scroll). Navigable via dots, arrows,
+// swipe and keyboard, with a gentle auto-advance that pauses on hover and after
+// any manual move. The intro slide gets a longer hold so it can breathe.
+// Respects prefers-reduced-motion (no auto-advance). Lightweight, no deps.
+(function landingCarousel() {
+  const root = document.getElementById('carousel');
+  const track = document.getElementById('carousel-track');
+  const home = document.getElementById('view-home');
+  if (!root || !track) return;
+
+  const slides = Array.from(track.children);
+  const dots = Array.from(document.querySelectorAll('#carousel-dots .cdot'));
+  const n = slides.length;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DWELL = i => (i === 0 ? 9000 : 6000); // intro holds longer
+  const isVisible = () => home && !home.classList.contains('hidden');
+
+  let index = 0, timer = null, paused = false;
+
+  function render() {
+    track.style.transform = `translateX(${-index * 100}%)`;
+    dots.forEach((d, i) => {
+      d.classList.toggle('active', i === index);
+      d.setAttribute('aria-selected', i === index ? 'true' : 'false');
+    });
+  }
+  function stop() { if (timer) { clearTimeout(timer); timer = null; } }
+  function schedule() {
+    stop();
+    if (reduce) return;                       // no auto-advance under reduced-motion
+    timer = setTimeout(() => {
+      if (!paused && isVisible()) go(index + 1, false);
+      schedule();
+    }, DWELL(index));
+  }
+  function go(i, manual) {
+    index = (i + n) % n;
+    render();
+    if (manual) schedule();                   // reset the dwell after a manual move
+  }
+
+  // dots + arrows
+  dots.forEach((d, i) => d.addEventListener('click', () => go(i, true)));
+  document.getElementById('car-next')?.addEventListener('click', () => go(index + 1, true));
+  document.getElementById('car-prev')?.addEventListener('click', () => go(index - 1, true));
+
+  // pause on hover
+  root.addEventListener('mouseenter', () => { paused = true; });
+  root.addEventListener('mouseleave', () => { paused = false; });
+
+  // keyboard (only while the landing is on screen)
+  window.addEventListener('keydown', (e) => {
+    if (!isVisible()) return;
+    if (e.key === 'ArrowRight') go(index + 1, true);
+    else if (e.key === 'ArrowLeft') go(index - 1, true);
+  });
+
+  // swipe / drag
+  let x0 = null;
+  root.addEventListener('pointerdown', (e) => { x0 = e.clientX; });
+  window.addEventListener('pointerup', (e) => {
+    if (x0 === null) return;
+    const dx = e.clientX - x0; x0 = null;
+    if (Math.abs(dx) > 45) go(index + (dx < 0 ? 1 : -1), true);
+  });
+
+  render();
+  schedule();
+})();
 
 // Fix Leaflet's default icon paths in Vite
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
