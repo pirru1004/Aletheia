@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
 import Chart from 'chart.js/auto';
 import { facilities, statusFor, headlineFor, matrixStateFor } from './facilities_adapter.js';
+import { initAskAletheia } from './ask_aletheia.js';
 
 // --- SPA ROUTING LOGIC ---
 function navigateTo(viewId) {
@@ -402,6 +403,144 @@ const investigate = [
 
 let trajChart = null;
 
+/* ===========================================================================
+   PROJECTION + AI-ACTION LEVERS + USER GOAL  (illustrative scenario layer)
+   Honesty rules (ALETHEIA_HANDOFF A4): everything here is a SCENARIO drawn on
+   top of the OBSERVED ppb record, never a prediction and never a claim about
+   what the operator emits or disclosed.
+     - The status-quo projection is an illustrative extrapolation of the trend.
+     - Levers bend ONLY the *excess above local background* (the abatable part),
+       never the background column itself.
+     - The goal line is the USER'S OWN target, framed as such.
+   =========================================================================== */
+
+const PROJ_MONTHS = 12;     // dashed status-quo continuation horizon
+const RAMP_MONTHS = 3;      // months for an abatement lever to phase to full effect
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Module state, shared by the chart + the lever/goal controls.
+let currentTrajFacility = null;
+const activeLevers = new Set();
+let userGoal = null;        // { pct:Number, year:Number } once the user plots one
+let askApi = null;          // "Ask Aletheia" chat handle (assigned at init)
+
+// Abatement levers — illustrative efficacy RANGES with real source tags.
+// efficacy = fractional reduction of the addressable excess (device capture eff.).
+const ABATE_ICON = {
+  valve:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v6M7 6l5 3 5-3"/><circle cx="12" cy="14" r="5"/><path d="M12 19v2M9 21h6"/></svg>',
+  vru:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="9" width="10" height="11" rx="1.5"/><path d="M14 12h4a2 2 0 0 1 2 2v6"/><path d="M9 9V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v4"/></svg>',
+  leak:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="6"/><path d="M15.4 15.4 21 21"/><path d="M11 8.6c1.6 1.2 1.6 3.1 0 4.8-1.6-1.7-1.6-3.6 0-4.8Z"/></svg>',
+  flare:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3c2 3 4 4.5 4 8a4 4 0 0 1-8 0c0-1.4.6-2.4 1.4-3.4C10 8.8 11 7 12 3Z"/><path d="M8 20h8"/></svg>',
+};
+const abatement = [
+  { id:'pneumatic', icon:'valve', title:'Replace high-bleed pneumatic controllers',
+    effLo:0.35, effHi:0.80, lead:6, confidence:'High',
+    source:'IEA Methane Abatement' },
+  { id:'vru', icon:'vru', title:'Install vapour-recovery unit (VRU)',
+    effLo:0.45, effHi:0.95, lead:9, confidence:'Medium–High',
+    source:'IEA Methane Abatement' },
+  { id:'ldar', icon:'leak', title:'Leak detection & repair (LDAR) programme',
+    effLo:0.40, effHi:0.60, lead:3, confidence:'High',
+    source:'OGMP 2.0' },
+  { id:'flare', icon:'flare', title:'Flare-efficiency / no-routine-flaring upgrade',
+    effLo:0.50, effHi:0.98, lead:12, confidence:'Medium',
+    source:'OGMP 2.0' },
+];
+const leverMid = l => (l.effLo + l.effHi) / 2;
+
+// "YYYY-MM" + k months -> "YYYY-MM"
+function addMonths(ym, k) {
+  const [y, m] = ym.split('-').map(Number);
+  const idx = (y * 12 + (m - 1)) + k;
+  return `${Math.floor(idx / 12)}-${String((idx % 12) + 1).padStart(2, '0')}`;
+}
+// whole months between two "YYYY-MM" (b - a)
+function monthsBetween(a, b) {
+  const [ay, am] = a.split('-').map(Number);
+  const [by, bm] = b.split('-').map(Number);
+  return (by * 12 + bm) - (ay * 12 + am);
+}
+
+// Least-squares slope/intercept + residual std over observed (index, ch4) points.
+function fitTrend(points) {
+  const n = points.length;
+  if (n < 2) return { slope: 0, intercept: points[0]?.y ?? 0, resStd: 0 };
+  let sx = 0, sy = 0, sxx = 0, sxy = 0;
+  for (const p of points) { sx += p.x; sy += p.y; sxx += p.x * p.x; sxy += p.x * p.y; }
+  const denom = (n * sxx - sx * sx) || 1;
+  const slope = (n * sxy - sx * sy) / denom;
+  const intercept = (sy - slope * sx) / n;
+  let ss = 0;
+  for (const p of points) { const e = p.y - (slope * p.x + intercept); ss += e * e; }
+  return { slope, intercept, resStd: Math.sqrt(ss / n) };
+}
+
+// Combined steady-state efficacy of the active levers on the excess (midpoints,
+// stacked multiplicatively): 1 - Π(1 - eff_i).
+function combinedEfficacy() {
+  let keep = 1;
+  abatement.forEach(l => { if (activeLevers.has(l.id)) keep *= (1 - leverMid(l)); });
+  return 1 - keep;
+}
+
+// Build the abatement-lever toggle cards once.
+function renderAbatementActions() {
+  const wrap = document.getElementById('abateActions');
+  if (!wrap || wrap.dataset.built) return;
+  abatement.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'actioncard abate';
+    b.setAttribute('aria-pressed', 'false');
+    b.dataset.lever = a.id;
+    const eff = `${Math.round(a.effLo * 100)}–${Math.round(a.effHi * 100)}%`;
+    b.innerHTML =
+      `<div class="ac-top"><span class="ic2">${ABATE_ICON[a.icon]}</span><span class="ac-title">${a.title}</span></div>` +
+      `<div class="ac-eff"><span class="eff-v">${eff}</span><span>efficacy on excess</span></div>` +
+      `<div class="ac-row"><span class="cf">lead ${a.lead} mo</span><span class="pill">confidence: ${a.confidence}</span></div>` +
+      `<div class="ac-src">source: ${a.source}</div>`;
+    b.addEventListener('click', () => {
+      const on = b.classList.toggle('active');
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (on) activeLevers.add(a.id); else activeLevers.delete(a.id);
+      updateLeverSummary();
+      if (currentTrajFacility) renderTrajectory(currentTrajFacility);
+    });
+    wrap.appendChild(b);
+  });
+  wrap.dataset.built = '1';
+}
+
+function updateLeverSummary() {
+  const el = document.getElementById('abateSummary');
+  if (!el) return;
+  const n = activeLevers.size;
+  if (!n) { el.textContent = 'No levers active · status-quo'; return; }
+  const pct = Math.round(combinedEfficacy() * 100);
+  el.textContent = `${n} lever${n > 1 ? 's' : ''} active · ~${pct}% lower excess at full effect`;
+}
+
+// Published-quantification callout — CITED magnitude from the literature, never
+// derived by our pipeline. Facilities without a published number say so plainly.
+function renderQuantCallout(f) {
+  const el = document.getElementById('quantCallout');
+  if (!el) return;
+  const q = f.quant || {};
+  if (!q.published || !q.magnitude) {
+    el.className = 'quant none';
+    el.innerHTML =
+      `<div class="q-h">Published quantification</div>` +
+      `<div class="q-mag">No published point-source figure.</div>` +
+      `<div class="q-cap">${q.note || 'No detectable enhancement above local background.'}</div>`;
+    return;
+  }
+  el.className = 'quant';
+  el.innerHTML =
+    `<div class="q-h">Published quantification · cited, not derived</div>` +
+    `<div class="q-mag">${q.magnitude}</div>` +
+    `<div class="q-src">${q.source}${q.method ? ` · ${q.method}` : ''}</div>` +
+    `<div class="q-cap">${q.note}</div>`;
+}
+
 // Build the static "Investigate now" action cards once.
 function renderInvestigateActions() {
   const wrap = document.getElementById('verifyActions');
@@ -421,23 +560,116 @@ function renderInvestigateActions() {
 
 // Observed methane trajectory in ppb. null months are gaps (spanGaps:false),
 // never zeros — winter cloud cover at Groundbirch shows as a break in the line.
+// On top of the OBSERVED line we draw three illustrative-SCENARIO overlays:
+// a status-quo projection + uncertainty band, lever-bent projection, and the
+// user's own goal line. None of these is a prediction or an operator disclosure.
 function renderTrajectory(f) {
-  const labels = f.trajectory.map(t => t.month);
-  const data = f.trajectory.map(t => t.ch4);
-  const ds = {
-    label: 'Observed (satellite)', data,
-    borderColor: css('--amber'), borderWidth: 2.6, pointRadius: 2.6,
-    pointBackgroundColor: css('--amber'), spanGaps: false, tension: 0.35,
-  };
+  currentTrajFacility = f;
+  const BAND = 'rgba(181,134,60,.16)';
+
+  // --- observed series ---
+  const obsLabels = f.trajectory.map(t => t.month);
+  const obsData = f.trajectory.map(t => t.ch4);
+
+  // last cloud-free observed point = the anchor every overlay grows from
+  const lastIdxObs = [...obsData].map((v, i) => (v != null ? i : -1)).filter(i => i >= 0).pop();
+  const haveAnchor = lastIdxObs != null && lastIdxObs >= 0;
+
+  // future month labels
+  const futureLabels = [];
+  if (haveAnchor) {
+    for (let k = 1; k <= PROJ_MONTHS; k++) futureLabels.push(addMonths(obsLabels[lastIdxObs], k));
+  }
+  const labels = obsLabels.concat(futureLabels);
+  const N = labels.length;
+  const anchorIdx = lastIdxObs;
+  const anchorVal = haveAnchor ? obsData[lastIdxObs] : null;
+
+  // background / clean-reference column — the floor abatement cannot go below.
+  const bkgd = (f.bkgdCh4 != null) ? f.bkgdCh4
+    : Math.min(...obsData.filter(v => v != null));
+
+  // trend fit over observed points (index space)
+  const pts = obsData.map((y, x) => ({ x, y })).filter(p => p.y != null);
+  const { slope, resStd } = fitTrend(pts);
+
+  // status-quo projection passes through the actual anchor value.
+  const proj = new Array(N).fill(null);
+  const bandLo = new Array(N).fill(null);
+  const bandHi = new Array(N).fill(null);
+  const bent = new Array(N).fill(null);
+  const goal = new Array(N).fill(null);
+
+  const anyLever = activeLevers.size > 0;
+  const showGoal = !!userGoal;
+  const enhAnchor = haveAnchor ? (anchorVal - bkgd) : 0;
+
+  // goal geometry (excess reduced by pct% by the target year)
+  let goalSlopeEnh = 0, goalMonthsTotal = 0;
+  if (showGoal && haveAnchor) {
+    goalMonthsTotal = Math.max(1, monthsBetween(obsLabels[anchorIdx], `${userGoal.year}-12`));
+    const enhTarget = enhAnchor * (1 - userGoal.pct / 100);
+    goalSlopeEnh = (enhTarget - enhAnchor) / goalMonthsTotal;
+  }
+
+  if (haveAnchor) {
+    proj[anchorIdx] = anchorVal;
+    bandLo[anchorIdx] = anchorVal; bandHi[anchorIdx] = anchorVal;
+    if (anyLever) bent[anchorIdx] = anchorVal;
+    if (showGoal) goal[anchorIdx] = anchorVal;
+
+    for (let j = anchorIdx + 1; j < N; j++) {
+      const s = j - anchorIdx;                       // months ahead
+      const pv = anchorVal + slope * s;              // status-quo projection
+      proj[j] = pv;
+      const hw = resStd + Math.max(resStd * 0.3, 1.6) * s;   // band widens with time
+      bandLo[j] = pv - hw; bandHi[j] = pv + hw;
+
+      if (anyLever) {
+        let keep = 1;
+        abatement.forEach(l => {
+          if (!activeLevers.has(l.id)) return;
+          const phase = Math.max(0, Math.min(1, (s - l.lead) / RAMP_MONTHS));
+          keep *= (1 - leverMid(l) * phase);
+        });
+        bent[j] = bkgd + (pv - bkgd) * keep;          // only the excess is abated
+      }
+      if (showGoal) goal[j] = bkgd + (enhAnchor + goalSlopeEnh * s);
+    }
+  }
+
+  const mkLine = (label, data, color, opts = {}) => ({
+    label, data, borderColor: color, backgroundColor: color,
+    borderWidth: opts.w ?? 2, pointRadius: opts.pr ?? 0, pointHoverRadius: opts.pr ? 3 : 0,
+    borderDash: opts.dash || [], spanGaps: opts.span ?? false, tension: opts.t ?? 0.25,
+    fill: opts.fill ?? false, order: opts.order ?? 5,
+  });
+
+  const datasets = [
+    // uncertainty band (lower drawn first, upper fills down to it)
+    { ...mkLine('band-lo', bandLo, 'transparent', { order: 9 }), pointHitRadius: 0 },
+    { ...mkLine('Uncertainty band', bandHi, 'transparent', { order: 9, fill: '-1' }), backgroundColor: BAND, pointHitRadius: 0 },
+    // status-quo projection (dashed)
+    mkLine('Projection · status-quo', proj, css('--amber-soft'), { dash: [6, 5], order: 4 }),
+    // observed (solid, on top)
+    mkLine('Observed (satellite)', obsData.concat(new Array(futureLabels.length).fill(null)),
+      css('--amber'), { w: 2.6, pr: 2.6, t: 0.35, order: 1 }),
+  ];
+  if (anyLever) datasets.push(mkLine('With selected levers', bent, css('--green'), { dash: [5, 4], w: 2.4, order: 2 }));
+  if (showGoal) datasets.push(mkLine('Goal line (your target)', goal, css('--muted'), { dash: [2, 4], w: 2, order: 3 }));
+
+  const HIDE_IN_TIP = new Set(['band-lo', 'Uncertainty band']);
+
   if (trajChart) {
     trajChart.data.labels = labels;
-    trajChart.data.datasets = [ds];
-    trajChart.update();
+    trajChart.data.datasets = datasets;
+    trajChart.update(reduceMotion ? 'none' : undefined);
   } else {
     trajChart = new Chart(document.getElementById('chart'), {
-      type: 'line', data: { labels, datasets: [ds] },
+      type: 'line', data: { labels, datasets },
       options: {
-        responsive: true, maintainAspectRatio: false, animation: { duration: 500, easing: 'easeOutCubic' },
+        responsive: true, maintainAspectRatio: false,
+        animation: reduceMotion ? false : { duration: 500, easing: 'easeOutCubic' },
         interaction: { mode: 'index', intersect: false }, layout: { padding: { top: 14, right: 6 } },
         scales: {
           x: { grid: { color: 'rgba(40,50,63,.5)', drawTicks: false }, ticks: { color: css('--faint'), font: { family: 'IBM Plex Mono', size: 10 }, maxRotation: 0, autoSkipPadding: 8 }, border: { color: css('--line') } },
@@ -448,12 +680,18 @@ function renderTrajectory(f) {
           legend: { display: false },
           tooltip: { backgroundColor: '#0C1116', borderColor: css('--line'), borderWidth: 1, titleColor: css('--text'), bodyColor: css('--muted'),
             titleFont: { family: 'IBM Plex Mono', size: 11 }, bodyFont: { family: 'IBM Plex Mono', size: 11 }, padding: 10,
-            callbacks: { label: c => c.parsed.y == null ? '' : ` ${c.parsed.y.toFixed(1)} ppb` } }
+            filter: c => !HIDE_IN_TIP.has(c.dataset.label),
+            callbacks: { label: c => c.parsed.y == null ? '' : ` ${c.dataset.label}: ${c.parsed.y.toFixed(1)} ppb` } }
         }
       }
     });
   }
-  const latest = [...f.trajectory].reverse().find(t => t.ch4 != null);
+
+  // legend toggles for the optional overlays
+  const lgAb = document.getElementById('lg-abated'); if (lgAb) lgAb.hidden = !anyLever;
+  const lgTg = document.getElementById('lg-target'); if (lgTg) lgTg.hidden = !showGoal;
+
+  const latest = haveAnchor ? f.trajectory[anchorIdx] : null;
   const yv = document.getElementById('yendVal'); if (yv) yv.textContent = latest ? `${latest.ch4.toFixed(1)} ppb` : '—';
   const yn = document.getElementById('yendNote'); if (yn) yn.textContent = latest ? `most recent cloud-free month · ${latest.month}` : 'no cloud-free month in window';
 }
@@ -461,6 +699,8 @@ function renderTrajectory(f) {
 function renderReport(f) {
   if (!f) return;
   renderInvestigateActions();
+  renderAbatementActions();
+  updateLeverSummary();
 
   const status = statusFor(f.verdict);
   const color = STATUS_COLOR[status.tone] || '#F2B53B';
@@ -556,8 +796,14 @@ function renderReport(f) {
   document.getElementById('rep-o3-sub').textContent =
     `Measured ${f.basisLabel}. No operator-reported figure exists yet, so there is no disclosure comparison — only observation vs reference.`;
 
-  // --- trajectory ---
+  // --- trajectory (observed) + projection / lever / goal overlays ---
   renderTrajectory(f);
+
+  // --- published-quantification callout (cited) ---
+  renderQuantCallout(f);
+
+  // --- keep "Ask Aletheia" grounded on the current facility ---
+  askApi?.refresh();
 
   // --- provenance footer ---
   document.getElementById('rep-footer').innerHTML =
@@ -573,6 +819,58 @@ document.querySelectorAll('[data-expand]').forEach(t => {
     t.setAttribute('aria-expanded', open);
     const ch = t.querySelector('.chev'); if (ch) ch.classList.toggle('rot', open);
   });
+});
+
+// --- Abatement lever "Reset": clear all toggles + redraw status-quo ---
+document.getElementById('abateReset')?.addEventListener('click', () => {
+  activeLevers.clear();
+  document.querySelectorAll('#abateActions .actioncard.abate').forEach(b => {
+    b.classList.remove('active'); b.setAttribute('aria-pressed', 'false');
+  });
+  updateLeverSummary();
+  if (currentTrajFacility) renderTrajectory(currentTrajFacility);
+});
+
+// --- User-entered goal line: the user's OWN target, not an operator disclosure ---
+const goalPct = document.getElementById('goalPct');
+const goalYear = document.getElementById('goalYear');
+const goalClearBtn = document.getElementById('goalClear');
+const goalCap = document.getElementById('goalCap');
+
+document.getElementById('goalApply')?.addEventListener('click', () => {
+  const pct = Number(goalPct?.value) || 30;        // default -30%
+  const year = Number(goalYear?.value) || 2030;    // default 2030
+  userGoal = { pct, year };
+  if (goalClearBtn) goalClearBtn.hidden = false;
+  if (goalCap) goalCap.textContent =
+    `Goal line: −${pct}% excess by ${year} · set by user, not an operator disclosure. ` +
+    `Drawn as a glide path from the latest observed point; the window shows the first ${PROJ_MONTHS} months of that path.`;
+  if (currentTrajFacility) renderTrajectory(currentTrajFacility);
+});
+
+goalClearBtn?.addEventListener('click', () => {
+  userGoal = null;
+  if (goalPct) goalPct.value = '';
+  if (goalYear) goalYear.value = '';
+  goalClearBtn.hidden = true;
+  if (goalCap) goalCap.textContent =
+    'Default: −30% by 2030 · Global Methane Pledge. Goal line set by user · not an operator disclosure.';
+  if (currentTrajFacility) renderTrajectory(currentTrajFacility);
+});
+
+// --- "Ask Aletheia": grounded, read-only chat. getContext() returns the LIVE
+// facility view-model + on-page scenario state, so answers always reflect the
+// current selection, active levers and goal — and nothing else. ---
+askApi = initAskAletheia({
+  getContext: () => ({
+    f: currentTrajFacility,
+    scenario: {
+      levers: abatement.filter(l => activeLevers.has(l.id)),
+      combinedEff: combinedEfficacy(),
+      userGoal,
+      projMonths: PROJ_MONTHS,
+    },
+  }),
 });
 
 // Render the default selection so the report is populated before any pin click.

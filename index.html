@@ -442,16 +442,75 @@
       <div class="chartwrap">
         <div class="legend">
           <span><span class="ln obs"></span> Observed (satellite)</span>
+          <span><span class="ln proj"></span> Projection · illustrative status-quo extrapolation</span>
+          <span><span class="sw band"></span> Uncertainty band (scenario, not a prediction)</span>
+          <span id="lg-abated" hidden><span class="ln abated"></span> With selected levers</span>
+          <span id="lg-target" hidden><span class="ln tgt"></span> Goal line (set by user)</span>
         </div>
         <div id="chartbox"><canvas id="chart"></canvas></div>
         <div class="yend"><span class="k">Latest observed</span><span class="v" id="yendVal">—</span><span class="note" id="yendNote">most recent cloud-free month</span></div>
+
+        <!-- USER-ENTERED TARGET — the user's own goal line, NOT an operator disclosure -->
+        <div class="goalrow">
+          <label class="goal-lbl" for="goalPct">Your reduction target</label>
+          <div class="goal-inputs">
+            <input id="goalPct" class="num" type="number" min="0" max="100" step="5" placeholder="30" aria-label="percent reduction">
+            <span class="goal-unit">% by</span>
+            <input id="goalYear" class="num" type="number" min="2026" max="2050" step="1" placeholder="2030" aria-label="target year">
+            <button id="goalApply" class="goal-go" type="button">Plot goal</button>
+            <button id="goalClear" class="goal-clear" type="button" hidden>Clear</button>
+          </div>
+          <span class="goal-cap" id="goalCap">Default: −30% by 2030 · Global Methane Pledge. Goal line set by user · not an operator disclosure.</span>
+        </div>
+
+        <!-- PUBLISHED-QUANTIFICATION CALLOUT — cited from literature, NOT derived here -->
+        <div class="quant" id="quantCallout"></div>
       </div>
     </div>
 
     <div class="card ai">
       <div class="card-h"><span class="t">AI actions</span><span class="s">agent-surfaced</span></div>
+
+      <div class="grp">Abatement levers · illustrative scenario</div>
+      <div class="lever-note">agent-surfaced · illustrative scenario. Toggling a lever bends the projection's <b>excess above background</b> downward by its efficacy — it does not change the observed record.</div>
+      <div class="bd" id="abateActions"></div>
+      <div class="lever-foot">
+        <span id="abateSummary" class="lever-sum">No levers active · status-quo</span>
+        <button id="abateReset" class="lever-reset" type="button">Reset</button>
+      </div>
+
       <div class="grp">Investigate now · verify severity</div>
       <div class="bd" id="verifyActions"></div>
+    </div>
+  </section>
+
+  <!-- ===== Ask Aletheia — grounded, read-only chat ===== -->
+  <section class="ask" id="askPanel">
+    <button class="ask-toggle" id="askToggle" aria-expanded="false" aria-controls="askBody" type="button">
+      <span class="ask-tt">
+        <span class="ask-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12Z"/><path d="M8.5 11h7M8.5 14h4"/></svg>
+        </span>
+        <span class="ask-htxt">
+          <span class="ask-h">Ask Aletheia</span>
+          <span class="ask-s">grounded only in this facility's record · read-only, no live data</span>
+        </span>
+      </span>
+      <span class="chev" aria-hidden="true">⌄</span>
+    </button>
+    <div class="ask-body" id="askBody" hidden>
+      <div class="ask-meta">
+        <span class="ask-mode" id="askMode">Deterministic grounded mode · no network, no API key</span>
+        <span class="ask-grounding" id="askGrounding">Grounded on: —</span>
+      </div>
+      <div class="ask-log" id="askLog" role="log" aria-live="polite"></div>
+      <div class="ask-seeds" id="askSeeds"></div>
+      <form class="ask-form" id="askForm">
+        <input id="askInput" class="ask-input" type="text" autocomplete="off"
+               placeholder="Ask about this facility…" aria-label="Ask Aletheia about this facility">
+        <button class="ask-send" type="submit">Ask</button>
+      </form>
+      <div class="ask-foot">Answers compose only from this facility's <b>pipeline/facilities.json</b> record + the scenario shown above. Aletheia screens with TROPOMI and recommends fine-sensor / drone confirmation — it never fetches live data or browses.</div>
     </div>
   </section>
 

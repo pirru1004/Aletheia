@@ -16,6 +16,11 @@
     },
     "methane_excess_pct": -0.109,
     "flaring_bcm_yr": 0.0,
+    "quantification_published": false,
+    "quantification_magnitude": null,
+    "quantification_source": null,
+    "quantification_method": null,
+    "quantification_note": "No detectable enhancement above local background — consistent with a well-managed or idle site.",
     "trajectory": [
       {
         "month": "2025-05",
@@ -88,6 +93,11 @@
     },
     "methane_excess_pct": 0.624,
     "flaring_bcm_yr": 0.0093,
+    "quantification_published": true,
+    "quantification_magnitude": "≈120 ± 27 kt CH₄ over 11 months (compressor station) · 10–43 t/h",
+    "quantification_source": "Varon et al. 2019, GHGSat-D + TROPOMI",
+    "quantification_method": "point-source instruments",
+    "quantification_note": "Magnitude cited from published literature (point-source instruments). Our pipeline performs TROPOMI screening only.",
     "trajectory": [
       {
         "month": "2025-05",
@@ -159,6 +169,11 @@
     },
     "methane_excess_pct": 2.411,
     "flaring_bcm_yr": 0.08877,
+    "quantification_published": true,
+    "quantification_magnitude": "Delaware sub-basin ≈1.4 ± 0.3 Tg CH₄/yr (2019) · basin leakage ~4.1%",
+    "quantification_source": "Zhang et al. 2020 / Liu et al. 2021",
+    "quantification_method": "basin-scale aircraft + satellite inversion",
+    "quantification_note": "BASIN-scale figure, not a single facility.",
     "trajectory": [
       {
         "month": "2025-05",

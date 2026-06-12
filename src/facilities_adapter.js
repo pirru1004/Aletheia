@@ -63,6 +63,17 @@ function adapt(raw) {
     generated: raw.generated,
     note: raw.note,
 
+    // Published-quantification callout (A4 — CITED, not derived). These are
+    // magnitudes from the peer-reviewed literature (point-source instruments),
+    // NOT outputs of our TROPOMI screening pipeline. null where none exists.
+    quant: {
+      published: !!raw.quantification_published,
+      magnitude: raw.quantification_magnitude ?? null,
+      source: raw.quantification_source ?? null,
+      method: raw.quantification_method ?? null,
+      note: raw.quantification_note ?? '',
+    },
+
     // What the excess is measured against (A4.4 — label the method).
     basisLabel: isBasin ? 'basin · vs clean reference' : 'facility · vs local background',
     comparisonName: isBasin ? 'clean reference' : 'local background',
