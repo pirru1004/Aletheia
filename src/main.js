@@ -21,6 +21,17 @@ function initTheme() {
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('aletheia-theme', newTheme);
       document.querySelectorAll('.theme-toggle').forEach(b => b.textContent = newTheme === 'dark' ? '☀️' : '🌙');
+      
+      // Attempt to toggle the leaflet map basemap if it exists
+      if (typeof map !== 'undefined' && typeof lightBasemap !== 'undefined' && typeof darkBasemap !== 'undefined') {
+        if (newTheme === 'dark') {
+          map.removeLayer(lightBasemap);
+          darkBasemap.addTo(map);
+        } else {
+          map.removeLayer(darkBasemap);
+          lightBasemap.addTo(map);
+        }
+      }
     });
   });
 }
@@ -202,6 +213,21 @@ const lightBasemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z
   maxZoom: 20
 });
 
+// Dark CARTO Dark Matter basemap — matches the dark theme.
+const darkBasemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 20
+});
+
+// Automatically apply the correct basemap based on current theme
+if (document.documentElement.getAttribute('data-theme') === 'dark') {
+  darkBasemap.addTo(map);
+} else {
+  lightBasemap.addTo(map);
+}
+
+
 // --- COMPLIANCE SIDE PANEL LOGIC ---
 const panel = document.getElementById('compliance-panel');
 const closeBtn = document.getElementById('cp-close');
@@ -267,8 +293,7 @@ facilities.forEach(f => {
   });
 });
 
-// Start with the light Positron basemap active
-lightBasemap.addTo(map);
+// (Basemap applied above via theme toggle logic)
 
 // Add Planet Labs Satellite layer (via secure backend proxy)
 // NOTE: The mosaic name must match one that your Planet subscription grants access to.
@@ -325,7 +350,8 @@ const sarLayer = L.tileLayer.wms('/api/sar-wms', {
 
 // Set up Layer Control (Checkbox/Radio toggle)
 const baseMaps = {
-  "Light (Positron)": lightBasemap
+  "Light (Positron)": lightBasemap,
+  "Dark (Dark Matter)": darkBasemap
 };
 
 // We will add Planet, NASA, and SAR as overlays so you can toggle them on/off

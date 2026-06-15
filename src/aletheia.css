@@ -11,16 +11,6 @@
     --watch:#B5863C; --watch-bg:#F4ECDC; --watch-ink:#7A5A1E;
     --alert:#B5544A; --alert-bg:#F4E4E1; --alert-ink:#7C3A33;
     --series-observed:#1F6F6B; --series-reported:#5B7B9A; --band:rgba(181,134,60,.18);
-  }
-
-  [data-theme="dark"] {
-    --paper: #0C1116; --surface: #171E25; --inset: #242D35; --hairline: #303B46;
-    --ink: #FFFFFF; --ink-2: #A1B0C1; --ink-3: #6B7B8C;
-    --accent: #5FD4CC; --accent-bg: #1A3638;
-    --good: #5DE292;  --good-bg: #143423;  --good-ink: #A8EAC1;
-    --watch: #F2C94C; --watch-bg: #423511; --watch-ink: #F9E298;
-    --alert: #FF6B6B; --alert-bg: #4A1A1A; --alert-ink: #FFB3B3;
-    --series-observed: #5FD4CC; --series-reported: #80A1C1; --band: rgba(242,201,76,.18);
 
     /* ===== Dashboard-local names, remapped onto the shared light set ===== */
     --panel:var(--surface); --panel-2:var(--inset); --raise:var(--inset);
@@ -37,6 +27,17 @@
     --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
     --r:14px;
   }
+
+  [data-theme="dark"] {
+    --paper: #0C1116; --surface: #171E25; --inset: #242D35; --hairline: #303B46;
+    --ink: #FFFFFF; --ink-2: #A1B0C1; --ink-3: #6B7B8C;
+    --accent: #5FD4CC; --accent-bg: #1A3638;
+    --good: #5DE292;  --good-bg: #143423;  --good-ink: #A8EAC1;
+    --watch: #F2C94C; --watch-bg: #423511; --watch-ink: #F9E298;
+    --alert: #FF6B6B; --alert-bg: #4A1A1A; --alert-ink: #FFB3B3;
+    --series-observed: #5FD4CC; --series-reported: #80A1C1; --band: rgba(242,201,76,.18);
+  }
+
   *{box-sizing:border-box} html,#aletheia-report-modal-content {margin:0}
 
   /* data values inline (coordinates, ppb, BCM, percentages, dates) */
