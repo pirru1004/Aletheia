@@ -1013,3 +1013,17 @@ document.addEventListener('keydown', e => {
 
 // Render the default selection so the report is populated before any pin click.
 renderReport(selectedFacility);
+
+// --- SPLASH SCREEN LOGIC ---
+window.addEventListener('load', () => {
+  const splash = document.getElementById('splash-screen');
+  if (splash) {
+    // Add a slight delay to allow the user to see the logo
+    setTimeout(() => {
+      splash.style.opacity = '0';
+      splash.style.visibility = 'hidden';
+      // Remove it from DOM after transition completes to prevent blocking clicks
+      setTimeout(() => splash.remove(), 800);
+    }, 1200);
+  }
+});
