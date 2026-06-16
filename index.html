@@ -405,6 +405,10 @@
               <p id="oe-cp-headline" style="margin: 0; color: var(--ink-2); font-size: 14px; line-height: 1.5;"></p>
             </div>
 
+            <!-- Op Eff service-catalogue teaser: matched site's hero band + title.
+                 Populated by renderServiceTeaser() from operational_efficiency.json. -->
+            <div id="oe-svc-teaser" class="oe-svc-teaser" hidden></div>
+
             <button id="oe-btn-open-report" style="width: 100%; padding: 13px; background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: 8px; font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 14px; letter-spacing: 0.01em; cursor: pointer; transition: background 0.2s;">
               ⛶ View full analysis report
             </button>
@@ -895,6 +899,10 @@
       <div class="bd" id="oe-verifyActions"></div>
     </div>
   </section>
+
+  <!-- Op Eff service catalogue (manifest-driven) — rendered below the observation
+       content by renderServiceCatalogue() from operational_efficiency.json. -->
+  <section id="oe-svc-root" class="oe-svc-section" hidden></section>
 
   <footer>
     <span id="oe-rep-footer">—</span>

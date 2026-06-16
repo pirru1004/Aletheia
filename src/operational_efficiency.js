@@ -314,6 +314,241 @@ function renderTrajectory(f) {
   const yn = document.getElementById('oe-yendNote'); if (yn) yn.textContent = latest ? `most recent cloud-free month · ${latest.month}` : 'no cloud-free month in window';
 }
 
+// ===========================================================================
+// SERVICE CATALOGUE (manifest-driven) — public/operational_efficiency.json
+//
+// Honesty rules (non-negotiable): render ONLY what the manifest states. A
+// service shows band/value/trend/rank ONLY when status === 'populated'. A
+// 'pending' service shows label + source + trace and a neutral "not yet
+// screened" pill — no band, no value, no trend, no rank. Nothing is computed
+// or invented: every displayed string comes straight from the manifest. No
+// currency, no tonnages, no "% of throughput". Every new id/class is oe-svc-
+// prefixed so it can never collide with the observation dashboard, the
+// Sustainability pillar, or Asset Security.
+// ===========================================================================
+let oeManifest = null;
+let oeManifestPromise = null;
+
+// Wasted-value pricing state. Money appears ONLY on the flaring card (measured
+// VIIRS BCM × a user-editable reference price). oePrice persists across site
+// switches so a user's chosen assumption sticks; it defaults to the manifest's
+// value_basis price on first load.
+let oeValueBasis = null;
+let oePrice = null;
+
+// Load + cache the manifest once; reuse the cached object across selections.
+function loadOpEffManifest() {
+  if (oeManifest) return Promise.resolve(oeManifest);
+  if (oeManifestPromise) return oeManifestPromise;
+  oeManifestPromise = fetch('/operational_efficiency.json')
+    .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+    .then(m => { oeManifest = m; return m; })
+    .catch(err => {
+      console.warn('[op-eff] could not load service catalogue manifest:', err);
+      oeManifestPromise = null;
+      return null;
+    });
+  return oeManifestPromise;
+}
+
+// Match a facility view-model to a manifest site. Tiers: exact id, then
+// case-insensitive name, then tolerant id/name containment (facility ids are
+// slugified — e.g. "permian-basin-delaware" must still match manifest "permian").
+function matchOpEffSite(f, manifest) {
+  if (!f || !manifest || !Array.isArray(manifest.sites)) return null;
+  const fid = (f.id || '').toLowerCase();
+  const fname = (f.name || '').toLowerCase();
+  let s = manifest.sites.find(x => (x.id || '').toLowerCase() === fid);
+  if (s) return s;
+  s = manifest.sites.find(x => (x.name || '').toLowerCase() === fname);
+  if (s) return s;
+  return manifest.sites.find(x => {
+    const sid = (x.id || '').toLowerCase();
+    return sid && (fid.startsWith(sid + '-') || fid.includes(sid) || fname.includes(sid));
+  }) || null;
+}
+
+// Tabler-style outline glyphs (this file already ships inline SVGs rather than a
+// font; no emoji). trend: up/down/flat; route: trace marker.
+const OE_SVC_ICON = {
+  up:    '<svg class="oe-svc-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 7 7 17"/><path d="M8 7h9v9"/></svg>',
+  down:  '<svg class="oe-svc-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m7 7 10 10"/><path d="M17 8v9h-9"/></svg>',
+  flat:  '<svg class="oe-svc-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>',
+  route: '<svg class="oe-svc-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="18" r="2"/><path d="M8 6h6a4 4 0 0 1 4 4v4"/></svg>',
+};
+const OE_BAND_WORD = { low: 'Low', medium: 'Medium', high: 'High' };
+const oeEsc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function oeTrace(svc) {
+  return `<div class="oe-svc-trace">${OE_SVC_ICON.route}<span>${oeEsc(svc.trace)}</span></div>`;
+}
+
+// Compact wasted-value formatter: >= $1M -> "$12.2M/yr", else "$NNk/yr".
+function oeFormatUsd(value) {
+  return value >= 1e6
+    ? '$' + (value / 1e6).toFixed(1) + 'M/yr'
+    : '$' + Math.round(value / 1e3) + 'k/yr';
+}
+
+// Wasted-value line for the FLARING card only. Flaring is burned gas with a
+// MEASURED volume, so value = volume × price is defensible. flared_bcm === 0
+// shows an absolute "no flaring to recover" state, never "$0.00". This is the
+// ONLY place money is rendered — never on venting or any other card.
+function oeFlareValueHTML(svc) {
+  const bcm = svc.flared_bcm;
+  if (!(bcm > 0)) {
+    return `<div class="oe-svc-value-usd zero" data-oe-bcm="0">` +
+      `<span class="oe-svc-usd-fig">≈$0/yr — no flaring to recover</span></div>`;
+  }
+  const value = bcm * oeValueBasis.bcm_to_mmbtu * oePrice;
+  return `<div class="oe-svc-value-usd" data-oe-bcm="${bcm}" data-oe-attr="${oeEsc(svc.attribution || '')}">` +
+    `<span class="oe-svc-usd-fig">≈${oeFormatUsd(value)}</span>` +
+    `<span class="oe-svc-usd-ref">${oeEsc(svc.attribution || '')}, at $${Number(oePrice).toFixed(2)}/MMBtu reference</span>` +
+    `</div>`;
+}
+
+function oeServiceCard(svc) {
+  // PENDING — muted state: label + source + trace only. Never a value/band/trend/rank.
+  if (svc.status !== 'populated') {
+    return `<div class="oe-svc-card pending">` +
+      `<div class="oe-svc-top"><span class="oe-svc-label">${oeEsc(svc.label)}</span>` +
+      `<span class="oe-svc-source">${oeEsc(svc.source)}</span></div>` +
+      `<div class="oe-svc-bandrow"><span class="oe-svc-pill pending">Pending — not yet screened</span></div>` +
+      oeTrace(svc) + `</div>`;
+  }
+  // POPULATED — render exactly what the manifest carries.
+  const bandCls = svc.band || 'low';
+  const word = OE_BAND_WORD[svc.band] || '—';
+  const trend = (svc.trend && OE_SVC_ICON[svc.trend])
+    ? `<span class="oe-svc-trend">${OE_SVC_ICON[svc.trend]}</span>` : '';
+  const metaBits = [svc.persistence, svc.estate_rank ? `estate ${svc.estate_rank}` : null].filter(Boolean);
+  const meta = metaBits.length ? `<div class="oe-svc-meta">${oeEsc(metaBits.join(' · '))}</div>` : '';
+  const value = svc.value ? `<div class="oe-svc-value">${oeEsc(svc.value)}</div>` : '';
+  // Money lives ONLY on the flaring card, just under the band, and only when a
+  // measured flared volume is present (0 -> the absolute "no flaring" state).
+  const flareVal = (svc.id === 'flaring' && typeof svc.flared_bcm === 'number' && oeValueBasis)
+    ? oeFlareValueHTML(svc) : '';
+  return `<div class="oe-svc-card">` +
+    `<div class="oe-svc-top"><span class="oe-svc-label">${oeEsc(svc.label)}</span>` +
+    `<span class="oe-svc-source">${oeEsc(svc.source)}</span></div>` +
+    `<div class="oe-svc-bandrow"><span class="oe-svc-pill ${bandCls}">${word}</span>${trend}</div>` +
+    flareVal + value + meta + oeTrace(svc) + `</div>`;
+}
+
+function oeHeroCard(hero) {
+  const band = (hero && hero.band) || 'low';
+  return `<div class="oe-svc-hero ${band}">` +
+    `<div class="oe-svc-hero-title">${oeEsc(hero && hero.title)}</div>` +
+    `<div class="oe-svc-hero-line">${oeEsc(hero && hero.line)}</div></div>`;
+}
+
+function oeEstateStrip(manifest, currentId) {
+  const rows = (manifest.estate || []).map((e, i) => {
+    const active = e.id === currentId ? ' active' : '';
+    const word = OE_BAND_WORD[e.band] || '—';
+    return `<div class="oe-svc-erow${active}">` +
+      `<span class="oe-svc-enum">${i + 1}</span>` +
+      `<span class="oe-svc-ename">${oeEsc(e.name)}</span>` +
+      `<span class="oe-svc-pill ${e.band || 'low'}">${word}</span>` +
+      `<span class="oe-svc-enote">${oeEsc(e.note)}</span></div>`;
+  }).join('');
+  return `<div class="oe-svc-estate">${rows}</div>`;
+}
+
+// Inline gas-price control + value caveat, shown just under the principle chips.
+// The price is a user assumption (default from value_basis); changing it updates
+// every flaring card's wasted-value figure live.
+function oePriceControl(vb) {
+  if (!vb) return '';
+  return `<div class="oe-svc-pricebar">` +
+      `<label class="oe-svc-price-l" for="oe-svc-price">Gas price (reference)</label>` +
+      `<input id="oe-svc-price" class="num oe-svc-price" type="number" step="0.1" min="0" ` +
+        `value="${oeEsc(String(oePrice))}" aria-label="Gas price reference, US dollars per MMBtu">` +
+      `<span class="oe-svc-price-suf">/MMBtu</span>` +
+      `<span class="oe-svc-price-note">${oeEsc(vb.gas_price_label)} · your assumption</span>` +
+    `</div>` +
+    (vb.note ? `<div class="oe-svc-price-caveat">${oeEsc(vb.note)}</div>` : '');
+}
+
+function buildServiceCatalogue(manifest, site) {
+  const chips = (manifest.governing_principles || [])
+    .map(p => `<span class="oe-svc-chip">${oeEsc(p)}</span>`).join('');
+  const services = (site.services || []).map(oeServiceCard).join('');
+  const caveats = (manifest.global_caveats || [])
+    .map(c => `<li class="oe-svc-caveat">${oeEsc(c)}</li>`).join('');
+  return `<div class="oe-svc-head">Service catalogue` +
+      `<span class="oe-svc-sub">screening-grade · ${oeEsc(site.name)}</span></div>` +
+    `<div class="oe-svc-principles">${chips}</div>` +
+    oePriceControl(manifest.value_basis) +
+    oeHeroCard(site.hero) +
+    `<div class="oe-svc-grid">${services}</div>` +
+    `<div class="oe-svc-estate-h">Estate ranking</div>` +
+    oeEstateStrip(manifest, site.id) +
+    `<ul class="oe-svc-caveats">${caveats}</ul>`;
+}
+
+// Paint the catalogue section in the full-analysis report for facility f.
+function renderServiceCatalogue(f) {
+  const root = document.getElementById('oe-svc-root');
+  if (!root) return;
+  loadOpEffManifest().then(manifest => {
+    if (!manifest) { root.hidden = true; root.innerHTML = ''; return; }
+    const site = matchOpEffSite(f, manifest);
+    if (!site) {
+      console.warn(`[op-eff] no manifest site matched facility "${f && f.name}" (id="${f && f.id}")`);
+      root.hidden = true; root.innerHTML = '';
+      return;
+    }
+    // Pricing state: capture value_basis and seed the price from its default on
+    // first load (user edits afterwards persist across site switches).
+    oeValueBasis = manifest.value_basis || null;
+    if (oePrice == null && oeValueBasis) oePrice = Number(oeValueBasis.gas_price_default_usd_per_mmbtu);
+
+    root.innerHTML = buildServiceCatalogue(manifest, site);
+    root.hidden = false;
+    oeWirePriceControl();
+  });
+}
+
+// Recompute every flaring card's wasted-value figure from the current price.
+// The flared_bcm === 0 line ("no flaring to recover") never changes.
+function oeRecomputeFlareValues() {
+  if (!oeValueBasis) return;
+  document.querySelectorAll('#oe-svc-root .oe-svc-value-usd').forEach(el => {
+    const bcm = parseFloat(el.dataset.oeBcm);
+    if (!(bcm > 0)) return;
+    const value = bcm * oeValueBasis.bcm_to_mmbtu * oePrice;
+    const fig = el.querySelector('.oe-svc-usd-fig');
+    const ref = el.querySelector('.oe-svc-usd-ref');
+    if (fig) fig.textContent = '≈' + oeFormatUsd(value);
+    if (ref) ref.textContent = `${el.dataset.oeAttr || ''}, at $${Number(oePrice).toFixed(2)}/MMBtu reference`;
+  });
+}
+
+function oeWirePriceControl() {
+  const input = document.getElementById('oe-svc-price');
+  if (!input) return;
+  input.addEventListener('input', () => {
+    const v = parseFloat(input.value);
+    if (!Number.isNaN(v) && v >= 0) { oePrice = v; oeRecomputeFlareValues(); }
+  });
+}
+
+// Paint the one-line hero teaser (band chip + title) in the observe side panel.
+function renderServiceTeaser(f) {
+  const el = document.getElementById('oe-svc-teaser');
+  if (!el) return;
+  loadOpEffManifest().then(manifest => {
+    const site = manifest && matchOpEffSite(f, manifest);
+    if (!site || !site.hero) { el.hidden = true; el.innerHTML = ''; return; }
+    const band = site.hero.band || 'low';
+    const word = OE_BAND_WORD[band] || '—';
+    el.innerHTML = `<span class="oe-svc-pill ${band}">${word}</span>` +
+      `<span class="oe-svc-teaser-title">${oeEsc(site.hero.title)}</span>`;
+    el.hidden = false;
+  });
+}
+
 function renderReport(f) {
   if (!f) return;
   renderInvestigateActions();
@@ -364,11 +599,23 @@ function renderReport(f) {
   if (f.verdict === 'performant') {
     o1v.innerHTML = `Operating <span class="em-green">cleanly</span> — ${m.label.toLowerCase()}.`;
     o1s.textContent = 'Methane sits at local background and flaring is negligible — there is no excess to explain.';
+  } else if (m.cell === 'flare-high') {
+    // Korpezhe's methane is a near-threshold signal (clears 2σ in only 1 of 6
+    // years), so the combustion read is softened to an indicative cue: it must
+    // not overclaim, and it must not contradict the service catalogue, which
+    // still lists combustion screening as pending. Other flare-high sites (e.g.
+    // Permian, which clears 2σ every year) keep the firmer read.
+    const nearThreshold = f.id === 'korpezhe' || /korpezhe/i.test(f.name || '');
+    if (nearThreshold) {
+      o1v.innerHTML = `Possible incomplete combustion — <span class="em-amber">indicative</span>.`;
+      o1s.textContent = 'Flaring is detected and methane sits modestly above background, but the methane enhancement is near the detection threshold (clears 2σ in 1 of 6 years) — a screening cue, not a confirmed verdict.';
+    } else {
+      o1v.innerHTML = `Likely <span class="em-amber">${m.label.toLowerCase()}</span>.`;
+      o1s.textContent = 'Methane is elevated and flaring is detected — combustion looks incomplete.';
+    }
   } else {
     o1v.innerHTML = `Likely <span class="em-amber">${m.label.toLowerCase()}</span>.`;
-    o1s.textContent = m.cell === 'flare-high'
-      ? 'Methane is elevated and flaring is detected — combustion looks incomplete.'
-      : 'Methane is elevated with little or no detected flaring — gas may be escaping uncombusted.';
+    o1s.textContent = 'Methane is elevated with little or no detected flaring — gas may be escaping uncombusted.';
   }
 
   // --- Output 2: co-pollutant & combustion-signal inventory ---
@@ -440,6 +687,9 @@ function renderReport(f) {
     `<b>Source:</b> ${f.source}. <b>Generated:</b> ${f.generated}. ${f.note} ` +
     `The defensible comparison today is observed-vs-${f.isBasin ? 'reference' : 'background'}; ` +
     `operator-reported baselines (annual reports, OGMP 2.0 / GMP / IEA targets) are a separate future workstream and are not shown.`;
+
+  // --- service catalogue (manifest-driven, below the observation content) ---
+  renderServiceCatalogue(f);
 }
 
 // Populate + open the observe-step side panel from a facility view-model.
@@ -457,6 +707,7 @@ function renderPanel(f) {
   word.textContent = status.word;
   word.style.color = color;
   document.getElementById('oe-cp-headline').innerHTML = headlineFor(f);
+  renderServiceTeaser(f);
   panel.classList.remove('hidden');
 }
 

@@ -42,3 +42,133 @@
 .oe-hz-opt + .oe-hz-opt { border-left: 1px solid var(--line); }
 .oe-hz-opt.active { background: var(--text); color: var(--paper); font-weight: 600; }
 .oe-hz-opt:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* =========================================================================
+   SERVICE CATALOGUE (manifest-driven) — every selector is oe-svc- scoped so it
+   cannot touch the observation dashboard, Sustainability, or Asset Security.
+   The spec's generic token names map onto this codebase's semantic tokens:
+     band low    -> --good-bg  / --good-ink  / --good   (success)
+     band medium -> --watch-bg / --watch-ink / --watch  (warning)
+     band high   -> --alert-bg / --alert-ink / --alert  (danger)
+   No font below 11px; sentence case; Tabler-style outline glyphs (no emoji).
+   ========================================================================= */
+.oe-svc-section { margin: 28px 0 8px; padding-top: 22px; border-top: 1px solid var(--line); }
+.oe-svc-section[hidden] { display: none; }
+
+.oe-svc-head {
+  font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--text);
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.oe-svc-head .oe-svc-sub { font-family: var(--mono); font-size: 11px; color: var(--faint); font-weight: 400; }
+
+/* Governing-principle chips (mono). */
+.oe-svc-principles { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.oe-svc-chip {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .02em; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; background: var(--panel-2);
+  white-space: nowrap;
+}
+
+/* Gas-price control + value caveat (just under the principle chips). The number
+   input reuses the codebase's pre-styled number-input treatment (mirrors
+   .goalrow input) — only width is set here, not a fresh visual style. */
+.oe-svc-pricebar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 8px; }
+.oe-svc-price-l { font-family: var(--body); font-size: 11.5px; letter-spacing: .03em; color: var(--muted); }
+.oe-svc-price {
+  width: 80px; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13px;
+  background: var(--surface); color: var(--text); border: 1px solid var(--line);
+  border-radius: 8px; padding: 6px 9px;
+}
+.oe-svc-price:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.oe-svc-price-suf { font-family: var(--body); font-size: 12px; color: var(--muted); margin-left: -4px; }
+.oe-svc-price-note { font-family: var(--body); font-size: 11.5px; color: var(--faint); }
+.oe-svc-price-caveat { font-family: var(--body); font-size: 11.5px; color: var(--faint); line-height: 1.5; margin-bottom: 16px; }
+
+/* Wasted-value figure (flaring card only). */
+.oe-svc-value-usd { display: flex; flex-direction: column; gap: 2px; }
+.oe-svc-usd-fig { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.25; }
+.oe-svc-value-usd.zero .oe-svc-usd-fig { font-size: 13px; font-weight: 500; color: var(--muted); }
+.oe-svc-usd-ref { font-family: var(--body); font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+/* Hero card — full-width, band-tinted. */
+.oe-svc-hero { border-radius: var(--r); padding: 16px 20px; margin-bottom: 18px; border: 1px solid transparent; }
+.oe-svc-hero.low    { background: var(--good-bg);  border-color: var(--good);  color: var(--good-ink); }
+.oe-svc-hero.medium { background: var(--watch-bg); border-color: var(--watch); color: var(--watch-ink); }
+.oe-svc-hero.high   { background: var(--alert-bg); border-color: var(--alert); color: var(--alert-ink); }
+.oe-svc-hero-title { font-family: var(--serif); font-size: 17px; font-weight: 700; line-height: 1.3; }
+.oe-svc-hero-line  { font-family: var(--body); font-size: 13px; line-height: 1.5; margin-top: 6px; opacity: .92; }
+
+/* Service-card grid — exactly 3 columns (6 cards -> 2 rows × 3). minmax(0,1fr)
+   lets columns shrink below content size so long mono text can't force overflow.
+   Narrow screens fall back to 2 columns, then 1. */
+.oe-svc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 720px) { .oe-svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .oe-svc-grid { grid-template-columns: 1fr; } }
+.oe-svc-card {
+  background: var(--surface); border: 0.5px solid var(--line); border-radius: var(--r);
+  padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 8px;
+}
+.oe-svc-card.pending { background: var(--panel-2); }
+
+.oe-svc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.oe-svc-label  { font-family: var(--body); font-size: 13.5px; font-weight: 500; color: var(--text); line-height: 1.3; }
+.oe-svc-source { font-family: var(--mono); font-size: 11px; color: var(--faint); text-align: right; white-space: nowrap; }
+.oe-svc-card.pending .oe-svc-label { color: var(--muted); }
+
+/* Band pill + trend. */
+.oe-svc-bandrow { display: flex; align-items: center; gap: 8px; }
+.oe-svc-pill {
+  font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: .02em;
+  border-radius: 999px; padding: 3px 10px; display: inline-flex; align-items: center;
+}
+.oe-svc-pill.low    { background: var(--good-bg);  color: var(--good-ink);  border: 1px solid var(--good); }
+.oe-svc-pill.medium { background: var(--watch-bg); color: var(--watch-ink); border: 1px solid var(--watch); }
+.oe-svc-pill.high   { background: var(--alert-bg); color: var(--alert-ink); border: 1px solid var(--alert); }
+.oe-svc-pill.pending { background: var(--panel-2); color: var(--faint); border: 1px solid var(--line); }
+
+.oe-svc-trend { color: var(--faint); display: inline-flex; }
+.oe-svc-i { width: 14px; height: 14px; display: block; }
+
+.oe-svc-value { font-family: var(--mono); font-size: 13px; color: var(--text); line-height: 1.4; }
+.oe-svc-meta  { font-family: var(--body); font-size: 11px; color: var(--muted); }
+
+.oe-svc-trace {
+  font-family: var(--body); font-size: 12px; color: var(--muted); line-height: 1.45;
+  display: flex; gap: 7px; align-items: flex-start; margin-top: 2px;
+  padding-top: 9px; border-top: 0.5px solid var(--line);
+}
+.oe-svc-trace .oe-svc-i { color: var(--faint); flex: none; margin-top: 1px; }
+
+/* Estate strip. */
+.oe-svc-estate-h {
+  font-family: var(--body); font-size: 11px; text-transform: uppercase; letter-spacing: .16em;
+  color: var(--ink-3); margin: 22px 0 10px;
+}
+.oe-svc-estate { display: flex; flex-direction: column; gap: 6px; }
+.oe-svc-erow {
+  display: grid; grid-template-columns: 22px 1fr auto minmax(0, 1.4fr); align-items: center; gap: 12px;
+  padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface);
+}
+.oe-svc-erow.active { border-color: var(--accent); background: var(--accent-bg); }
+.oe-svc-enum { font-family: var(--mono); font-size: 12px; color: var(--faint); text-align: center; }
+.oe-svc-ename { font-family: var(--body); font-size: 13px; font-weight: 500; color: var(--text); }
+.oe-svc-erow.active .oe-svc-ename { font-weight: 600; }
+.oe-svc-enote { font-family: var(--body); font-size: 11.5px; color: var(--muted); text-align: right; }
+
+/* Caveat footer. */
+.oe-svc-caveats { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.oe-svc-caveat {
+  font-family: var(--body); font-size: 11.5px; color: var(--faint); line-height: 1.5;
+  padding-left: 14px; position: relative;
+}
+.oe-svc-caveat::before { content: "—"; position: absolute; left: 0; color: var(--ink-3); }
+
+/* Observe side-panel teaser (band chip + hero title, one line). */
+.oe-svc-teaser { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.oe-svc-teaser[hidden] { display: none; }
+.oe-svc-teaser-title { font-family: var(--body); font-size: 13px; font-weight: 500; color: var(--ink-2); line-height: 1.35; }
+
+@media (max-width: 620px) {
+  .oe-svc-erow { grid-template-columns: 22px 1fr auto; }
+  .oe-svc-enote { grid-column: 2 / 4; text-align: left; }
+}
