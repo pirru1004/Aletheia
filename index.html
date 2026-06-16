@@ -363,7 +363,65 @@
       
     </section>
 
-    </div>
+      <!-- ==========================================
+           VIEW 4: MY PROFILE
+           ========================================== -->
+      <section id="view-my-profile" class="view hidden">
+        <header class="app-header">
+          <div class="logo">
+            <img src="/aletheia_logo_on_light.svg" alt="Aletheia Logo" height="32">
+          </div>
+          <div class="header-nav">
+            <button class="icon-btn btn-goto-home" aria-label="Home">
+              <img src="/grid_icon.svg" alt="Home" height="24">
+            </button>
+            <div class="auth-slot"></div>
+          </div>
+        </header>
+        <div class="admin-container">
+          <h2>Manage My Profile</h2>
+          <div class="my-profile-card">
+            <img id="my-profile-avatar" src="" alt="Avatar" class="profile-avatar-large">
+            <h3 id="my-profile-name"></h3>
+            <p id="my-profile-email"></p>
+            <p><strong>Role: </strong><span id="my-profile-role">Loading...</span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           VIEW 5: PROFILES MANAGEMENT (ADMIN)
+           ========================================== -->
+      <section id="view-admin" class="view hidden">
+        <header class="app-header">
+          <div class="logo">
+            <img src="/aletheia_logo_on_light.svg" alt="Aletheia Logo" height="32">
+          </div>
+          <div class="header-nav">
+            <button class="icon-btn btn-goto-home" aria-label="Home">
+              <img src="/grid_icon.svg" alt="Home" height="24">
+            </button>
+            <div class="auth-slot"></div>
+          </div>
+        </header>
+        <div class="admin-container">
+          <h2>Profiles Management</h2>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-tbody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
     
     <!-- Profile Modal -->
     <div id="profile-modal" class="profile-modal hidden">
@@ -375,7 +433,11 @@
           <h3 id="profile-name"></h3>
           <p id="profile-email"></p>
         </div>
-        <button id="btn-sign-out" class="primary-btn outline">Sign Out</button>
+        <div class="profile-actions">
+          <button id="btn-goto-my-profile" class="primary-btn outline full-width">Manage My Profile</button>
+          <button id="btn-goto-admin" class="primary-btn outline full-width">Profiles Management</button>
+          <button id="btn-sign-out" class="primary-btn full-width">Sign Out</button>
+        </div>
       </div>
     </div>
 
