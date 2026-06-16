@@ -40,7 +40,10 @@
         <nav class="landing-nav">
           <span class="landing-nav-mark">ALETHEIA</span>
           <div style="display:flex; gap:12px; align-items:center;">
-            <button class="primary-btn outline js-goto-pillars landing-login">Login</button>
+            <button class="theme-toggle" aria-label="Toggle theme">☀️</button>
+            <div class="auth-slot">
+              <button class="primary-btn outline js-login-btn">Login</button>
+            </div>
           </div>
         </nav>
 
@@ -169,10 +172,13 @@
             <button class="back-btn btn-goto-home">← Home</button>
             <h1>Aletheia Dashboard</h1>
           </div>
-          <div class="header-controls">
+          <div class="header-controls" style="display:flex; gap:16px; align-items:center;">
             <button class="theme-toggle" aria-label="Toggle theme" style="background:transparent; border:none; cursor:pointer; font-size:16px;">☀️</button>
             <span class="status-indicator online"></span>
             <span>Authenticated</span>
+            <div class="auth-slot">
+              <button class="primary-btn outline js-login-btn">Login</button>
+            </div>
           </div>
         </header>
         
@@ -247,9 +253,13 @@
             <button id="btn-back-pillars" class="back-btn">← Pillars</button>
             <h1>Aletheia Compliance Map</h1>
           </div>
-          <div class="header-controls">
+          <div class="header-controls" style="display:flex; gap:16px; align-items:center;">
+            <button class="theme-toggle" aria-label="Toggle theme" style="background:transparent; border:none; cursor:pointer; font-size:16px;">☀️</button>
             <span class="status-indicator online"></span>
             <span>Live Monitoring</span>
+            <div class="auth-slot">
+              <button class="primary-btn outline js-login-btn">Login</button>
+            </div>
           </div>
         </header>
         
@@ -321,6 +331,21 @@
 
     </div>
     
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="profile-modal hidden">
+      <div class="profile-modal-content">
+        <button class="close-profile-btn" id="close-profile-modal">&times;</button>
+        <h2>Your Profile</h2>
+        <div class="profile-info">
+          <img id="profile-avatar" src="" alt="Avatar" class="profile-avatar">
+          <h3 id="profile-name"></h3>
+          <p id="profile-email"></p>
+        </div>
+        <button id="btn-sign-out" class="primary-btn outline">Sign Out</button>
+      </div>
+    </div>
+
+    <!-- Scripts -->
     <!-- Leaflet Heatmap Plugin -->
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script type="module" src="/src/main.js"></script>

@@ -1,4 +1,6 @@
 import './style.css';
+import { auth, googleProvider } from './firebase.js';
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
@@ -1100,3 +1102,65 @@ window.addEventListener('load', () => {
     }, 1200);
   }
 });
+
+// --- AUTHENTICATION LOGIC ---
+let currentUser = null;
+
+function renderAuthUI(user) {
+  currentUser = user;
+  const loginBtnsHTML = '<button class="primary-btn outline js-login-btn">Login</button>';
+  
+  let authHTML = loginBtnsHTML;
+  if (user) {
+    const avatarUrl = user.photoURL || 'https://via.placeholder.com/150';
+    authHTML = `<button class="user-avatar-btn js-profile-btn" aria-label="Open Profile"><img src="${avatarUrl}" alt="User Avatar"></button>`;
+  }
+
+  const containers = document.querySelectorAll('.auth-slot');
+  containers.forEach(container => {
+    container.innerHTML = authHTML;
+  });
+
+  // Re-attach event listeners
+  document.querySelectorAll('.js-login-btn').forEach(btn => {
+    btn.addEventListener('click', handleLogin);
+  });
+  document.querySelectorAll('.js-profile-btn').forEach(btn => {
+    btn.addEventListener('click', openProfileModal);
+  });
+}
+
+function handleLogin() {
+  signInWithPopup(auth, googleProvider).then((result) => {
+    console.log("Logged in:", result.user);
+    navigateTo('view-pillars');
+  }).catch((error) => {
+    console.error("Login Error:", error);
+    alert("Failed to login. Please ensure Google Sign-In is enabled in the Firebase Console.");
+  });
+}
+
+function openProfileModal() {
+  if (!currentUser) return;
+  document.getElementById('profile-avatar').src = currentUser.photoURL || 'https://via.placeholder.com/150';
+  document.getElementById('profile-name').textContent = currentUser.displayName || 'Unknown User';
+  document.getElementById('profile-email').textContent = currentUser.email || 'No email';
+  document.getElementById('profile-modal').classList.remove('hidden');
+}
+
+function closeProfileModal() {
+  document.getElementById('profile-modal').classList.add('hidden');
+}
+
+document.getElementById('close-profile-modal')?.addEventListener('click', closeProfileModal);
+document.getElementById('btn-sign-out')?.addEventListener('click', () => {
+  signOut(auth).then(() => {
+    closeProfileModal();
+    navigateTo('view-landing');
+  });
+});
+
+onAuthStateChanged(auth, (user) => {
+  renderAuthUI(user);
+});
+
