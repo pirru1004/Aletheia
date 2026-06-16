@@ -1172,3 +1172,24 @@ html, body {
   height: 100%;
   object-fit: cover;
 }
+
+/* Admin permissions checkboxes */
+.permissions-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+.permissions-checks label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #fff;
+}
+.permissions-checks input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}

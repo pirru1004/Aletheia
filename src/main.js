@@ -1111,6 +1111,11 @@ window.addEventListener('load', () => {
 // --- AUTHENTICATION LOGIC ---
 let currentUser = null;
 let currentUserRole = 'user'; // default
+let currentUserPermissions = {
+  operationalEfficiency: true,
+  assetSecurity: true,
+  sustainability: true
+};
 
 function renderAuthUI(user) {
   currentUser = user;
@@ -1144,17 +1149,30 @@ async function syncUserToFirestore(user) {
     
     if (!userSnap.exists()) {
       // Create new user profile, default role is 'admin' as requested for now
+      const defaultPermissions = {
+        operationalEfficiency: true,
+        assetSecurity: true,
+        sustainability: true
+      };
       await setDoc(userRef, {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
-        role: 'admin' 
+        role: 'admin',
+        permissions: defaultPermissions
       });
       currentUserRole = 'admin';
+      currentUserPermissions = defaultPermissions;
     } else {
       // User exists, just update their current role in memory
-      currentUserRole = userSnap.data().role || 'user';
+      const data = userSnap.data();
+      currentUserRole = data.role || 'user';
+      currentUserPermissions = data.permissions || {
+        operationalEfficiency: true,
+        assetSecurity: true,
+        sustainability: true
+      };
     }
   } catch (err) {
     console.error("Firestore sync failed (database might not be set up):", err);
@@ -1179,6 +1197,13 @@ function openProfileModal() {
   document.getElementById('profile-avatar').src = currentUser.photoURL || 'https://via.placeholder.com/150';
   document.getElementById('profile-name').textContent = currentUser.displayName || 'Unknown User';
   document.getElementById('profile-email').textContent = currentUser.email || 'No email';
+  
+  // Hide Admin button if user is not an admin
+  const btnAdmin = document.getElementById('btn-goto-admin');
+  if (btnAdmin) {
+    btnAdmin.style.display = (currentUserRole === 'admin') ? 'block' : 'none';
+  }
+  
   document.getElementById('profile-modal').classList.remove('hidden');
 }
 
@@ -1214,13 +1239,15 @@ document.getElementById('btn-goto-admin')?.addEventListener('click', () => {
 
 async function loadAdminUsers() {
   const tbody = document.getElementById('admin-users-tbody');
-  tbody.innerHTML = '<tr><td colspan="3">Loading users...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="4">Loading users...</td></tr>';
   
   try {
     const querySnapshot = await getDocs(collection(db, "users"));
     tbody.innerHTML = '';
     querySnapshot.forEach((docSnap) => {
       const data = docSnap.data();
+      const perms = data.permissions || { operationalEfficiency: false, assetSecurity: false, sustainability: false };
+      
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>
@@ -1236,11 +1263,18 @@ async function loadAdminUsers() {
             <option value="admin" ${data.role === 'admin' ? 'selected' : ''}>Admin</option>
           </select>
         </td>
+        <td>
+          <div class="permissions-checks">
+            <label><input type="checkbox" class="perm-check" data-uid="${data.uid}" data-perm="operationalEfficiency" ${perms.operationalEfficiency ? 'checked' : ''}> Op. Efficiency</label>
+            <label><input type="checkbox" class="perm-check" data-uid="${data.uid}" data-perm="assetSecurity" ${perms.assetSecurity ? 'checked' : ''}> Asset Security</label>
+            <label><input type="checkbox" class="perm-check" data-uid="${data.uid}" data-perm="sustainability" ${perms.sustainability ? 'checked' : ''}> Sustainability</label>
+          </div>
+        </td>
       `;
       tbody.appendChild(tr);
     });
 
-    // Add listeners to selects
+    // Add listeners to role selects
     document.querySelectorAll('.role-select').forEach(select => {
       select.addEventListener('change', async (e) => {
         const uid = e.target.getAttribute('data-uid');
@@ -1258,15 +1292,84 @@ async function loadAdminUsers() {
       });
     });
 
+    // Add listeners to permission checkboxes
+    document.querySelectorAll('.perm-check').forEach(checkbox => {
+      checkbox.addEventListener('change', async (e) => {
+        const uid = e.target.getAttribute('data-uid');
+        const permKey = e.target.getAttribute('data-perm');
+        const isChecked = e.target.checked;
+        const userRef = doc(db, 'users', uid);
+        try {
+          await updateDoc(userRef, {
+            [`permissions.${permKey}`]: isChecked
+          });
+          if (uid === currentUser?.uid) {
+            currentUserPermissions[permKey] = isChecked;
+            renderPillarsDashboard();
+          }
+        } catch (err) {
+          console.error("Failed to update permission:", err);
+          alert("Error updating permission. Check console.");
+        }
+      });
+    });
+
   } catch (error) {
     console.error("Error loading users:", error);
-    tbody.innerHTML = '<tr><td colspan="3">Error loading users. Is Firestore enabled?</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4">Error loading users. Is Firestore enabled?</td></tr>';
+  }
+}
+
+function renderPillarsDashboard() {
+  // Operational Efficiency Pillar (index 0) - usually "Coming soon" but we can block it
+  const effCard = document.querySelector('.pillars-grid .pillar-card:nth-child(1)');
+  if (effCard) {
+    if (!currentUserPermissions.operationalEfficiency) {
+      effCard.classList.add('is-soon');
+      effCard.classList.remove('is-available');
+      effCard.querySelector('.pillar-state').textContent = 'Locked 🔒';
+    } else {
+      effCard.querySelector('.pillar-state').textContent = 'Coming soon';
+    }
+  }
+
+  // Asset Security Pillar
+  const assetBtn = document.getElementById('btn-goto-asset');
+  if (assetBtn) {
+    if (!currentUserPermissions.assetSecurity) {
+      assetBtn.classList.add('is-soon');
+      assetBtn.classList.remove('is-available');
+      assetBtn.querySelector('.pillar-state').textContent = 'Locked 🔒';
+      assetBtn.style.pointerEvents = 'none';
+    } else {
+      assetBtn.classList.remove('is-soon');
+      assetBtn.classList.add('is-available');
+      assetBtn.querySelector('.pillar-state').textContent = 'Open workspace →';
+      assetBtn.style.pointerEvents = 'auto';
+    }
+  }
+
+  // Sustainability Pillar
+  const mapBtn = document.getElementById('btn-goto-map');
+  if (mapBtn) {
+    if (!currentUserPermissions.sustainability) {
+      mapBtn.classList.add('is-soon');
+      mapBtn.classList.remove('is-available');
+      mapBtn.querySelector('.pillar-state').textContent = 'Locked 🔒';
+      mapBtn.style.pointerEvents = 'none';
+    } else {
+      mapBtn.classList.remove('is-soon');
+      mapBtn.classList.add('is-available');
+      mapBtn.querySelector('.pillar-state').textContent = 'Open workspace →';
+      mapBtn.style.pointerEvents = 'auto';
+    }
   }
 }
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     await syncUserToFirestore(user);
+    renderPillarsDashboard();
   } else {
     currentUserRole = 'user';
   }
