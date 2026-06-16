@@ -1,0 +1,108 @@
+{
+  "_comment": "Aletheia Operational Efficiency manifest. flaring = real VIIRS Nightfire 2012-2024. lost (methane) = real TROPOMI 2019-2024. Other services pending real screening. Wasted-value money is shown ONLY on flaring (measured BCM x user price); venting stays relative (no measured volume). No invented thresholds, no tonnages, no '% of throughput'. Bands reflect estate-relative magnitude; trend reflects direction vs the site's own history.",
+  "generated": "2026-06-16",
+  "governing_principles": ["Value = volume \u00d7 your price", "Self-baseline target", "Screening-grade", "Traceable"],
+  "value_basis": {
+    "gas_price_default_usd_per_mmbtu": 3.10,
+    "gas_price_label": "Henry Hub reference, Jun 2026",
+    "bcm_to_mmbtu": 36000000,
+    "note": "Wasted value = measured flared volume (VIIRS BCM) x bcm_to_mmbtu x the user's price. The conversion (~36 million MMBtu per BCM) varies a few % with gas heating value. Henry Hub is a reference price only; realized regional prices differ (e.g. Permian Waha trades below Henry Hub). This is a reference-price estimate of the value of gas burned, not a claim of recoverable revenue. Money is shown ONLY where a real flared volume exists; venting/methane has no measured volume and carries no dollar figure."
+  },
+  "global_caveats": [
+    "Flaring from EOG VIIRS Nightfire (2012-2024); the 2016\u21922017 step partly reflects a data-product change.",
+    "Methane from Sentinel-5P TROPOMI (2019-2024); ~5x7 km pixels cannot resolve a single facility \u2014 enhancement vs background only, never a leak rate or % of throughput.",
+    "'detected' for methane = excess exceeds 2x background spatial variability (a significance convention, not an emissions threshold).",
+    "Near-zero flaring is reported as an absolute state, never as a percentage (a percent on a near-zero baseline is meaningless)."
+  ],
+  "estate": [
+    { "id": "permian", "name": "Permian (Delaware sub-basin)", "band": "high", "note": "Heavy persistent flaring + significant basin methane" },
+    { "id": "korpezhe", "name": "Korpezhe", "band": "medium", "note": "Small but both signals rising" },
+    { "id": "groundbirch", "name": "Groundbirch", "band": "low", "note": "Clean on flaring and methane" }
+  ],
+  "sites": [
+    {
+      "id": "groundbirch", "name": "Groundbirch", "operator": "Shell", "basin": "Montney, Canada",
+      "hero": { "band": "low", "title": "Well-run \u2014 little to recover",
+                "line": "No flaring since 2018 and no methane enhancement above background across six years. The only operational lever is inspection displacement." },
+      "services": [
+        { "id": "flaring", "label": "Flaring volume & frequency", "source": "VIIRS Nightfire",
+          "status": "populated", "band": "low", "value": "No facility flaring; eliminated since 2018",
+          "flared_bcm": 0, "flared_bcm_year": 2024, "attribution": "facility \u2014 none detected",
+          "trend": "flat", "estate_rank": "3 / 3", "persistence": null,
+          "trace": "VIIRS 2012-2024: no detection within ~5 km of the facility since 2018; earlier minor flaring ceased." },
+        { "id": "lost", "label": "Lost product / venting", "source": "TROPOMI methane",
+          "status": "populated", "band": "low", "value": "No methane enhancement above background",
+          "trend": "flat", "estate_rank": "3 / 3", "persistence": null,
+          "trace": "TROPOMI 2019-2024: facility at or below the local-ring background every year (\u22128 to \u221222 ppb); no excess detected." },
+        { "id": "combustion", "label": "Combustion efficiency", "source": "VIIRS \u00d7 TROPOMI",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Flare heat cross-referenced with co-located methane (interpretation layer \u2014 not yet enabled)." },
+        { "id": "throughput", "label": "Throughput / activity", "source": "TROPOMI NO\u2082/CO",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "NO\u2082/CO activity proxy vs the site's own baseline (not yet screened)." },
+        { "id": "inspection", "label": "Inspection displacement", "source": "Optical + SAR",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Satellite pass substituting scheduled physical visits (not yet quantified)." },
+        { "id": "idle", "label": "Idle / underperforming", "source": "VIIRS + TROPOMI",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Declared activity vs thermal + atmospheric signature (not yet assessed)." }
+      ]
+    },
+    {
+      "id": "permian", "name": "Permian (Delaware sub-basin)", "operator": "Multi-operator", "basin": "Delaware, USA",
+      "hero": { "band": "high", "title": "Flaring & basin methane",
+                "line": "Persistent dense flaring across the basin plus a methane enhancement that is significant every year and rising. The largest efficiency-loss signal in the estate \u2014 basin-scale, not one facility." },
+      "services": [
+        { "id": "flaring", "label": "Flaring volume & frequency", "source": "VIIRS Nightfire",
+          "status": "populated", "band": "high", "value": "Persistent dense flaring (~30\u00d7 estate); 2024 in line with own multi-year average",
+          "flared_bcm": 0.1089, "flared_bcm_year": 2024, "attribution": "basin / multi-operator (\u226415 km AOI)",
+          "trend": "flat", "estate_rank": "1 / 3", "persistence": "persistent",
+          "trace": "VIIRS 2012-2024: dense multi-flare field across the AOI every year. Basin / multi-operator \u2014 not attributable to one operator." },
+        { "id": "lost", "label": "Lost product / venting", "source": "TROPOMI methane",
+          "status": "populated", "band": "high", "value": "Basin methane clearly elevated vs clean reference (~+20\u201325 ppb), significant every year, rising",
+          "trend": "up", "estate_rank": "1 / 3", "persistence": "persistent",
+          "trace": "TROPOMI 2019-2024 basin method: Delaware basin above a distant clean reference all six years, clearing the 2\u03c3 bar every year. Basin-scale (not one facility); screening-grade, not a leak rate." },
+        { "id": "combustion", "label": "Combustion efficiency", "source": "VIIRS \u00d7 TROPOMI",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Per-flare combustion cannot be assessed at basin scale (not enabled)." },
+        { "id": "throughput", "label": "Throughput / activity", "source": "TROPOMI NO\u2082/CO",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "NO\u2082/CO activity proxy vs the site's own baseline (not yet screened)." },
+        { "id": "inspection", "label": "Inspection displacement", "source": "Optical + SAR",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Satellite pass substituting scheduled physical visits (not yet quantified)." },
+        { "id": "idle", "label": "Idle / underperforming", "source": "VIIRS + TROPOMI",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Declared activity vs thermal + atmospheric signature (not yet assessed)." }
+      ]
+    },
+    {
+      "id": "korpezhe", "name": "Korpezhe", "operator": "Turkmengaz", "basin": "Turkmenistan",
+      "hero": { "band": "medium", "title": "Worsening \u2014 flaring & methane both rising",
+                "line": "A small facility flare and a persistent methane enhancement, both increasing since 2019 and highest in 2024. Modest in absolute terms, but two independent signals trending the same way." },
+      "services": [
+        { "id": "flaring", "label": "Flaring volume & frequency", "source": "VIIRS Nightfire",
+          "status": "populated", "band": "medium", "value": "Small but persistent flare, ~2\u00d7 prior-years average; record high in 2024",
+          "flared_bcm": 0.0093, "flared_bcm_year": 2024, "attribution": "facility",
+          "trend": "up", "estate_rank": "2 / 3", "persistence": "persistent",
+          "trace": "VIIRS 2012-2024: one facility flare detected in 19% of passes in 2012 rising to 67% in 2024." },
+        { "id": "lost", "label": "Lost product / venting", "source": "TROPOMI methane",
+          "status": "populated", "band": "medium", "value": "Persistent methane above local background (~+15\u201325 ppb), rising; 2024 highest",
+          "trend": "up", "estate_rank": "2 / 3", "persistence": "chronic",
+          "trace": "TROPOMI 2019-2024: facility consistently above its local ring; near the significance bar (clears 2\u03c3 in 1 of 6 years) \u2014 a real but modest, near-threshold signal. Screening-grade, not a leak rate." },
+        { "id": "combustion", "label": "Combustion efficiency", "source": "VIIRS \u00d7 TROPOMI",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Flare heat cross-referenced with co-located methane (interpretation layer \u2014 not yet enabled)." },
+        { "id": "throughput", "label": "Throughput / activity", "source": "TROPOMI NO\u2082/CO",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "NO\u2082/CO activity proxy vs the site's own baseline (not yet screened)." },
+        { "id": "inspection", "label": "Inspection displacement", "source": "Optical + SAR",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Satellite pass substituting scheduled physical visits (not yet quantified)." },
+        { "id": "idle", "label": "Idle / underperforming", "source": "VIIRS + TROPOMI",
+          "status": "pending", "band": null, "value": null, "trend": null, "estate_rank": null, "persistence": null,
+          "trace": "Declared activity vs thermal + atmospheric signature (not yet assessed)." }
+      ]
+    }
+  ]
+}
