@@ -422,6 +422,18 @@ html, body {
   pointer-events: none;
 }
 
+#view-landing {
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#view-landing #lslider {
+  height: 100vh;
+  position: relative;
+}
+
 /* ==========================================
    BUTTONS & FORMS
    ========================================== */
@@ -1395,4 +1407,156 @@ html, body {
   border: solid #000;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
+}
+
+/* ==========================================
+   LANDING SCROLL PARALLAX COMPONENT
+   ========================================== */
+.landing-scroll-content {
+  position: relative;
+  width: 100%;
+  background: var(--bg-color); /* Matches dark landing background */
+  padding: 4rem 0 8rem 0;
+  z-index: 10;
+}
+
+.parallax-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+  view-timeline: --section-timeline;
+}
+
+.parallax-section.reverse {
+  flex-direction: row-reverse;
+}
+
+.text-side {
+  flex: 1;
+  max-width: 400px;
+  animation: parallax-fade-up linear both;
+  animation-timeline: --section-timeline;
+  animation-range: entry 10% cover 40%;
+}
+
+.parallax-eyebrow {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.text-side h2 {
+  font-size: 2.2rem;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.text-side p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.images-side {
+  flex: 1;
+  position: relative;
+  height: 400px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parallax-img {
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  object-fit: cover;
+}
+
+.img-back {
+  width: 75%;
+  height: auto;
+  left: 0;
+  top: 10%;
+  animation: parallax-back linear both;
+  animation-timeline: --section-timeline;
+  animation-range: entry 0% cover 100%;
+}
+
+.img-front {
+  width: 65%;
+  height: auto;
+  right: -5%;
+  bottom: 0%;
+  z-index: 2;
+  animation: parallax-front linear both;
+  animation-timeline: --section-timeline;
+  animation-range: entry 0% cover 100%;
+}
+
+.parallax-section.reverse .img-back {
+  left: auto;
+  right: 0;
+}
+.parallax-section.reverse .img-front {
+  right: auto;
+  left: -5%;
+}
+
+@keyframes parallax-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes parallax-back {
+  from {
+    transform: translateY(100px);
+  }
+  to {
+    transform: translateY(-50px);
+  }
+}
+
+@keyframes parallax-front {
+  from {
+    transform: translateY(180px);
+  }
+  to {
+    transform: translateY(-80px);
+  }
+}
+
+@media (max-width: 900px) {
+  .parallax-section, .parallax-section.reverse {
+    flex-direction: column;
+    text-align: center;
+    gap: 2rem;
+  }
+  .images-side {
+    height: 300px;
+    margin-top: 2rem;
+  }
+  .img-back, .img-front {
+    width: 80%;
+  }
+  .img-front {
+    right: 5%;
+  }
 }
