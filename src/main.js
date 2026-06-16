@@ -5,6 +5,12 @@ import 'leaflet.heat';
 import Chart from 'chart.js/auto';
 import { facilities, statusFor, headlineFor, matrixStateFor } from './facilities_adapter.js';
 import { initAskAletheia } from './ask_aletheia.js';
+import { openAssetDashboard } from './asset_security.js';
+import { assetSiteByNearest } from './asset_security_adapter.js';
+
+// Which pillar opened the shared compliance map. Determines what clicking a pin
+// does: 'sustainability' -> methane report; 'asset' -> Asset Security dashboard.
+let mapMode = 'sustainability';
 
 // --- THEME TOGGLE LOGIC ---
 function initTheme() {
@@ -69,7 +75,32 @@ document.querySelectorAll('.btn-goto-home').forEach(btn => {
   btn.addEventListener('click', () => navigateTo('view-home'));
 });
 
-document.getElementById('btn-goto-map')?.addEventListener('click', () => navigateTo('view-map'));
+document.getElementById('btn-goto-map')?.addEventListener('click', () => {
+  setMapMode('sustainability');
+  navigateTo('view-map');
+});
+
+document.getElementById('btn-goto-asset')?.addEventListener('click', () => {
+  setMapMode('asset');
+  navigateTo('view-map');
+});
+
+// Switch the shared map between pillars: retitle the header and remember the mode
+// so the pin-click handler knows which dashboard to open.
+function setMapMode(mode) {
+  mapMode = mode;
+  const title = document.querySelector('#view-map .dashboard-header h1');
+  if (title) {
+    title.textContent = mode === 'asset'
+      ? 'Asset Security — Site Map'
+      : 'Aletheia Compliance Map';
+  }
+  // The opacity panel + compliance side panel are Sustainability-specific; tuck
+  // them away in Asset Security mode so the shared map stays uncluttered.
+  const opacityPanel = document.querySelector('#view-map .opacity-panel');
+  if (opacityPanel) opacityPanel.style.display = mode === 'asset' ? 'none' : '';
+  if (mode === 'asset') document.getElementById('compliance-panel')?.classList.add('hidden');
+}
 
 document.getElementById('btn-back-pillars')?.addEventListener('click', () => navigateTo('view-pillars'));
 
@@ -288,6 +319,17 @@ facilities.forEach(f => {
   }).addTo(map);
   marker.bindTooltip(`<b>${f.name}</b><br>${f.basisLabel}`);
   marker.on('click', () => {
+    if (mapMode === 'asset') {
+      // Asset Security flow: zoom to the matched site's own lat/lon, then open
+      // the per-facility footprint dashboard. (Pins come from facilities.json;
+      // we match to the Asset Security manifest site by nearest coordinate.)
+      const site = assetSiteByNearest(f.lat, f.lon);
+      if (site) {
+        map.setView([site.lat, site.lon], 12, { animate: true });
+        openAssetDashboard(site);
+      }
+      return;
+    }
     map.setView([f.lat, f.lon], f.isBasin ? 7 : 9, { animate: true });
     selectFacility(f);
   });

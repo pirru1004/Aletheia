@@ -1,0 +1,347 @@
+{
+  "pillar": "Asset Security",
+  "subtitle": "Physical footprint over time, from Sentinel-2",
+  "global_caveats": [
+    "Imagery are clearest-pixel Sentinel-2 composites (best available view per summer), cloud- and snow-masked with Cloud Score+ — not single dated scenes.",
+    "This view demonstrates observation capability (detecting and, where reliable, measuring footprint change). Comparison against operator-disclosed footprint is a roadmap layer, not shown here.",
+    "The reference-date control sets an earlier OBSERVATION as the comparison point. It is a temporal reference, not a disclosure baseline."
+  ],
+  "sites": [
+    {
+      "id": "groundbirch",
+      "name": "Groundbirch",
+      "operator": "Shell",
+      "basin": "Montney, Canada",
+      "lat": 55.962807,
+      "lon": -121.077735,
+      "method_label": "Vegetation-loss (forest clearing) — quantified",
+      "metric_mode": "quantified",
+      "metric_summary": "Established field — footprint broadly stable, no material expansion (~1.0 km²).",
+      "metric_note": "Year-to-year wobble reflects vegetation phenology and residual haze; 2023 is wildfire-smoke affected. Read as stable, not a trend.",
+      "baseline_year": 2019,
+      "metric_series": [
+        {
+          "year": 2019,
+          "km2": 1.034,
+          "pct_since_baseline": 0.0
+        },
+        {
+          "year": 2020,
+          "km2": 1.043,
+          "pct_since_baseline": 0.9
+        },
+        {
+          "year": 2021,
+          "km2": 0.901,
+          "pct_since_baseline": -12.9
+        },
+        {
+          "year": 2022,
+          "km2": 1.14,
+          "pct_since_baseline": 10.3
+        },
+        {
+          "year": 2023,
+          "km2": 1.474,
+          "pct_since_baseline": 42.6
+        },
+        {
+          "year": 2024,
+          "km2": 1.055,
+          "pct_since_baseline": 2.1
+        },
+        {
+          "year": 2025,
+          "km2": 1.118,
+          "pct_since_baseline": 8.1
+        }
+      ],
+      "frames": [
+        {
+          "year": 2019,
+          "window": "a",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2019a.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2019a.png"
+        },
+        {
+          "year": 2019,
+          "window": "b",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2019b.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2019b.png"
+        },
+        {
+          "year": 2020,
+          "window": "a",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2020a.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2020a.png"
+        },
+        {
+          "year": 2020,
+          "window": "b",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2020b.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2020b.png"
+        },
+        {
+          "year": 2021,
+          "window": "a",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2021a.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2021a.png"
+        },
+        {
+          "year": 2021,
+          "window": "b",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2021b.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2021b.png"
+        },
+        {
+          "year": 2022,
+          "window": "a",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2022a.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2022a.png"
+        },
+        {
+          "year": 2022,
+          "window": "b",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2022b.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2022b.png"
+        },
+        {
+          "year": 2023,
+          "window": "a",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2023a.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2023a.png"
+        },
+        {
+          "year": 2023,
+          "window": "b",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2023b.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2023b.png"
+        },
+        {
+          "year": 2024,
+          "window": "a",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2024a.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2024a.png"
+        },
+        {
+          "year": 2024,
+          "window": "b",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2024b.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2024b.png"
+        },
+        {
+          "year": 2025,
+          "window": "a",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2025a.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2025a.png"
+        },
+        {
+          "year": 2025,
+          "window": "b",
+          "rgb": "/asset-security/groundbirch/groundbirch_rgb_2025b.png",
+          "ndbi": "/asset-security/groundbirch/groundbirch_ndbi_2025b.png"
+        }
+      ]
+    },
+    {
+      "id": "permian",
+      "name": "Permian — Delaware sub-basin",
+      "operator": "Multi-operator",
+      "basin": "Delaware (Lea Co., NM), USA",
+      "lat": 32.2672,
+      "lon": -103.7272,
+      "method_label": "Optical change (desert) — visual only",
+      "metric_mode": "visual_only",
+      "metric_summary": "Extensive new development 2019–2025 — visible in the time-lapse.",
+      "metric_note": "Desert change-detection is too noisy for a defensible per-year area figure, so no km² is shown. The imagery is the evidence.",
+      "baseline_year": 2019,
+      "metric_series": [],
+      "frames": [
+        {
+          "year": 2019,
+          "window": "a",
+          "rgb": "/asset-security/permian/permian_rgb_2019a.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2019a.png"
+        },
+        {
+          "year": 2019,
+          "window": "b",
+          "rgb": "/asset-security/permian/permian_rgb_2019b.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2019b.png"
+        },
+        {
+          "year": 2020,
+          "window": "a",
+          "rgb": "/asset-security/permian/permian_rgb_2020a.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2020a.png"
+        },
+        {
+          "year": 2020,
+          "window": "b",
+          "rgb": "/asset-security/permian/permian_rgb_2020b.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2020b.png"
+        },
+        {
+          "year": 2021,
+          "window": "a",
+          "rgb": "/asset-security/permian/permian_rgb_2021a.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2021a.png"
+        },
+        {
+          "year": 2021,
+          "window": "b",
+          "rgb": "/asset-security/permian/permian_rgb_2021b.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2021b.png"
+        },
+        {
+          "year": 2022,
+          "window": "a",
+          "rgb": "/asset-security/permian/permian_rgb_2022a.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2022a.png"
+        },
+        {
+          "year": 2022,
+          "window": "b",
+          "rgb": "/asset-security/permian/permian_rgb_2022b.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2022b.png"
+        },
+        {
+          "year": 2023,
+          "window": "a",
+          "rgb": "/asset-security/permian/permian_rgb_2023a.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2023a.png"
+        },
+        {
+          "year": 2023,
+          "window": "b",
+          "rgb": "/asset-security/permian/permian_rgb_2023b.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2023b.png"
+        },
+        {
+          "year": 2024,
+          "window": "a",
+          "rgb": "/asset-security/permian/permian_rgb_2024a.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2024a.png"
+        },
+        {
+          "year": 2024,
+          "window": "b",
+          "rgb": "/asset-security/permian/permian_rgb_2024b.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2024b.png"
+        },
+        {
+          "year": 2025,
+          "window": "a",
+          "rgb": "/asset-security/permian/permian_rgb_2025a.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2025a.png"
+        },
+        {
+          "year": 2025,
+          "window": "b",
+          "rgb": "/asset-security/permian/permian_rgb_2025b.png",
+          "ndbi": "/asset-security/permian/permian_ndbi_2025b.png"
+        }
+      ]
+    },
+    {
+      "id": "korpezhe",
+      "name": "Korpezhe",
+      "operator": "Turkmengaz",
+      "basin": "Turkmenistan",
+      "lat": 38.499,
+      "lon": 54.199,
+      "method_label": "Optical change (desert) — visual only",
+      "metric_mode": "visual_only",
+      "metric_summary": "Established compressor station — footprint broadly stable.",
+      "metric_note": "Sparse desert site; its primary signal is the documented methane super-emitter (see Sustainability), not footprint growth.",
+      "baseline_year": 2019,
+      "metric_series": [],
+      "frames": [
+        {
+          "year": 2019,
+          "window": "a",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2019a.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2019a.png"
+        },
+        {
+          "year": 2019,
+          "window": "b",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2019b.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2019b.png"
+        },
+        {
+          "year": 2020,
+          "window": "a",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2020a.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2020a.png"
+        },
+        {
+          "year": 2020,
+          "window": "b",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2020b.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2020b.png"
+        },
+        {
+          "year": 2021,
+          "window": "a",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2021a.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2021a.png"
+        },
+        {
+          "year": 2021,
+          "window": "b",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2021b.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2021b.png"
+        },
+        {
+          "year": 2022,
+          "window": "a",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2022a.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2022a.png"
+        },
+        {
+          "year": 2022,
+          "window": "b",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2022b.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2022b.png"
+        },
+        {
+          "year": 2023,
+          "window": "a",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2023a.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2023a.png"
+        },
+        {
+          "year": 2023,
+          "window": "b",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2023b.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2023b.png"
+        },
+        {
+          "year": 2024,
+          "window": "a",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2024a.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2024a.png"
+        },
+        {
+          "year": 2024,
+          "window": "b",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2024b.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2024b.png"
+        },
+        {
+          "year": 2025,
+          "window": "a",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2025a.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2025a.png"
+        },
+        {
+          "year": 2025,
+          "window": "b",
+          "rgb": "/asset-security/korpezhe/korpezhe_rgb_2025b.png",
+          "ndbi": "/asset-security/korpezhe/korpezhe_ndbi_2025b.png"
+        }
+      ]
+    }
+  ]
+}
