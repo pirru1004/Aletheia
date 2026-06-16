@@ -429,11 +429,6 @@ html, body {
   overflow-x: hidden;
 }
 
-#view-landing #lslider {
-  height: 100vh;
-  position: relative;
-}
-
 /* ==========================================
    BUTTONS & FORMS
    ========================================== */
@@ -526,7 +521,7 @@ html, body {
 }
 
 /* ---- carousel mechanics ---- */
-.carousel { position: absolute; inset: 0; overflow: hidden; }
+.carousel { position: relative; width: 100%; height: 100vh; overflow: hidden; }
 .carousel-track {
   display: flex;
   height: 100%;
