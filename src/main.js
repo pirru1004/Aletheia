@@ -1134,22 +1134,28 @@ function renderAuthUI(user) {
 
 async function syncUserToFirestore(user) {
   if (!user) return;
-  const userRef = doc(db, 'users', user.uid);
-  const userSnap = await getDoc(userRef);
-  
-  if (!userSnap.exists()) {
-    // Create new user profile, default role is 'admin' as requested for now
-    await setDoc(userRef, {
-      uid: user.uid,
-      displayName: user.displayName,
-      email: user.email,
-      photoURL: user.photoURL,
-      role: 'admin' 
-    });
+  try {
+    const userRef = doc(db, 'users', user.uid);
+    const userSnap = await getDoc(userRef);
+    
+    if (!userSnap.exists()) {
+      // Create new user profile, default role is 'admin' as requested for now
+      await setDoc(userRef, {
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        role: 'admin' 
+      });
+      currentUserRole = 'admin';
+    } else {
+      // User exists, just update their current role in memory
+      currentUserRole = userSnap.data().role || 'user';
+    }
+  } catch (err) {
+    console.error("Firestore sync failed (database might not be set up):", err);
+    // Default to admin so they can still see the UI, even if it doesn't save
     currentUserRole = 'admin';
-  } else {
-    // User exists, just update their current role in memory
-    currentUserRole = userSnap.data().role || 'user';
   }
 }
 
