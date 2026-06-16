@@ -490,8 +490,7 @@ html, body {
    ========================================== */
 #view-home.landing {
   background: #05080A;
-  height: auto;
-  min-height: 100vh;
+  height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
 }
