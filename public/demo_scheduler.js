@@ -247,22 +247,24 @@ document.addEventListener("DOMContentLoaded", function() {
     submitBtn.style.opacity = '0.5';
 
     try {
-      // Send data via FormSubmit to automatically email you AND send an auto-reply to the client
+      // Build FormData for better compatibility with FormSubmit's autoresponse feature
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('_replyto', email);
+      formData.append('_subject', `Aletheia Demo Request - ${name}`);
+      formData.append('_autoresponse', `Hi ${name}, thank you for requesting a demo of Aletheia! We have successfully received your request for ${startObj.toLocaleDateString()} at ${selectedTimeStr.label}. Our team will review your request and get in touch with you shortly to confirm the details. Best regards, The Aletheia Team`);
+      formData.append('Date', startObj.toLocaleDateString());
+      formData.append('Time', selectedTimeStr.label);
+      formData.append('Comments', comments || "No comments provided.");
+
+      // Send data via FormSubmit
       await fetch('https://formsubmit.co/ajax/prazo983@gmail.com', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          _subject: `Aletheia Demo Request - ${name}`,
-          _autoresponse: `Hi ${name},\n\nThank you for requesting a demo of Aletheia.\n\nWe have successfully received your request for ${startObj.toLocaleDateString()} at ${selectedTimeStr.label}.\n\nOur team will review your request and get in touch with you shortly to confirm the details.\n\nBest regards,\nThe Aletheia Team`,
-          "Date": startObj.toLocaleDateString(),
-          "Time": selectedTimeStr.label,
-          "Comments": comments || "No comments provided."
-        })
+        body: formData
       });
       // Always show success regardless of webhook state since we don't know the exact webhook yet
       showStep4();
