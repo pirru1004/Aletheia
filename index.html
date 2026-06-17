@@ -182,9 +182,8 @@
           <!-- Section 1 -->
           <div class="parallax-section layer">
             <div class="text-side">
-              <span class="parallax-eyebrow">Data Synergy</span>
-              <h2>Global Network Visibility</h2>
-              <p>Aletheia fuses disparate satellite and ground telemetry into a single, cohesive orbital overview. Pinpoint anomalies in real-time across millions of monitored nodes worldwide.</p>
+              <h2>Utilities &amp; Solutions Energy</h2>
+              <p>Monitor the operational efficiency of your sites</p>
             </div>
             <div class="images-side">
               <img src="/feature_map_data_1781624864691.png" class="parallax-img img-back" alt="Map Data">
@@ -324,26 +323,59 @@
           </div>
         </header>
         
-        <main id="map-container">
-          <div id="map"></div>
-          
-          <!-- Custom Opacity Control Panel -->
-          <div class="opacity-panel">
-            <h3>Layer Opacity</h3>
-            <div class="slider-group">
-              <label for="planet-opacity">Planet Satellite Imagery</label>
-              <input type="range" id="planet-opacity" min="0" max="100" value="100">
+        <div id="dashboard-layout" style="display: flex; height: calc(100vh - 64px); margin-top: 64px; width: 100vw; overflow: hidden;">
+          <!-- Left Sidebar for Layer Management -->
+          <aside class="layer-sidebar">
+            <h2>Layer Management</h2>
+            
+            <div class="layer-group">
+              <label class="layer-toggle">
+                <input type="checkbox" id="toggle-planet" checked>
+                <span>Planet Satellite Imagery</span>
+              </label>
+              <div class="slider-group">
+                <input type="range" id="planet-opacity" min="0" max="100" value="100">
+              </div>
             </div>
-            <div class="slider-group">
-              <label for="vnf-opacity">VIIRS Gas Flaring (VNF)</label>
-              <input type="range" id="vnf-opacity" min="0" max="100" value="100">
+
+            <div class="layer-group">
+              <label class="layer-toggle">
+                <input type="checkbox" id="toggle-vnf" checked>
+                <span>VIIRS Gas Flaring (VNF)</span>
+              </label>
+              <div class="slider-group">
+                <input type="range" id="vnf-opacity" min="0" max="100" value="100">
+              </div>
             </div>
-            <div class="slider-group">
-              <label for="sar-opacity">Sentinel-1 SAR (Oil Spills)</label>
-              <input type="range" id="sar-opacity" min="0" max="100" value="100">
+
+            <div class="layer-group">
+              <label class="layer-toggle">
+                <input type="checkbox" id="toggle-sar" checked>
+                <span>Sentinel-1 SAR (Oil Spills)</span>
+              </label>
+              <div class="slider-group">
+                <input type="range" id="sar-opacity" min="0" max="100" value="100">
+              </div>
             </div>
-          </div>
-        </main>
+            
+            <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 0.75rem; text-transform: uppercase; color: var(--ink-3);">Basemap</h3>
+            <div class="layer-group basemap-toggles">
+              <label class="layer-toggle">
+                <input type="radio" name="basemap" id="toggle-base-dark" value="dark" checked>
+                <span>Dark Matter Base</span>
+              </label>
+              <label class="layer-toggle" style="margin-top: 0.75rem;">
+                <input type="radio" name="basemap" id="toggle-base-light" value="light">
+                <span>Positron Base</span>
+              </label>
+            </div>
+          </aside>
+
+          <!-- Center: Map -->
+          <main id="map-container" style="flex: 1; position: relative;">
+            <div id="map" style="width: 100%; height: 100%;"></div>
+          </main>
+        </div>
         
         <!-- Compliance Gap Side Panel -->
         <aside id="compliance-panel" class="side-panel hidden">

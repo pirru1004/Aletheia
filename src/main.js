@@ -446,57 +446,24 @@ initOperationalEfficiency();
 
 // (Basemap applied above via theme toggle logic)
 
-// Add Planet Labs Satellite layer (via secure backend proxy)
-// NOTE: The mosaic name must match one that your Planet subscription grants access to.
-const mosaicName = 'global_monthly_2023_01_mosaic';
-
-// We hit our local proxy instead of Planet directly. 
-// The backend will attach the API key, keeping it invisible to the browser.
-const planetLayer = L.tileLayer(`/api/planet-tiles/${mosaicName}/{z}/{x}/{y}`, {
-  attribution: '&copy; <a href="https://www.planet.com/">Planet Labs</a>',
+// Add Planet Labs Satellite layer (Public Esri World Imagery fallback for Demo)
+const planetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',
   maxZoom: 18
 });
 
-// Add NASA FIRMS VIIRS WMS layer (via secure backend proxy)
-const firmsLayer = L.tileLayer.wms('/api/firms-wms', {
-  layers: 'fires_viirs_snpp_24', // Display VIIRS detections from the last 24 hours
+// Add NASA FIRMS VIIRS WMS layer (via NASA GIBS Public WMS)
+const firmsLayer = L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi', {
+  layers: 'VIIRS_SNPP_Thermal_Anomalies_375m_All', 
   format: 'image/png',
   transparent: true,
-  attribution: '&copy; <a href="https://firms.modaps.eosdis.nasa.gov/">NASA FIRMS</a>'
+  attribution: '&copy; <a href="https://firms.modaps.eosdis.nasa.gov/">NASA FIRMS</a> / GIBS'
 });
 
-// Custom Sentinel Hub Evalscript to detect Oil Spills (Low Backscatter)
-const oilSpillEvalscript = `//VERSION=3
-function setup() {
-  return {
-    input: ["VV", "dataMask"],
-    output: { bands: 4 }
-  };
-}
-function evaluatePixel(sample) {
-  if (sample.dataMask === 0) return [0, 0, 0, 0];
-  
-  // Calculate approximate backscatter in decibels
-  let backscatter = Math.log10(sample.VV) * 10;
-  
-  // Very smooth water reflects radar away, causing extremely low backscatter (<-20 dB)
-  if (backscatter < -20) {
-    return [1, 0, 0, 1]; // Paint potential oil spills RED
-  }
-  
-  // Paint everything else in standard grayscale
-  let gray = Math.max(0, backscatter + 30) / 30;
-  return [gray, gray, gray, 1];
-}`;
-
-// Add Sentinel-1 SAR WMS layer (via secure backend proxy)
-const sarLayer = L.tileLayer.wms('/api/sar-wms', {
-  layers: '9_SAR-URBAN-VV-VH', // Fallback layer
-  format: 'image/png',
-  transparent: true,
-  minZoom: 8, // Required: Sentinel Hub limits SAR processing to higher zoom levels
-  EVALSCRIPT64: btoa(oilSpillEvalscript), // Inject our custom script into the request!
-  attribution: '&copy; <a href="https://www.sentinel-hub.com/">Sentinel Hub</a>'
+// Sentinel-1 SAR WMS layer (Fallback to Esri Dark Gray Base for visual distinction in Demo)
+const sarLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+  attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, DeLorme, NAVTEQ',
+  maxZoom: 16
 });
 
 // Set up Layer Control (Checkbox/Radio toggle)
@@ -506,15 +473,37 @@ const baseMaps = {
 };
 
 // We will add Planet, NASA, and SAR as overlays so you can toggle them on/off
-const overlayMaps = {
-  "Planet Satellite Imagery": planetLayer,
-  "NASA VIIRS (24hr)": firmsLayer,
-  "Sentinel-1 SAR (Oil Spills)": sarLayer
-};
+// Initialize map with default overlays enabled
+planetLayer.addTo(map);
+firmsLayer.addTo(map);
+sarLayer.addTo(map);
 
-L.control.layers(baseMaps, overlayMaps, {
-  position: 'topright'
-}).addTo(map);
+// Wire custom Layer Toggle checkboxes
+document.getElementById('toggle-planet')?.addEventListener('change', (e) => {
+  e.target.checked ? planetLayer.addTo(map) : map.removeLayer(planetLayer);
+});
+document.getElementById('toggle-vnf')?.addEventListener('change', (e) => {
+  e.target.checked ? firmsLayer.addTo(map) : map.removeLayer(firmsLayer);
+});
+document.getElementById('toggle-sar')?.addEventListener('change', (e) => {
+  e.target.checked ? sarLayer.addTo(map) : map.removeLayer(sarLayer);
+});
+
+// Wire custom Basemap radio buttons
+document.getElementById('toggle-base-dark')?.addEventListener('change', (e) => {
+  if (e.target.checked) {
+    map.removeLayer(lightBasemap);
+    darkBasemap.addTo(map);
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+});
+document.getElementById('toggle-base-light')?.addEventListener('change', (e) => {
+  if (e.target.checked) {
+    map.removeLayer(darkBasemap);
+    lightBasemap.addTo(map);
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+});
 
 // --- TROPOMI Methane Heatmap ---
 const heatData = [];

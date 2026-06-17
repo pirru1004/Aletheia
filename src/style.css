@@ -159,42 +159,57 @@ html, body {
   margin-right: 8px;
 }
 
-/* Opacity Panel Overlay */
-.opacity-panel {
-  position: absolute;
-  bottom: 30px;
-  left: 20px;
-  background-color: var(--header-bg);
-  border: 1px solid var(--border-color);
-  padding: 1.25rem;
-  border-radius: 8px;
-  box-shadow: var(--shadow-lg);
-  z-index: 1000; /* Positioned above the Leaflet map */
-  min-width: 250px;
-  color: var(--text-primary);
+/* Sidebar Layer Management */
+.layer-sidebar {
+  width: 320px;
+  background-color: var(--bg-color);
+  border-right: 1px solid var(--border-color);
+  padding: 1.5rem;
+  overflow-y: auto;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
 }
 
-.opacity-panel h3 {
-  margin: 0 0 1rem 0;
-  font-size: 0.75rem;
+.layer-sidebar h2 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.layer-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.layer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-family: var(--sans);
+  font-weight: 500;
+}
+
+.layer-toggle input[type="checkbox"],
+.layer-toggle input[type="radio"] {
+  accent-color: var(--accent-color);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
 
 .slider-group {
-  margin-bottom: 1rem;
-}
-
-.slider-group:last-child {
-  margin-bottom: 0;
-}
-
-.slider-group label {
-  display: block;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
+  padding-left: 28px;
 }
 
 .slider-group input[type="range"] {
