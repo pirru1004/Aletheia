@@ -364,7 +364,7 @@
             </div>
 
             <button id="btn-open-report" style="width: 100%; padding: 13px; background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: 8px; font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 14px; letter-spacing: 0.01em; cursor: pointer; transition: background 0.2s;">
-              ⛶ View full analysis report
+              ⛶ Open compliance summary
             </button>
           </div>
         </aside>
@@ -927,6 +927,19 @@
 
 
     </div>
+  </div>
+
+  <!-- ============================================================
+       SUSTAINABILITY COMPLIANCE FRONT PAGE (pillar 03)
+       The compliance-first view pillar 03 lands on. Manifest-driven by
+       sustainability_compliance.js from public/sustainability.json; all markup
+       is injected into #sus-compliance-modal-content and namespaced `sus-`.
+       The existing observation report (#aletheia-report-modal) is untouched and
+       sits one click down behind the "View full observation evidence" link.
+       ============================================================ -->
+  <div id="sus-compliance-modal">
+    <button id="sus-btn-close-report" class="aletheia-close-btn">&times;</button>
+    <div id="sus-compliance-modal-content"></div>
   </div>
 
   <!-- ===== Ask Aletheia — grounded, read-only chat (right-side drawer overlay) =====

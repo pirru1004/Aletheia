@@ -1,0 +1,147 @@
+/* sustainability_compliance.css
+   Sustainability (pillar 03) compliance-first front page. Opens FIRST when a
+   sustainability site's report is opened; the existing observation report
+   (#aletheia-report-modal) is reachable from the "View full observation
+   evidence" link and is left completely untouched.
+
+   Everything here is namespaced `sus-` so it never collides with the global
+   aletheia.css report styles (.card / .chip / .eyebrow / .head / .facility …)
+   used by the observation report and the other pillars. Colours come from the
+   real codebase tokens (paper/surface/inset/hairline · ink/ink-2/ink-3 ·
+   accent · good/watch/alert · display/body/mono) so light & dark themes follow
+   the rest of the app — the compliance mockup's --disp maps to --display.
+   No font below 11px; no fabricated values (pending strings come from the
+   manifest). */
+
+/* ---- full-screen modal wrapper (mirror of #aletheia-report-modal) ---- */
+#sus-compliance-modal {
+  position: fixed;
+  inset: 0;
+  /* one layer below #aletheia-report-modal (9999) so the observation report,
+     opened from the evidence link, stacks ON TOP and closing it reveals this
+     compliance page still open underneath ("evidence is one click down"). */
+  z-index: 9990;
+  background: var(--paper);
+  overflow-y: auto;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+#sus-compliance-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+#sus-compliance-modal-content { margin: 0; }
+
+.sus-wrap { max-width: 1320px; margin: 0 auto; padding: 40px 44px 60px; font-size: 15px; line-height: 1.5; color: var(--ink); font-family: var(--body); }
+
+/* ---- header ---- */
+.sus-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 18px 22px; padding-bottom: 22px; border-bottom: 1px solid var(--hairline); }
+.sus-site { font-family: var(--display); font-size: 40px; font-weight: 600; letter-spacing: -.01em; line-height: 1; }
+.sus-pill-status { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; border-radius: 30px; padding: 6px 16px; text-transform: uppercase; }
+.sus-pill-status.k-good { color: var(--good-ink); border: 1.5px solid var(--good); }
+.sus-pill-status.k-watch { color: var(--watch-ink); border: 1.5px solid var(--watch); }
+.sus-pill-status.k-alert { color: var(--alert-ink); border: 1.5px solid var(--alert); }
+.sus-meta { font-family: var(--mono); font-size: 13.5px; color: var(--ink-2); }
+.sus-meta b { color: var(--ink); font-weight: 500; }
+.sus-lastfused { font-family: var(--mono); font-size: 13px; color: var(--ink-3); margin-left: auto; }
+
+/* ---- hero — FILING READINESS ---- */
+.sus-hero { display: grid; grid-template-columns: 340px 1fr; gap: 18px; margin: 24px 0 14px; }
+.sus-hero-pill { background: var(--inset); border-radius: 26px; padding: 24px 28px; display: flex; flex-direction: column; justify-content: center; }
+.sus-hero-pill .sus-dot { width: 34px; height: 34px; border-radius: 50%; margin-bottom: 12px; }
+.sus-hero-pill .sus-dot.k-good { background: var(--good); box-shadow: 0 0 0 7px rgba(63,126,94,.16); }
+.sus-hero-pill .sus-dot.k-watch { background: var(--watch); box-shadow: 0 0 0 7px rgba(181,134,60,.16); }
+.sus-hero-pill h2 { font-family: var(--display); font-size: 30px; font-weight: 600; line-height: 1; }
+.sus-hero-pill .sus-sub { font-size: 13.5px; color: var(--ink-2); margin-top: 8px; }
+.sus-hero-pill .sus-sub b { color: var(--ink); }
+.sus-hero-statement { background: var(--surface); border: 1px solid var(--hairline); border-radius: 26px; padding: 30px 34px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.sus-hero-statement .sus-readiness { font-family: var(--display); font-size: 25px; font-weight: 500; line-height: 1.34; }
+.sus-hero-statement .sus-readiness .sus-em { color: var(--accent); font-weight: 700; }
+.sus-hero-statement .sus-readiness .sus-em-good { color: var(--good); font-weight: 700; }
+.sus-hero-statement .sus-obs-line { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); }
+.sus-hero-statement.unmapped .sus-readiness { font-size: 22px; font-weight: 500; }
+/* remind-me affordance — visual only (non-functional for the demo) */
+.sus-remind { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--accent); border: 1.5px solid var(--accent); border-radius: 8px; padding: 6px 13px; background: transparent; cursor: default; white-space: nowrap; }
+.sus-remind svg { width: 13px; height: 13px; }
+
+/* ---- section eyebrow ---- */
+.sus-eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: .12em; color: var(--ink-3); text-transform: uppercase; margin: 34px 0 14px; }
+.sus-eyebrow b { color: var(--accent); font-weight: 500; }
+
+/* ---- obligations table ---- */
+.sus-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 18px; overflow: hidden; }
+.sus-table { width: 100%; border-collapse: collapse; }
+.sus-table thead th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); text-align: left; padding: 14px 20px; border-bottom: 1px solid var(--hairline); font-weight: 500; }
+.sus-table tbody td { padding: 13px 20px; border-bottom: 1px solid var(--hairline); font-size: 14px; vertical-align: middle; }
+.sus-table tbody tr:last-child td { border-bottom: none; }
+.sus-tierband td { background: var(--inset); font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); padding: 9px 20px; font-weight: 500; }
+.sus-fil { font-weight: 600; color: var(--ink); }
+.sus-reg { color: var(--ink-2); }
+.sus-table td.sus-mono { font-family: var(--mono); font-size: 13px; color: var(--ink-2); }
+.sus-chip { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: .04em; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+.sus-chip.c-good { background: var(--good-bg); color: var(--good-ink); }
+.sus-chip.c-watch { background: var(--watch-bg); color: var(--watch-ink); }
+.sus-chip.c-neutral { background: var(--inset); color: var(--ink-2); }
+.sus-chip.c-accent { background: var(--accent-bg); color: var(--accent); }
+
+/* ---- not-mapped panel (unmapped jurisdictions) ---- */
+.sus-notmapped { background: var(--surface); border: 1px dashed var(--hairline); border-radius: 18px; padding: 26px 28px; display: flex; flex-direction: column; gap: 8px; }
+.sus-notmapped .sus-nm-title { font-family: var(--display); font-size: 18px; font-weight: 600; color: var(--ink); }
+.sus-notmapped .sus-nm-body { font-size: 13.5px; color: var(--ink-2); line-height: 1.5; max-width: 760px; }
+.sus-notmapped .sus-nm-body b { color: var(--ink); }
+
+/* ---- pollutant cards ---- */
+.sus-poll-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.sus-poll { background: var(--surface); border: 1px solid var(--hairline); border-radius: 18px; padding: 22px 24px; }
+.sus-poll-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.sus-poll-h .sus-name { font-family: var(--display); font-size: 21px; font-weight: 600; }
+.sus-stream { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.sus-obs-label { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.sus-obs { display: flex; align-items: baseline; gap: 10px; margin: 14px 0 4px; }
+.sus-obs .sus-val { font-family: var(--mono); font-size: 30px; font-weight: 500; color: var(--ink); }
+.sus-obs .sus-val.pend { font-size: 20px; color: var(--ink-3); font-style: italic; }
+.sus-obs .sus-unit { font-family: var(--mono); font-size: 14px; color: var(--ink-2); }
+.sus-verdict { font-size: 13.5px; margin: 8px 0 16px; font-weight: 500; }
+.sus-verdict.k-good { color: var(--good-ink); }
+.sus-verdict.k-watch { color: var(--watch-ink); }
+.sus-verdict.k-neutral { color: var(--ink-2); font-weight: 400; }
+.sus-cmp { border-top: 1px solid var(--hairline); padding-top: 12px; display: flex; flex-direction: column; gap: 9px; }
+.sus-cmp-row { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
+.sus-cmp-row .k { color: var(--ink-2); }
+.sus-cmp-row .v { font-family: var(--mono); font-size: 12.5px; color: var(--ink); text-align: right; }
+.sus-cmp-row .v.pend { color: var(--ink-3); font-style: italic; }
+.sus-note { font-size: 12px; color: var(--ink-3); margin-top: 14px; line-height: 1.45; }
+
+/* ---- filing launcher ---- */
+.sus-filing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 2px; }
+.sus-filing { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+.sus-filing .sus-ttl { font-weight: 600; font-size: 14.5px; }
+.sus-filing .sus-rg { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+.sus-filing .sus-btn { margin-top: 4px; align-self: flex-start; font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--accent); border: 1.5px solid var(--accent); border-radius: 8px; padding: 7px 14px; background: transparent; cursor: default; }
+.sus-signoff { background: var(--accent-bg); border: 1px solid var(--hairline); border-radius: 14px; padding: 16px 20px; margin-top: 14px; font-size: 13px; color: var(--ink); line-height: 1.5; }
+.sus-signoff b { color: var(--accent); }
+.sus-legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 14px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+.sus-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sus-sq { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.sus-sq.satellite { background: var(--accent); }
+.sus-sq.measured { background: var(--good); }
+.sus-sq.operator { background: var(--watch); }
+
+/* ---- evidence link (prominent — one click down to the observation report) ---- */
+.sus-evidence { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; margin: 30px 0 6px; padding: 18px 22px; background: var(--inset); border: 1px solid var(--hairline); border-radius: 16px; }
+.sus-evidence .sus-ev-link { font-family: var(--display); font-size: 17px; font-weight: 600; color: var(--accent); background: transparent; border: 0; padding: 0; cursor: pointer; text-align: left; }
+.sus-evidence .sus-ev-link:hover { text-decoration: underline; }
+.sus-evidence .sus-ev-method { font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--ink-2); border: 1px solid var(--hairline); border-radius: 20px; padding: 4px 12px; background: var(--surface); }
+.sus-evidence .sus-ev-cap { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); margin-left: auto; }
+
+.sus-footer { margin-top: 36px; border-top: 1px solid var(--hairline); padding-top: 16px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); line-height: 1.6; }
+
+@media (max-width: 880px) {
+  .sus-hero { grid-template-columns: 1fr; }
+  .sus-poll-grid { grid-template-columns: 1fr; }
+  .sus-filing-grid { grid-template-columns: 1fr; }
+  .sus-wrap { padding: 32px 20px 48px; }
+}

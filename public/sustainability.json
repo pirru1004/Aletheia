@@ -1,0 +1,221 @@
+{
+  "_comment": "Aletheia Sustainability (compliance-first) manifest. Observed by_pollutant values are REAL: TROPOMI CH4/NO2/CO + VIIRS Nightfire, fused 2026-06-11 (same pipeline as the observation report / facilities.json). Obligations, deadlines, regulators and filing drafts are REAL for Groundbirch ONLY (Shell, BC/Canada). Permian (US) and Korpezhe (Turkmenistan) are obligations_mapped:false — their jurisdictions are not yet mapped, so NO filings/deadlines/regulators are shown for them (never fabricate, never show Canadian filings under a US/TM site). Methane is EVIDENCE in the by-pollutant section, never a hero verdict. Any figure without a real value renders as pending — never invented.",
+  "generated": "2026-06-11",
+  "provenance_legend": [
+    { "kind": "satellite", "label": "Satellite-derived (screening)" },
+    { "kind": "measured", "label": "Measured" },
+    { "kind": "operator", "label": "Operator-supplied" }
+  ],
+  "signoff": "Filing-ready draft — not auto-file. Aletheia assembles each form from source-tagged data with no manual re-entry. A company officer reviews, verifies and signs; Aletheia is never the filer of record. Drafts are compliant only as of generation date.",
+  "footer": "Aletheia · sustainability compliance view. Observation data is real (TROPOMI / VIIRS, fused 2026-06-11). Thresholds, prior-year history and operator-reported figures are shown as pending where no real value exists — never fabricated. Satellite data is screening-grade and independent; statutory filings require human verification and sign-off.",
+  "sites": [
+    {
+      "id": "groundbirch",
+      "name": "Groundbirch",
+      "operator": "Shell plc",
+      "basin": "Montney, Canada",
+      "jurisdiction": "British Columbia, Canada",
+      "aoi": "55.963°, −121.078°",
+      "method_label": "facility · vs local background",
+      "last_fused": "2026-06-11",
+      "status_pill": "No action",
+      "status_kind": "good",
+      "obligations_mapped": true,
+      "hero": {
+        "filing": "Methane & venting / flaring",
+        "regulator": "BC Energy Regulator",
+        "due": "2026-03-31",
+        "due_label": "31 Mar 2026",
+        "draft_status": "draft ready",
+        "remindable": true,
+        "observation_line": "no excess observed — see evidence"
+      },
+      "obligations": [
+        { "tier": "Mandatory · statutory (legal)", "filing": "GHG Reporting Program", "regulator": "ECCC — Single Window", "frequency": "Annual", "next_deadline": "1 Jun 2026", "status_chip": "Monitoring · awaiting activity data", "status_kind": "neutral" },
+        { "tier": "Mandatory · statutory (legal)", "filing": "Methane & venting / flaring", "regulator": "BC Energy Regulator", "frequency": "Annual", "next_deadline": "31 Mar 2026", "status_chip": "No excess observed", "status_kind": "good" },
+        { "tier": "Mandatory · statutory (legal)", "filing": "NPRI — air-quality pollutants", "regulator": "ECCC (NPRI)", "frequency": "Annual", "next_deadline": "1 Jun 2026", "status_chip": "Awaiting data", "status_kind": "neutral" },
+        { "tier": "Operator corporate", "filing": "Group GHG inventory feed", "regulator": "Shell — group level", "frequency": "Annual", "next_deadline": "—", "status_chip": "Feeds group", "status_kind": "accent" },
+        { "tier": "Global voluntary", "filing": "OGMP 2.0 — Level 5", "regulator": "UNEP / IMEO", "frequency": "Annual", "next_deadline": "Mar 2026", "status_chip": "On track · measurement-based", "status_kind": "good" },
+        { "tier": "Global voluntary", "filing": "CDP Climate", "regulator": "CDP", "frequency": "Annual", "next_deadline": "—", "status_chip": "Feeds group", "status_kind": "accent" },
+        { "tier": "Internal · best-practice", "filing": "Site self-audit", "regulator": "Internal", "frequency": "Continuous", "next_deadline": "live", "status_chip": "Active · no anomalies", "status_kind": "good" }
+      ],
+      "by_pollutant": [
+        {
+          "name": "CH₄",
+          "stream": "Greenhouse gas",
+          "obs_label": "Observed · 14-day TROPOMI composite",
+          "value": "1863.0",
+          "unit": "ppb",
+          "verdict": "−0.109% vs local background · no excess",
+          "verdict_kind": "good",
+          "rows": [
+            { "k": "Local background", "v": "1865.0 ppb", "pending": false },
+            { "k": "vs prior years", "v": "Baseline building", "pending": true },
+            { "k": "vs regulatory threshold", "v": "Threshold library pending", "pending": true },
+            { "k": "vs operator-reported", "v": "No operator figure", "pending": true }
+          ],
+          "note": "Concentration excess above local background — not intensity (% of throughput)."
+        },
+        {
+          "name": "CO₂ / GHG",
+          "stream": "Greenhouse gas",
+          "obs_label": "Site CO₂e estimate",
+          "value": "Estimate pending",
+          "value_pending": true,
+          "verdict": "Needs operator activity data to complete",
+          "verdict_kind": "neutral",
+          "rows": [
+            { "k": "Activity proxy · CO", "v": "2.80e-2 mol/m²", "pending": false },
+            { "k": "Flaring (VIIRS)", "v": "0 BCM/yr", "pending": false },
+            { "k": "vs prior years", "v": "Baseline building", "pending": true },
+            { "k": "vs operator-reported", "v": "No operator figure", "pending": true }
+          ],
+          "note": "Observed proxies present; a site CO₂e figure is produced once operator activity data is fused."
+        },
+        {
+          "name": "NOₓ",
+          "stream": "Air quality · NPRI",
+          "obs_label": "NO₂ column · TROPOMI",
+          "value": "1.15e-5",
+          "unit": "mol/m²",
+          "verdict": "Indicative reading · air-quality stream",
+          "verdict_kind": "neutral",
+          "rows": [
+            { "k": "Reporting stream", "v": "NPRI (not GHG)", "pending": false },
+            { "k": "vs prior years", "v": "Baseline building", "pending": true },
+            { "k": "vs threshold", "v": "Threshold library pending", "pending": true }
+          ],
+          "note": "Absolute column reading — not labelled \"elevated\" without a calibrated per-site baseline."
+        }
+      ],
+      "filings": [
+        { "ttl": "GHG Reporting Program", "rg": "ECCC · annual · due 1 Jun 2026" },
+        { "ttl": "Methane & venting / flaring", "rg": "BC Energy Regulator · annual" },
+        { "ttl": "OGMP 2.0 — Level 5", "rg": "UNEP/IMEO · annual · Mar 2026" }
+      ]
+    },
+
+    {
+      "id": "permian",
+      "name": "Permian Basin (Delaware)",
+      "operator": "Multiple operators",
+      "basin": "Delaware sub-basin, Texas/New Mexico, USA",
+      "jurisdiction": "United States (Texas / New Mexico)",
+      "aoi": "31.900°, −103.900°",
+      "method_label": "basin · vs clean reference",
+      "last_fused": "2026-06-11",
+      "status_pill": "Investigate",
+      "status_kind": "watch",
+      "obligations_mapped": false,
+      "by_pollutant": [
+        {
+          "name": "CH₄",
+          "stream": "Greenhouse gas",
+          "obs_label": "Observed · basin target · 14-day TROPOMI composite",
+          "value": "1929.6",
+          "unit": "ppb",
+          "verdict": "+2.411% enhancement vs clean reference · basin method",
+          "verdict_kind": "watch",
+          "rows": [
+            { "k": "Clean reference", "v": "1884.2 ppb", "pending": false },
+            { "k": "Method", "v": "basin · not facility-attributable", "pending": false },
+            { "k": "vs prior years", "v": "Baseline building", "pending": true },
+            { "k": "vs regulatory threshold", "v": "Threshold library pending", "pending": true }
+          ],
+          "note": "Basin-scale enhancement vs a clean reference region — a wide-area screening signal, NOT a single-facility leak rate or intensity."
+        },
+        {
+          "name": "CO₂ / GHG",
+          "stream": "Greenhouse gas",
+          "obs_label": "Basin CO₂e estimate",
+          "value": "Estimate pending",
+          "value_pending": true,
+          "verdict": "Basin method · per-facility activity data not available",
+          "verdict_kind": "neutral",
+          "rows": [
+            { "k": "Flaring (VIIRS)", "v": "0.089 BCM/yr", "pending": false },
+            { "k": "Activity proxy · CO", "v": "N/A · basin method", "pending": true },
+            { "k": "vs prior years", "v": "Baseline building", "pending": true }
+          ],
+          "note": "Flaring is a measured basin total; a CO₂e figure needs per-facility activity data not resolvable at basin scale."
+        },
+        {
+          "name": "NOₓ",
+          "stream": "Air quality",
+          "obs_label": "NO₂ column · TROPOMI",
+          "value": "N/A",
+          "value_pending": true,
+          "verdict": "N/A · basin method",
+          "verdict_kind": "neutral",
+          "rows": [
+            { "k": "Per-pixel NO₂ / CO", "v": "N/A · basin method", "pending": true },
+            { "k": "vs threshold", "v": "Threshold library pending", "pending": true }
+          ],
+          "note": "Per-pixel NO₂ / CO attribution is not part of the basin method — shown as N/A rather than invented."
+        }
+      ]
+    },
+
+    {
+      "id": "korpezhe",
+      "name": "Korpezhe",
+      "operator": "State (Turkmengaz)",
+      "basin": "W. Turkmenistan",
+      "jurisdiction": "Turkmenistan",
+      "aoi": "38.499°, 54.199°",
+      "method_label": "facility · vs local background",
+      "last_fused": "2026-06-11",
+      "status_pill": "Investigate",
+      "status_kind": "watch",
+      "obligations_mapped": false,
+      "by_pollutant": [
+        {
+          "name": "CH₄",
+          "stream": "Greenhouse gas",
+          "obs_label": "Observed · 14-day TROPOMI composite",
+          "value": "1972.2",
+          "unit": "ppb",
+          "verdict": "+0.624% vs local background · facility method",
+          "verdict_kind": "watch",
+          "rows": [
+            { "k": "Local background", "v": "1960.0 ppb", "pending": false },
+            { "k": "vs prior years", "v": "Baseline building", "pending": true },
+            { "k": "vs regulatory threshold", "v": "Threshold library pending", "pending": true },
+            { "k": "vs operator-reported", "v": "No operator figure", "pending": true }
+          ],
+          "note": "Concentration excess above local background — not intensity (% of throughput)."
+        },
+        {
+          "name": "CO₂ / GHG",
+          "stream": "Greenhouse gas",
+          "obs_label": "Site CO₂e estimate",
+          "value": "Estimate pending",
+          "value_pending": true,
+          "verdict": "Needs operator activity data to complete",
+          "verdict_kind": "neutral",
+          "rows": [
+            { "k": "Activity proxy · CO", "v": "3.19e-2 mol/m²", "pending": false },
+            { "k": "Flaring (VIIRS)", "v": "0.009 BCM/yr", "pending": false },
+            { "k": "vs prior years", "v": "Baseline building", "pending": true },
+            { "k": "vs operator-reported", "v": "No operator figure", "pending": true }
+          ],
+          "note": "Observed proxies present; a site CO₂e figure is produced once operator activity data is fused."
+        },
+        {
+          "name": "NOₓ",
+          "stream": "Air quality",
+          "obs_label": "NO₂ column · TROPOMI",
+          "value": "1.69e-5",
+          "unit": "mol/m²",
+          "verdict": "Indicative reading · air-quality stream",
+          "verdict_kind": "neutral",
+          "rows": [
+            { "k": "vs prior years", "v": "Baseline building", "pending": true },
+            { "k": "vs threshold", "v": "Threshold library pending", "pending": true }
+          ],
+          "note": "Absolute column reading — not labelled \"elevated\" without a calibrated per-site baseline."
+        }
+      ]
+    }
+  ]
+}
