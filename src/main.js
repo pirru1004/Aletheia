@@ -11,6 +11,7 @@ import { initAskAletheia } from './ask_aletheia.js';
 import { openAssetDashboard } from './asset_security.js';
 import { assetSiteByNearest, assetSites } from './asset_security_adapter.js';
 import { initOperationalEfficiency, selectOperationalFacility } from './operational_efficiency.js';
+import { initSustainabilityCompliance, openSustainabilityCompliance } from './sustainability_compliance.js';
 
 // Which pillar opened the shared compliance map. Determines what clicking a pin
 // does: 'sustainability' -> methane report; 'asset' -> Asset Security dashboard;
@@ -352,10 +353,23 @@ function selectFacility(f) {
   renderReport(f); // keep the full report in sync with the selected pin
 }
 
+// Pillar 03 now opens on the compliance FRONT PAGE. The "Open report" button on
+// the side panel lands on the compliance view; the existing methane/flaring
+// OBSERVATION report is reachable one click down via its "View full observation
+// evidence" link (which carries the site's method label through). The observation
+// report itself is unchanged — selectFacility() already keeps it rendered for the
+// selected pin, and the evidence callback re-renders + opens it on top.
+initSustainabilityCompliance({
+  onViewEvidence: (f) => {
+    const facility = f || selectedFacility;
+    const modal = document.getElementById('aletheia-report-modal');
+    if (facility) renderReport(facility);
+    if (modal) modal.classList.add('open');
+  }
+});
+
 document.getElementById('btn-open-report')?.addEventListener('click', () => {
-  const modal = document.getElementById('aletheia-report-modal');
-  if (selectedFacility) renderReport(selectedFacility);
-  if (modal) modal.classList.add('open');
+  if (selectedFacility) openSustainabilityCompliance(selectedFacility);
 });
 
 document.getElementById('btn-close-report')?.addEventListener('click', () => {
