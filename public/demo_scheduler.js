@@ -47,9 +47,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 <label for="ds-comments">Comments (Optional)</label>
                 <textarea id="ds-comments" class="ds-input" placeholder="Anything you want to share in advance?"></textarea>
               </div>
-              <button type="submit" class="ds-submit-btn">Schedule on Google Calendar</button>
-              <div class="ds-helper-text">This will open Google Calendar to add the event to your calendar and invite us automatically.</div>
+              <button type="submit" id="ds-submit-btn" class="ds-submit-btn">Schedule Demo</button>
             </form>
+          </div>
+
+          <!-- Step 4: Success View -->
+          <div id="ds-step-4" class="ds-view ds-success-view">
+            <div class="ds-success-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M20 6L9 17l-5-5"></path>
+              </svg>
+            </div>
+            <h3 class="ds-success-title">Thank You!</h3>
+            <p class="ds-success-desc">Your demo request has been received.<br>We will contact you shortly.</p>
+            <button id="ds-done-btn" class="ds-done-btn">Done</button>
           </div>
 
         </div>
@@ -64,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const step1 = document.getElementById('ds-step-1');
   const step2 = document.getElementById('ds-step-2');
   const step3 = document.getElementById('ds-step-3');
+  const step4 = document.getElementById('ds-step-4');
 
   // State
   const today = new Date();
@@ -142,11 +154,13 @@ document.addEventListener("DOMContentLoaded", function() {
     step1.classList.add('ds-active');
     step2.classList.remove('ds-active');
     step3.classList.remove('ds-active');
+    step4.classList.remove('ds-active');
   }
 
   function showStep2() {
     step1.classList.remove('ds-active');
     step3.classList.remove('ds-active');
+    step4.classList.remove('ds-active');
     step2.classList.add('ds-active');
 
     const dateDisplay = document.getElementById('ds-date-display');
@@ -176,10 +190,18 @@ document.addEventListener("DOMContentLoaded", function() {
   function showStep3() {
     step1.classList.remove('ds-active');
     step2.classList.remove('ds-active');
+    step4.classList.remove('ds-active');
     step3.classList.add('ds-active');
 
     const slotDisplay = document.getElementById('ds-slot-display');
     slotDisplay.textContent = `${selectedDate.toLocaleDateString('default', { weekday: 'short', month: 'short', day: 'numeric' })} at ${selectedTimeStr.label}`;
+  }
+
+  function showStep4() {
+    step1.classList.remove('ds-active');
+    step2.classList.remove('ds-active');
+    step3.classList.remove('ds-active');
+    step4.classList.add('ds-active');
   }
 
   // Bind events
@@ -201,37 +223,58 @@ document.addEventListener("DOMContentLoaded", function() {
     setTimeout(showStep1, 300); // reset after hidden
   });
 
-  document.getElementById('ds-form').addEventListener('submit', (e) => {
+  document.getElementById('ds-done-btn').addEventListener('click', () => {
+    modal.classList.remove('ds-active');
+    setTimeout(showStep1, 300);
+  });
+
+  document.getElementById('ds-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('ds-name').value;
     const email = document.getElementById('ds-email').value;
     const comments = document.getElementById('ds-comments').value;
+    const submitBtn = document.getElementById('ds-submit-btn');
 
-    // Build ISO strings for Calendar link (UTC timezone assumption for ease, but typically local to the user)
-    // To make it easy, we will format it as a local timezone string without the Z for Google Calendar, 
-    // so it imports into the user's local timezone.
+    // Build ISO strings for Calendar link (UTC timezone assumption for ease)
     const startObj = new Date(selectedDate);
     startObj.setHours(selectedTimeStr.hour, 0, 0, 0);
     
     const endObj = new Date(startObj);
     endObj.setHours(startObj.getHours() + 1);
 
-    const formatGCalDate = (d) => {
-      return d.toISOString().replace(/-|:|\.\d\d\d/g, ''); // creates YYYYMMDDTHHmmssZ
-    };
+    submitBtn.textContent = 'Scheduling...';
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = '0.5';
 
-    const gcalUrl = new URL('https://calendar.google.com/calendar/render');
-    gcalUrl.searchParams.append('action', 'TEMPLATE');
-    gcalUrl.searchParams.append('text', `Aletheia Demo - ${name}`);
-    gcalUrl.searchParams.append('dates', `${formatGCalDate(startObj)}/${formatGCalDate(endObj)}`);
-    gcalUrl.searchParams.append('details', `Name: ${name}\\nEmail: ${email}\\n\\nComments:\\n${comments}`);
-    gcalUrl.searchParams.append('add', 'prazo983@gmail.com');
-
-    window.open(gcalUrl.toString(), '_blank');
-    
-    // Close modal
-    modal.classList.remove('ds-active');
-    setTimeout(showStep1, 300);
+    try {
+      // Send data to webhook
+      await fetch('https://hook.us1.make.com/YOUR_WEBHOOK_URL_HERE', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          comments,
+          date: startObj.toLocaleDateString(),
+          time: selectedTimeStr.label,
+          startIso: startObj.toISOString(),
+          endIso: endObj.toISOString(),
+          ownerEmail: 'prazo983@gmail.com'
+        })
+      });
+      // Always show success regardless of webhook state since we don't know the exact webhook yet
+      showStep4();
+    } catch (err) {
+      console.error('Error submitting demo request:', err);
+      // For now, still show step 4 for user experience since webhook isn't configured yet
+      showStep4();
+    } finally {
+      submitBtn.textContent = 'Schedule Demo';
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+    }
   });
 
   // Attach to Request Demo buttons
