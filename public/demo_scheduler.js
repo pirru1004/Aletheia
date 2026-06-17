@@ -247,21 +247,21 @@ document.addEventListener("DOMContentLoaded", function() {
     submitBtn.style.opacity = '0.5';
 
     try {
-      // Send data to webhook
-      await fetch('https://hook.us1.make.com/YOUR_WEBHOOK_URL_HERE', {
+      // Send data via FormSubmit to automatically email you AND send an auto-reply to the client
+      await fetch('https://formsubmit.co/ajax/prazo983@gmail.com', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({
-          name,
-          email,
-          comments,
-          date: startObj.toLocaleDateString(),
-          time: selectedTimeStr.label,
-          startIso: startObj.toISOString(),
-          endIso: endObj.toISOString(),
-          ownerEmail: 'prazo983@gmail.com'
+          name: name,
+          email: email,
+          _subject: `Aletheia Demo Request - ${name}`,
+          _autoresponse: `Hi ${name},\n\nThank you for requesting a demo of Aletheia.\n\nWe have successfully received your request for ${startObj.toLocaleDateString()} at ${selectedTimeStr.label}.\n\nOur team will review your request and get in touch with you shortly to confirm the details.\n\nBest regards,\nThe Aletheia Team`,
+          "Date": startObj.toLocaleDateString(),
+          "Time": selectedTimeStr.label,
+          "Comments": comments || "No comments provided."
         })
       });
       // Always show success regardless of webhook state since we don't know the exact webhook yet
