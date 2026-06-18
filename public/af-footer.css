@@ -1,0 +1,136 @@
+/* ============================================================================
+ * af-footer.css — Aletheia public site footer (namespace: af-)
+ * Dark, matching the landing theme. Reuses the site's font families
+ * (Space Grotesk display, IBM Plex Sans body, IBM Plex Mono labels).
+ * Self-scoped under .af-footer so it cannot leak into the app shell.
+ * No font below 11px.
+ * ==========================================================================*/
+.af-footer {
+  /* local token mirror of the landing dark palette (src/aletheia.css dark set) */
+  --af-bg: #05080A;
+  --af-surface: #0C1116;
+  --af-hairline: #232C34;
+  --af-ink: #F4F1EC;
+  --af-ink-2: #A1B0C1;
+  --af-ink-3: #6B7B8C;
+  --af-accent: #5FD4CC;
+  --af-display: 'Space Grotesk', system-ui, sans-serif;
+  --af-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --af-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+
+  display: block;
+  width: 100%;
+  background: var(--af-bg);
+  color: var(--af-ink-2);
+  border-top: 1px solid var(--af-hairline);
+  font-family: var(--af-body);
+  box-sizing: border-box;
+}
+.af-footer *,
+.af-footer *::before,
+.af-footer *::after { box-sizing: border-box; }
+
+.af-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 40px 32px;
+}
+
+.af-cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 72px;
+}
+
+.af-col { min-width: 160px; }
+
+.af-h {
+  margin: 0 0 18px;
+  font-family: var(--af-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--af-ink-3);
+}
+
+.af-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.af-list li { margin: 0 0 14px; }
+.af-list li:last-child { margin-bottom: 0; }
+
+.af-link {
+  font-family: var(--af-body);
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--af-ink);
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+.af-link:hover { color: var(--af-accent); }
+.af-link:focus-visible {
+  outline: 2px solid var(--af-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* "or book a demo slot →" sub-line beneath Contact us */
+.af-sub {
+  display: block;
+  margin-top: 5px;
+  font-size: 12.5px;
+  color: var(--af-ink-3);
+}
+.af-link--quiet {
+  font-size: 12.5px;
+  color: var(--af-ink-2);
+}
+
+/* social: live links read like the others; disabled ones are visibly greyed
+   and do not navigate (no live # that scrolls the page). */
+.af-list--social li { margin-bottom: 12px; }
+.af-social {
+  display: inline-block;
+  font-family: var(--af-body);
+  font-size: 15px;
+  color: var(--af-ink);
+  text-decoration: none;
+  transition: color 0.16s ease;
+}
+.af-social:hover { color: var(--af-accent); }
+.af-social--disabled {
+  color: var(--af-ink-3);
+  cursor: default;
+  opacity: 0.55;
+}
+
+.af-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  margin-top: 48px;
+  padding-top: 22px;
+  border-top: 1px solid var(--af-hairline);
+}
+.af-mark {
+  font-family: var(--af-display);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  color: var(--af-ink);
+}
+.af-copy {
+  font-family: var(--af-mono);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--af-ink-3);
+}
+
+@media (max-width: 640px) {
+  .af-inner { padding: 44px 24px 28px; }
+  .af-cols { gap: 34px 40px; }
+}
