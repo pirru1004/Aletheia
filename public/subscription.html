@@ -1,296 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aletheia · Plans</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aletheia — Plans</title>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2Z4KJF0F9L"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2Z4KJF0F9L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    gtag('config', 'G-2Z4KJF0F9L');
-  </script>
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/af-footer.css" />
-  <style>
-    :root{
-      --paper:#F7F5F1; --surface:#FFFFFF; --inset:#F0EDE7; --hairline:#E5E1D9;
-      --ink:#222826; --ink-2:#6B716A; --ink-3:#9CA099;
-      --accent:#1F6F6B; --accent-bg:#E4EFEE;
-      --gold:#B5863C; --deep:#1B4D3E;
-      --serif:'Newsreader',Georgia,serif;
-      --display:'Space Grotesk',-apple-system,system-ui,sans-serif;
-      --body:'IBM Plex Sans',-apple-system,system-ui,sans-serif;
-      --mono:'IBM Plex Mono',ui-monospace,monospace;
-    }
-    *{box-sizing:border-box;}
-    html{-webkit-text-size-adjust:100%;}
-    body{
-      margin:0; background:var(--paper); color:var(--ink);
-      font-family:var(--body); line-height:1.5; -webkit-font-smoothing:antialiased;
-    }
-    .wrap{max-width:1180px; margin:0 auto; padding:0 40px;}
+  gtag('config', 'G-2Z4KJF0F9L');
+</script>
+<style>
+  :root{
+    --bg:#f1efe8; --card:#ffffff; --ink:#23241f; --ink2:#56554d; --ink3:#8d8b80;
+    --line:rgba(35,36,31,0.12); --line2:rgba(35,36,31,0.07);
+    --green:#2f5d4d; --teal:#3a7c66; --gold:#bd9b4f; --band:#2f6253;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:1240px;margin:0 auto;padding:34px 40px 60px}
 
-    /* ---------- header ---------- */
-    .top{display:flex; align-items:center; justify-content:space-between; padding:34px 0 24px;}
-    .brand{font-family:var(--display); font-weight:600; font-size:21px; letter-spacing:-.01em;}
-    .top-actions{display:flex; gap:14px; align-items:center;}
-    .btn{
-      font-family:var(--mono); font-size:12.5px; letter-spacing:.02em;
-      padding:11px 18px; border-radius:8px; cursor:pointer; text-decoration:none;
-      display:inline-flex; align-items:center; gap:6px; border:1px solid transparent;
-      transition:.18s ease; white-space:nowrap;
-    }
-    .btn-ghost{border-color:var(--accent); color:var(--accent); background:transparent;}
-    .btn-ghost:hover{background:var(--accent-bg);}
-    .btn-solid{background:var(--accent); color:#fff;}
-    .btn-solid:hover{background:#185b57;}
-    .rule{height:1px; background:var(--hairline); border:0; margin:0;}
+  .head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .logo{font-size:21px;font-weight:700}
+  .hbtns{display:flex;gap:12px}
+  .btn{font-family:var(--mono);font-size:12.5px;padding:11px 18px;border-radius:9px;cursor:pointer;text-decoration:none;display:inline-block}
+  .btn.ghost{border:1px solid var(--teal);color:var(--green);background:transparent}
+  .btn.solid{background:var(--green);color:#eef3ee;border:1px solid var(--green)}
 
-    /* ---------- hero ---------- */
-    .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--ink-3);}
-    .hero{padding:54px 0 4px;}
-    .hero h1{
-      font-family:var(--display); font-weight:700; font-size:54px; line-height:1.08;
-      letter-spacing:-.02em; margin:18px 0 24px; max-width:11ch;
-    }
-    .hero p{font-size:17px; color:var(--ink-2); max-width:62ch; margin:0;}
-    .hero p b{color:var(--ink); font-weight:600;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--ink3);text-transform:uppercase}
+  .intro{padding:42px 0 8px}
+  .intro h1{font-size:46px;font-weight:800;letter-spacing:-1px;line-height:1.06;margin:16px 0 20px;max-width:14ch}
+  .intro p{color:var(--ink2);font-size:16px;line-height:1.65;margin:0;max-width:66ch}
+  .intro p b{color:var(--ink);font-weight:700}
 
-    /* ---------- tier cards ---------- */
-    .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
-    .tiers{margin:56px 0 0;}
-    .tier{
-      background:var(--surface); border:1px solid var(--hairline); border-radius:14px;
-      border-top:3px solid var(--accent); padding:26px 26px 28px; display:flex; flex-direction:column;
-    }
-    .tier.t1{border-top-color:var(--accent);}
-    .tier.t2{border-top-color:var(--gold);}
-    .tier.t3{border-top-color:var(--deep);}
-    .tier .t-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-3);}
-    .tier h2{font-family:var(--display); font-weight:600; font-size:30px; letter-spacing:-.01em; margin:14px 0 6px;}
-    .tier .t-sub{font-family:var(--mono); font-size:12.5px; color:var(--ink-2); margin-bottom:16px;}
-    .tier .t-desc{font-size:14.5px; color:var(--ink-2); line-height:1.55; min-height:48px;}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:34px}
+  .tier{background:var(--card);border:1px solid var(--line2);border-top:3px solid var(--teal);border-radius:14px;padding:26px 24px;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(0,0,0,0.03)}
+  .tier.t2{border-top-color:var(--gold)} .tier.t3{border-top-color:var(--green)}
+  .teyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink3);text-transform:uppercase}
+  .tname{font-size:30px;font-weight:700;margin:14px 0 4px}
+  .tsub{font-family:var(--mono);font-size:12.5px;color:var(--ink3);margin-bottom:18px}
+  .tdesc{font-size:15px;color:var(--ink2);line-height:1.5;min-height:46px;margin-bottom:18px}
+  .drow{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:9px 0;font-size:13.5px;border-top:1px solid var(--line2)}
+  .drow .k{font-family:var(--mono);font-size:11px;color:var(--ink3);text-transform:uppercase;padding-top:2px}
+  .drow .v{color:var(--ink2)}
+  .grp{font-weight:700;font-size:14.5px;margin:20px 0 12px}
+  .feat{list-style:none;padding:0;margin:0 0 14px;flex:1}
+  .feat li{display:flex;gap:11px;font-size:13.5px;color:var(--ink2);line-height:1.45;padding:6px 0}
+  .feat li .dot{flex:none;width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:7px}
+  .t2 .feat li .dot{background:var(--gold)} .t3 .feat li .dot{background:var(--green)}
+  .ttag{font-family:var(--mono);font-size:11.5px;color:var(--ink3);font-style:italic}
 
-    .divider{height:1px; background:var(--hairline); margin:20px 0;}
-    .da-row{display:grid; grid-template-columns:46px 1fr; gap:10px; align-items:start; margin-bottom:12px;}
-    .da-row:last-child{margin-bottom:0;}
-    .da-lbl{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; color:var(--ink-3); padding-top:2px;}
-    .da-val{font-size:14px; color:var(--ink); line-height:1.45;}
+  .pilllead{font-family:var(--mono);font-size:12.5px;letter-spacing:1.5px;color:var(--ink3);text-transform:uppercase;margin:56px 0 18px}
+  .pilllead b{color:var(--teal);font-weight:400}
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .pill{background:var(--card);border:1px solid var(--line2);border-radius:14px;padding:24px 22px;box-shadow:0 1px 2px rgba(0,0,0,0.03)}
+  .pill h3{font-size:21px;font-weight:700;margin:0 0 8px}
+  .pill .pd{font-size:13.5px;color:var(--ink2);line-height:1.5;margin-bottom:16px}
+  .prow{display:grid;grid-template-columns:78px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line2);font-size:13px}
+  .prow .pk{font-family:var(--mono);font-size:10.5px;letter-spacing:0.5px;color:var(--ink3)}
+  .prow .pv{color:var(--ink2);line-height:1.45}
 
-    .sec-h{font-family:var(--display); font-weight:600; font-size:16px; margin:0 0 14px;}
-    .feat{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:11px;}
-    .feat li{position:relative; padding-left:18px; font-size:14px; color:var(--ink); line-height:1.5;}
-    .feat li::before{content:""; position:absolute; left:0; top:7px; width:7px; height:7px; border-radius:50%; background:var(--accent);}
-    .t1 .feat li::before{background:var(--accent);}
-    .t2 .feat li::before{background:var(--gold);}
-    .t3 .feat li::before{background:var(--deep);}
-    .t-foot{margin-top:auto; padding-top:22px; font-family:var(--mono); font-size:11.5px; letter-spacing:.04em; color:var(--ink-3);}
+  .pricing{margin-top:40px;background:#ebe8df;border-radius:16px;padding:30px 34px}
+  .pricing h2{font-size:18px;font-weight:700;margin:0 0 18px}
+  .pitem{display:grid;grid-template-columns:18px 1fr;gap:6px;font-size:14px;color:var(--ink2);line-height:1.6;margin-bottom:12px}
+  .pitem b{color:var(--ink);font-weight:700}
+  .pitem .dash{color:var(--ink3)}
 
-    /* ---------- pillars ---------- */
-    .pillars-lead{font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); margin:64px 0 22px;}
-    .pillars-lead b{color:var(--accent); font-weight:500;}
-    .pillar{background:var(--surface); border:1px solid var(--hairline); border-radius:14px; padding:26px 26px 28px;}
-    .pillar h3{font-family:var(--display); font-weight:600; font-size:21px; margin:0 0 10px; letter-spacing:-.01em;}
-    .pillar .p-desc{font-size:14px; color:var(--ink-2); line-height:1.55; margin:0 0 22px;}
-    .pv-row{display:grid; grid-template-columns:78px 1fr; gap:14px; align-items:start; padding:16px 0; border-top:1px solid var(--hairline);}
-    .pv-lbl{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; color:var(--ink-3); padding-top:2px;}
-    .pv-val{font-size:13.5px; color:var(--ink); line-height:1.5;}
+  .cta{margin-top:34px;background:var(--band);color:#eef3ee;border-radius:16px;padding:42px 44px;display:flex;justify-content:space-between;align-items:flex-start;gap:30px;flex-wrap:wrap}
+  .cta h2{font-size:30px;font-weight:700;margin:0 0 14px}
+  .cta p{font-size:15px;line-height:1.6;color:rgba(238,243,238,0.86);margin:0;max-width:54ch}
+  .ctaright{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .placeholder{font-family:var(--mono);font-size:11px;letter-spacing:0.5px;color:rgba(238,243,238,0.6);text-transform:uppercase}
+  .ctabtn{background:transparent;border:1px solid rgba(238,243,238,0.5);color:#eef3ee;font-family:var(--mono);font-size:13px;padding:13px 22px;border-radius:9px}
+  .wired{font-family:var(--mono);font-size:10.5px;color:rgba(238,243,238,0.55)}
 
-    /* ---------- how pricing works ---------- */
-    .how{background:var(--inset); border-radius:14px; padding:30px 34px; margin:44px 0 0;}
-    .how h3{font-family:var(--display); font-weight:600; font-size:17px; margin:0 0 18px;}
-    .how-list{display:flex; flex-direction:column; gap:14px;}
-    .how-item{display:grid; grid-template-columns:18px 1fr; font-size:14px; color:var(--ink-2); line-height:1.55;}
-    .how-item .dash{color:var(--accent);}
-    .how-item b{color:var(--ink); font-weight:600;}
+  .foot{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--ink3);line-height:1.7}
 
-    /* ---------- CTA ---------- */
-    .cta{
-      position:relative; background:var(--accent); color:#fff; border-radius:14px;
-      padding:46px 48px; margin:36px 0 0;
-      display:flex; align-items:center; justify-content:space-between; gap:40px;
-    }
-    .cta h2{font-family:var(--display); font-weight:600; font-size:34px; letter-spacing:-.01em; margin:0 0 16px;}
-    .cta p{font-size:15px; color:rgba(255,255,255,.85); max-width:48ch; margin:0; line-height:1.6;}
-    .cta-placeholder{position:absolute; top:24px; right:48px; font-family:var(--mono); font-size:10px; letter-spacing:.14em; color:rgba(255,255,255,.55);}
-    .cta-right{display:flex; flex-direction:column; align-items:center; gap:8px; flex-shrink:0;}
-    .cta .btn-light{background:transparent; border:1px solid rgba(255,255,255,.7); color:#fff; font-size:13px; padding:13px 22px;}
-    .cta .btn-light:hover{background:rgba(255,255,255,.12);}
-    .cta-note{font-family:var(--mono); font-size:10.5px; color:rgba(255,255,255,.55);}
-
-    /* ---------- footer ---------- */
-    footer{margin-top:54px; border-top:1px solid var(--hairline); padding:26px 0 60px;}
-    footer p{font-family:var(--mono); font-size:11.5px; letter-spacing:.02em; color:var(--ink-3); line-height:1.7; margin:0; max-width:96ch;}
-
-    /* ---------- responsive ---------- */
-    @media (max-width:980px){
-      .grid-3{grid-template-columns:1fr;}
-      .hero h1{font-size:42px;}
-      .cta{flex-direction:column; align-items:flex-start;}
-    }
-    @media (max-width:560px){
-      .wrap{padding:0 22px;}
-      .hero h1{font-size:34px;}
-      .top-actions .btn-ghost{display:none;}
-    }
-  </style>
-  <link rel="stylesheet" href="/demo_scheduler.css" />
+  @media(max-width:900px){.wrap{padding:26px 20px 48px}.tiers,.pillars{grid-template-columns:1fr}.intro h1{font-size:36px}.cta{flex-direction:column}.ctaright{align-items:flex-start;text-align:left}}
+</style>
+<link rel="stylesheet" href="/demo_scheduler.css" />
+<link rel="stylesheet" href="/af-footer.css" />
 </head>
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <!-- Header -->
-    <header class="top">
-      <div class="brand">Aletheia</div>
-      <div class="top-actions">
-        <a class="btn btn-ghost" href="/">← Back to dashboard</a>
-        <a class="btn btn-solid" href="#demo">Request a demo</a>
-      </div>
-    </header>
-    <hr class="rule" />
+  <div class="head">
+    <div class="logo">Aletheia</div>
+    <div class="hbtns">
+      <a class="btn ghost" href="/">← Back to dashboard</a>
+      <a class="btn solid" href="#demo">Request a demo</a>
+    </div>
+  </div>
 
-    <!-- Hero -->
-    <section class="hero">
-      <div class="eyebrow">Plans</div>
-      <h1>Three tiers. One engine, growing with you.</h1>
-      <p>Every plan turns up two dials at once — the <b>data</b> behind your view, and the
-        <b>AI</b> working on it. Start by screening your estate on free satellite data; move up
-        to confirm with tasked data and alerts; reach the full picture by fusing satellite
-        with your own ground data. Each tier includes everything below it.</p>
-    </section>
+  <div class="intro">
+    <span class="eyebrow">Plans</span>
+    <h1>Three tiers. One engine, growing with you.</h1>
+    <p>Every plan turns up two dials at once — the <b>data</b> behind your view, and how far we take the <b>decision</b>. Start by screening your estate on free satellite data; move up to confirm with tasked data and verification; reach the full picture by fusing satellite with your own ground data. Each tier includes everything below it.</p>
+  </div>
 
-    <!-- Tier cards -->
-    <section class="tiers grid-3">
-      <!-- Tier 1 -->
-      <article class="tier t1">
-        <div class="t-eyebrow">Tier 1 · Entry</div>
-        <h2>Watch</h2>
-        <div class="t-sub">Standard · AI Level 1</div>
-        <div class="t-desc">See what's happening — screen and prioritise across the whole estate.</div>
-        <div class="divider"></div>
-        <div class="da-row"><div class="da-lbl">DATA</div><div class="da-val">Free satellite data</div></div>
-        <div class="da-row"><div class="da-lbl">AI</div><div class="da-val">Transforms data into clear information</div></div>
-        <div class="divider"></div>
-        <h4 class="sec-h">Watch &amp; Verify</h4>
-        <ul class="feat">
-          <li>Automated screening &amp; baselines across all sites</li>
-          <li>Per-site dashboards and estate ranking</li>
-          <li>Tells you where to look first</li>
-        </ul>
-        <div class="t-foot">Screening-grade · indicative</div>
-      </article>
+  <div class="tiers">
 
-      <!-- Tier 2 -->
-      <article class="tier t2">
-        <div class="t-eyebrow">Tier 2 · Core</div>
-        <h2>Verify</h2>
-        <div class="t-sub">Premium · AI Level 2</div>
-        <div class="t-desc">Understand what's actually there — confirm, and act on specific sites.</div>
-        <div class="divider"></div>
-        <div class="da-row"><div class="da-lbl">DATA</div><div class="da-val">Any satellite, incl. tasked premium</div></div>
-        <div class="da-row"><div class="da-lbl">AI</div><div class="da-val">Turns information into intelligence &amp; alerts</div></div>
-        <div class="divider"></div>
-        <h4 class="sec-h">Intelligence &amp; Alerts</h4>
-        <ul class="feat">
-          <li>Everything in Watch, plus:</li>
-          <li>Tasked higher-resolution confirmation</li>
-          <li>Anomaly detection, alerts &amp; API access</li>
-          <li>Cross-source data verification</li>
-        </ul>
-        <div class="t-foot">Most teams settle here</div>
-      </article>
+    <!-- WATCH -->
+    <div class="tier t1">
+      <div class="teyebrow">Tier 1 · Entry</div>
+      <div class="tname">Watch</div>
+      <div class="tsub">Standard · Describe</div>
+      <div class="tdesc">See what's happening — screen and prioritise across the whole estate.</div>
+      <div class="drow"><div class="k">Data</div><div class="v">Free public satellite data</div></div>
+      <div class="drow"><div class="k">Decision</div><div class="v">Automated screening — tells you where to look, not what's true</div></div>
+      <div class="grp">Screen &amp; prioritise</div>
+      <ul class="feat">
+        <li><span class="dot"></span>Automated screening &amp; baselines across all sites</li>
+        <li><span class="dot"></span>Per-site dashboards and estate ranking</li>
+        <li><span class="dot"></span>Deterministic and auditable — built for reporting</li>
+        <li><span class="dot"></span>Tells you where to look first</li>
+      </ul>
+      <div class="ttag">Screening-grade · indicative</div>
+    </div>
 
-      <!-- Tier 3 -->
-      <article class="tier t3">
-        <div class="t-eyebrow">Tier 3 · Enterprise</div>
-        <h2>Command</h2>
-        <div class="t-sub">Enterprise · AI Level 3</div>
-        <div class="t-desc">Act on it — predict, recommend and integrate across your operation.</div>
-        <div class="divider"></div>
-        <div class="da-row"><div class="da-lbl">DATA</div><div class="da-val">Satellite + your non-satellite data, fused</div></div>
-        <div class="da-row"><div class="da-lbl">AI</div><div class="da-val">Predicts &amp; recommends; acts on approval</div></div>
-        <div class="divider"></div>
-        <h4 class="sec-h">Analyse &amp; Command</h4>
-        <ul class="feat">
-          <li>Everything in Verify, plus:</li>
-          <li>Prediction &amp; recommended actions (human-approved)</li>
-          <li>Integration with your own systems</li>
-          <li>White-label, SSO, SLA &amp; dedicated support</li>
-        </ul>
-        <div class="t-foot">Your enterprise decision layer</div>
-      </article>
-    </section>
+    <!-- VERIFY -->
+    <div class="tier t2">
+      <div class="teyebrow">Tier 2 · Core</div>
+      <div class="tname">Verify</div>
+      <div class="tsub">Premium · Interpret</div>
+      <div class="tdesc">Understand what's actually there — confirm, and act on specific sites.</div>
+      <div class="drow"><div class="k">Data</div><div class="v">Any satellite, incl. tasked premium</div></div>
+      <div class="drow"><div class="k">Decision</div><div class="v">Confirmed, interpreted findings — the cause, not just an anomaly</div></div>
+      <div class="grp">Confirm &amp; interpret</div>
+      <ul class="feat">
+        <li><span class="dot"></span>Everything in Watch, plus:</li>
+        <li><span class="dot"></span>Tasked higher-resolution confirmation</li>
+        <li><span class="dot"></span>Multi-source fusion &amp; classification</li>
+        <li><span class="dot"></span>Cross-source verification — drone, inspector or your sensors</li>
+        <li><span class="dot"></span>Alerts &amp; API access</li>
+      </ul>
+      <div class="ttag">Most teams settle here</div>
+    </div>
 
-    <!-- Pillars -->
-    <div class="pillars-lead">Available across <b>three pillars</b> — buy one, expand sideways</div>
-    <section class="grid-3">
-      <!-- Operational Efficiency -->
-      <article class="pillar">
-        <h3>Operational Efficiency</h3>
-        <p class="p-desc">Find waste, lost product and underperforming assets; cut inspection &amp; servicing cost.</p>
-        <div class="pv-row"><div class="pv-lbl">WATCH</div><div class="pv-val">Flaring, combustion, idle-asset &amp; solar-array screening; estate ranking</div></div>
-        <div class="pv-row"><div class="pv-lbl">VERIFY</div><div class="pv-val">Lost-product quantification, inspection-visit displacement, solar-panel pinpointing, alerts</div></div>
-        <div class="pv-row"><div class="pv-lbl">COMMAND</div><div class="pv-val">Predictive efficiency &amp; maintenance, faulty-panel location via ground-sensor fusion, systems integration</div></div>
-      </article>
-
-      <!-- Sustainability -->
-      <article class="pillar">
-        <h3>Sustainability</h3>
-        <p class="p-desc">Measure, compare to regulation and prior years, file with confidence.</p>
-        <div class="pv-row"><div class="pv-lbl">WATCH</div><div class="pv-val">Methane, flaring &amp; air-quality screening per site</div></div>
-        <div class="pv-row"><div class="pv-lbl">VERIFY</div><div class="pv-val">Threshold &amp; compliance checks, reconciliation, evidence pack</div></div>
-        <div class="pv-row"><div class="pv-lbl">COMMAND</div><div class="pv-val">Filing-ready drafts (you review &amp; sign) + group roll-up</div></div>
-      </article>
-
-      <!-- Asset Security -->
-      <article class="pillar">
-        <h3>Asset Security</h3>
-        <p class="p-desc">See threats to assets from space; confirm and prioritise response.</p>
-        <div class="pv-row"><div class="pv-lbl">WATCH</div><div class="pv-val">Perimeter, right-of-way &amp; infrastructure-change screening</div></div>
-        <div class="pv-row"><div class="pv-lbl">VERIFY</div><div class="pv-val">Intrusion alerts, event confirmation, change-since-last-pass</div></div>
-        <div class="pv-row"><div class="pv-lbl">COMMAND</div><div class="pv-val">Predictive risk &amp; response prioritisation (human-in-the-loop)</div></div>
-      </article>
-    </section>
-
-    <!-- How pricing works -->
-    <section class="how">
-      <h3>How pricing works</h3>
-      <div class="how-list">
-        <div class="how-item"><span class="dash">—</span><div><b>Sold by pillar and by tier.</b> Choose the pillars you need and the tier that fits; add more of either as you grow. Multi-pillar and suite terms available.</div></div>
-        <div class="how-item"><span class="dash">—</span><div><b>Built for enterprise.</b> Plans are scoped to your assets and agreed as annual commitments — not off-the-shelf list prices.</div></div>
-        <div class="how-item"><span class="dash">—</span><div><b>Honest by design.</b> Watch runs on free, screening-grade data. Verification needs more than one source, so it begins at Verify. Sustainability filings are always reviewed and signed by your team — Aletheia prepares the draft, never the filing of record.</div></div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta" id="demo">
-      <div class="cta-placeholder">PLACEHOLDER · LINK TO BE ADDED</div>
-      <div class="cta-left">
-        <h2>See Aletheia on your own sites.</h2>
-        <p>We'll set up a walkthrough on your assets — screening your estate, showing where
-          the value and the risk concentrate, and how each tier fits your operation. Tailored
-          to a single pilot site or your whole portfolio.</p>
-      </div>
-      <div class="cta-right">
-        <a class="btn btn-light" href="#demo">Request a demo →</a>
-        <span class="cta-note">link to be wired up</span>
-      </div>
-    </section>
+    <!-- COMMAND -->
+    <div class="tier t3">
+      <div class="teyebrow">Tier 3 · Enterprise</div>
+      <div class="tname">Command</div>
+      <div class="tsub">Enterprise · Recommend</div>
+      <div class="tdesc">Decide what to do — recommended actions, scenario projection and integration, all human-approved.</div>
+      <div class="drow"><div class="k">Data</div><div class="v">Satellite + your own ground data, fused</div></div>
+      <div class="drow"><div class="k">Decision</div><div class="v">Recommends actions from your fused data; your team approves</div></div>
+      <div class="grp">Recommend &amp; integrate</div>
+      <ul class="feat">
+        <li><span class="dot"></span>Everything in Verify, plus:</li>
+        <li><span class="dot"></span>Scenario projection with uncertainty — a scenario, not a forecast</li>
+        <li><span class="dot"></span>Recommended actions from established playbooks (human-approved)</li>
+        <li><span class="dot"></span>Integration with your own systems — inverter / SCADA / sensors</li>
+        <li><span class="dot"></span>Flagship at enterprise — solar fleet efficiency and asset-security monitoring, fused with your ground data</li>
+        <li><span class="dot"></span>White-label, SSO, SLA &amp; dedicated support</li>
+      </ul>
+      <div class="ttag">Your enterprise decision layer</div>
+    </div>
 
   </div>
 
-  <!-- Public site footer — full-bleed, mounts via /af-footer.js -->
-  <div data-af-footer></div>
+  <div class="pricing">
+    <h2>How pricing works</h2>
+    <div class="pitem"><span class="dash">—</span><div><b>Sold by pillar and by tier.</b> Choose the pillars you need and the tier that fits; add more of either as you grow. Multi-pillar and suite terms available.</div></div>
+    <div class="pitem"><span class="dash">—</span><div><b>Built for enterprise.</b> Plans are scoped to your assets and agreed as annual commitments — not off-the-shelf list prices.</div></div>
+    <div class="pitem"><span class="dash">—</span><div><b>Honest by design.</b> Watch runs on free, screening-grade data — it tells you where to look, not what's true. Verification needs more than one source, so it begins at Verify. Projections are scenarios, not forecasts. Sustainability filings are always reviewed and signed by your team — Aletheia prepares the draft, never the filing of record.</div></div>
+  </div>
 
-  <script src="/af-footer.js"></script>
-  <script src="/demo_scheduler.js"></script>
+  <div class="cta" id="demo">
+    <div>
+      <h2>See Aletheia on your own sites.</h2>
+      <p>We'll set up a walkthrough on your assets — screening your estate, showing where the value and the risk concentrate, and how each tier fits your operation. Tailored to a single pilot site or your whole portfolio.</p>
+    </div>
+    <div class="ctaright">
+      <a class="ctabtn" href="#demo">Request a demo →</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- Public site footer — full-bleed, mounts via /af-footer.js -->
+<div data-af-footer></div>
+
+<script src="/af-footer.js"></script>
+<script src="/demo_scheduler.js"></script>
 </body>
 </html>
