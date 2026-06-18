@@ -108,6 +108,9 @@
   .empty{padding:26px 16px;color:var(--ink3);font-size:13px;text-align:center;border-top:0.5px solid var(--line)}
 
   .note{max-width:1180px;margin:16px auto 30px;padding:0 22px;font-family:var(--mono);font-size:11px;color:var(--ink3);line-height:1.6}
+  .btn-back{font-family:var(--mono);font-size:10.5px;color:var(--ink);background:var(--card);
+    border:1px solid var(--line2);border-radius:999px;padding:4px 12px;text-decoration:none;cursor:pointer;transition:background 0.15s;font-weight:600;}
+  .btn-back:hover{background:var(--bg);}
   @media(max-width:880px){.main{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -122,6 +125,7 @@
     <span class="tag"><span class="d" style="background:#3f78a8"></span>thermal · receiver flux</span>
     <span class="tag"><span class="d" style="background:#9a7a30"></span>receiver / HTF data</span>
     <span class="mock">Illustrative · mock data</span>
+    <a href="/" class="btn-back">← RETURN</a>
   </div>
 </div>
 
