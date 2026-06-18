@@ -1651,6 +1651,31 @@ html, body {
   border-color: var(--accent-color);
 }
 
+/* Interactive Hover Separation Effects */
+.parallax-card {
+  transition: translate 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), 
+              scale 0.5s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.5s ease, 
+              border-color 0.3s ease;
+  will-change: translate, scale;
+}
+
+.images-side:hover .img-back {
+  translate: -20px -20px;
+  box-shadow: -15px 25px 60px rgba(0, 0, 0, 0.7);
+}
+
+.images-side:hover .img-front {
+  translate: 20px 20px;
+  box-shadow: 15px 25px 60px rgba(0, 0, 0, 0.7);
+}
+
+.parallax-card:hover {
+  scale: 1.03;
+  border-color: rgba(255, 255, 255, 0.4);
+  z-index: 10 !important; /* Bring hovered card to the absolute front */
+}
+
 @media (max-width: 900px) {
   .parallax-section, .parallax-section.reverse {
     flex-direction: column;
