@@ -1537,6 +1537,39 @@ html, body {
   left: -5%;
 }
 
+/* 3-card layout support */
+.three-cards .img-back {
+  width: 60%;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+.img-middle {
+  position: absolute;
+  width: 60%;
+  left: 20%;
+  top: 20%;
+  z-index: 2;
+  animation: parallax-back linear both;
+  animation-timeline: --section-timeline;
+  animation-range: entry 0% cover 100%;
+}
+.three-cards .img-front {
+  width: 60%;
+  right: 0;
+  bottom: -5%;
+  z-index: 3;
+}
+.parallax-section.reverse .three-cards .img-back {
+  left: auto; right: 0;
+}
+.parallax-section.reverse .three-cards .img-middle {
+  left: auto; right: 20%;
+}
+.parallax-section.reverse .three-cards .img-front {
+  left: 0; right: auto;
+}
+
 @keyframes parallax-fade-up {
   from {
     opacity: 0;
@@ -1660,12 +1693,22 @@ html, body {
   will-change: translate, scale;
 }
 
-.images-side:hover .img-back {
+.images-side:not(.three-cards):hover .img-back {
   translate: -15% -5%;
 }
 
-.images-side:hover .img-front {
+.images-side:not(.three-cards):hover .img-front {
   translate: 15% 5%;
+}
+
+.three-cards:hover .img-back {
+  translate: -20% -15%;
+}
+.three-cards:hover .img-middle {
+  translate: 0% 0%;
+}
+.three-cards:hover .img-front {
+  translate: 20% 15%;
 }
 
 .parallax-card:hover {
