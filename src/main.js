@@ -19,6 +19,15 @@ import { initSustainabilityCompliance, openSustainabilityCompliance } from './su
 let mapMode = 'sustainability';
 
 // --- THEME TOGGLE LOGIC ---
+// Monochrome Tabler-style line icons (inherit currentColor), matching the inline
+// SVG idiom used elsewhere in the app. No emoji. In light theme we show the moon
+// ("switch to dark"); in dark theme the sun ("switch to light").
+const THEME_ICON = {
+  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M3 12h2M19 12h2M5.2 18.8l1.4-1.4M17.4 6.6l1.4-1.4"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg>'
+};
+const themeGlyph = theme => theme === 'dark' ? THEME_ICON.sun : THEME_ICON.moon;
+
 function initTheme() {
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const savedTheme = localStorage.getItem('aletheia-theme');
@@ -26,13 +35,13 @@ function initTheme() {
   document.documentElement.setAttribute('data-theme', currentTheme);
 
   document.querySelectorAll('.theme-toggle').forEach(btn => {
-    btn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    btn.innerHTML = themeGlyph(currentTheme);
     btn.addEventListener('click', () => {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       const newTheme = isDark ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('aletheia-theme', newTheme);
-      document.querySelectorAll('.theme-toggle').forEach(b => b.textContent = newTheme === 'dark' ? '☀️' : '🌙');
+      document.querySelectorAll('.theme-toggle').forEach(b => b.innerHTML = themeGlyph(newTheme));
       
       // Attempt to toggle the leaflet map basemap if it exists
       if (typeof map !== 'undefined' && typeof lightBasemap !== 'undefined' && typeof darkBasemap !== 'undefined') {
@@ -130,6 +139,11 @@ function setMapMode(mode) {
       : mode === 'operational' ? operationalPins
       : sustainabilityPins;
     active.addTo(map);
+  }
+  // Re-centre the methane heat plume on the active pillar's pin coordinates so the
+  // pin always sits in the middle of its blob (one coordinate drives both).
+  if (typeof methaneLayer !== 'undefined' && methaneLayer?.setLatLngs) {
+    methaneLayer.setLatLngs(buildHeatData(mode));
   }
 }
 
@@ -506,28 +520,43 @@ document.getElementById('toggle-base-light')?.addEventListener('change', (e) => 
 });
 
 // --- TROPOMI Methane Heatmap ---
-const heatData = [];
-facilities.forEach(facility => {
-  // Base intensity on the observed methane tonnes (fallback to 5000 if not present)
-  const tonnes = facility.observed?.methane_tonnes || 5000;
-  const intensityBase = tonnes / 10000;
-  
-  // Create a synthetic plume
-  for (let i = 0; i < 300; i++) {
-    const latOffset = (Math.random() - 0.5) * 0.4; 
-    const lonOffset = (Math.random() - 0.5) * 0.6;
-    let pointIntensity = intensityBase * (1 - (Math.abs(latOffset) + Math.abs(lonOffset)));
-    if (pointIntensity < 0.1) pointIntensity = 0.1;
-
-    heatData.push([
-      facility.lat + latOffset,
-      facility.lon + lonOffset,
-      pointIntensity
-    ]);
+// Each facility's synthetic plume is centred on the SAME coordinate as the pin the
+// active pillar shows, so the pin always sits in the middle of its blob. Asset
+// Security pins come from asset_security.json (matched by nearest coordinate); the
+// other pillars use facilities.json. Resolving the centre per mode keeps the pin
+// and the overlay driven by one coordinate so they can't drift apart. This is a
+// display-alignment choice only — the plume stays synthetic and implies no extra
+// spatial precision than the underlying point.
+function heatCenterFor(facility, mode) {
+  if (mode === 'asset') {
+    const s = assetSiteByNearest(facility.lat, facility.lon);
+    if (s) return [s.lat, s.lon];
   }
-});
+  return [facility.lat, facility.lon];
+}
 
-const methaneLayer = L.heatLayer(heatData, {
+function buildHeatData(mode) {
+  const data = [];
+  facilities.forEach(facility => {
+    const [cLat, cLon] = heatCenterFor(facility, mode);
+    // Base intensity on the observed methane tonnes (fallback to 5000 if not present)
+    const tonnes = facility.observed?.methane_tonnes || 5000;
+    const intensityBase = tonnes / 10000;
+
+    // Create a synthetic plume centred on the pin coordinate
+    for (let i = 0; i < 300; i++) {
+      const latOffset = (Math.random() - 0.5) * 0.4;
+      const lonOffset = (Math.random() - 0.5) * 0.6;
+      let pointIntensity = intensityBase * (1 - (Math.abs(latOffset) + Math.abs(lonOffset)));
+      if (pointIntensity < 0.1) pointIntensity = 0.1;
+
+      data.push([cLat + latOffset, cLon + lonOffset, pointIntensity]);
+    }
+  });
+  return data;
+}
+
+const methaneLayer = L.heatLayer(buildHeatData(mapMode), {
   radius: 35,
   blur: 25,
   maxZoom: 10,
@@ -796,6 +825,10 @@ function renderInvestigateActions() {
 function renderTrajectory(f) {
   currentTrajFacility = f;
   const BAND = 'rgba(181,134,60,.16)';
+  // Cool-slate tint for the measured excess above background. Deliberately a
+  // different hue/opacity from the warm uncertainty BAND so the two shadings can
+  // never be read as the same thing.
+  const EXCESS = 'rgba(86,124,156,.22)';
 
   // --- observed series ---
   const obsLabels = f.trajectory.map(t => t.month);
@@ -883,23 +916,29 @@ function renderTrajectory(f) {
     fill: opts.fill ?? false, order: opts.order ?? 5,
   });
 
+  const obsLine = obsData.concat(new Array(futureLabels.length).fill(null));
   const datasets = [
     // uncertainty band (lower drawn first, upper fills down to it)
     { ...mkLine('band-lo', bandLo, 'transparent', { order: 9 }), pointHitRadius: 0 },
     { ...mkLine('Uncertainty band', bandHi, 'transparent', { order: 9, fill: '-1' }), backgroundColor: BAND, pointHitRadius: 0 },
-    // measured background / clean-reference column (flat, dotted) — drawn beneath the observed line
-    mkLine('Background · measured clean reference', new Array(N).fill(bkgd), css('--ink-3'),
-      { w: 1.5, dash: [2, 3], t: 0, order: 6 }),
+    // measured background / clean-reference column — darkened + thickened so the
+    // reference floor reads as a deliberate line, not a faint whisper.
+    mkLine('Background · measured clean reference', new Array(N).fill(bkgd), css('--muted'),
+      { w: 2, dash: [5, 4], t: 0, order: 6 }),
+    // concentration excess above background: a flat cool-slate tint filling the gap
+    // between the observed line and the background floor. Distinct hue/opacity from
+    // the warm uncertainty BAND so the two never blur together.
+    { ...mkLine('Excess above background', obsLine, 'transparent', { t: 0.35, order: 7 }),
+      backgroundColor: EXCESS, fill: { target: 2, above: EXCESS, below: 'transparent' }, pointHitRadius: 0 },
     // status-quo projection (dashed)
     mkLine('Projection · status-quo', proj, css('--amber-soft'), { dash: [6, 5], order: 4 }),
     // observed (solid, on top)
-    mkLine('Observed (satellite)', obsData.concat(new Array(futureLabels.length).fill(null)),
-      css('--amber'), { w: 2.6, pr: 2.6, t: 0.35, order: 1 }),
+    mkLine('Observed (satellite)', obsLine, css('--amber'), { w: 2.6, pr: 2.6, t: 0.35, order: 1 }),
   ];
   if (anyLever) datasets.push(mkLine('With selected levers', bent, css('--green'), { dash: [5, 4], w: 2.4, order: 2 }));
   if (showGoal) datasets.push(mkLine('Goal line (your target)', goal, css('--muted'), { dash: [2, 4], w: 2, order: 3 }));
 
-  const HIDE_IN_TIP = new Set(['band-lo', 'Uncertainty band']);
+  const HIDE_IN_TIP = new Set(['band-lo', 'Uncertainty band', 'Excess above background']);
 
   if (trajChart) {
     trajChart.data.labels = labels;

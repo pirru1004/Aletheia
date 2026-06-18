@@ -191,9 +191,10 @@
   .legend .ln.rep{color:var(--reported);} .legend .ln.obs{color:var(--amber);} .legend .ln.tgt{border-top-style:dashed; color:var(--muted);}
   .legend .ln.proj{border-top-style:dashed; color:var(--amber-soft);}
   .legend .ln.abated{border-top-style:dashed; color:var(--green);}
-  .legend .ln.bkgd{border-top-width:1.5px; border-top-style:dotted; color:var(--ink-3);}
+  .legend .ln.bkgd{border-top-width:2px; border-top-style:dashed; color:var(--muted);}
   .legend .sw{width:16px; height:10px; border-radius:3px; display:inline-block;}
   .legend .sw.band{background:rgba(181,134,60,.16); border:1px solid rgba(181,134,60,.34);}
+  .legend .sw.excess{background:rgba(86,124,156,.22); border:1px solid rgba(86,124,156,.5);}
   .legend .gap{width:14px; height:10px; border-radius:2px; background:rgba(242,181,59,.18); border:1px solid rgba(242,181,59,.35); display:inline-block;}
   #chartbox{position:relative; height:352px;}
   .yend{margin:8px 6px 0; padding:11px 14px; border-radius:10px; border:1px solid var(--line); background:var(--panel-2); display:flex; align-items:center; gap:13px; font-family:var(--body); font-size:12px;}

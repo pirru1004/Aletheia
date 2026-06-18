@@ -30,9 +30,9 @@ const FOOTER_LINKS = {
   }
 };
 
-// Bottom line. [ENTITY NAME] stays a bracket placeholder — not invented here.
-const FOOTER_ENTITY = '[ENTITY NAME]';
-const FOOTER_YEAR = '[YEAR]';
+// Bottom line.
+const FOOTER_ENTITY = 'Aletheia Inc.';
+const FOOTER_YEAR = '2026';
 
 (function () {
   const L = FOOTER_LINKS;

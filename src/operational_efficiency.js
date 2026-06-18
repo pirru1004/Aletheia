@@ -187,6 +187,9 @@ function renderInvestigateActions() {
 function renderTrajectory(f) {
   currentTrajFacility = f;
   const BAND = 'rgba(181,134,60,.16)';
+  // Cool-slate tint for the measured excess above background — a different
+  // hue/opacity from the warm uncertainty BAND so the two are never confused.
+  const EXCESS = 'rgba(86,124,156,.22)';
 
   const obsLabels = f.trajectory.map(t => t.month);
   const obsData = f.trajectory.map(t => t.ch4);
@@ -265,19 +268,23 @@ function renderTrajectory(f) {
     fill: opts.fill ?? false, order: opts.order ?? 5,
   });
 
+  const obsLine = obsData.concat(new Array(futureLabels.length).fill(null));
   const datasets = [
     { ...mkLine('band-lo', bandLo, 'transparent', { order: 9 }), pointHitRadius: 0 },
     { ...mkLine('Uncertainty band', bandHi, 'transparent', { order: 9, fill: '-1' }), backgroundColor: BAND, pointHitRadius: 0 },
-    mkLine('Background · measured clean reference', new Array(N).fill(bkgd), css('--ink-3'),
-      { w: 1.5, dash: [2, 3], t: 0, order: 6 }),
+    // background / clean-reference floor — darkened + thickened for legibility.
+    mkLine('Background · measured clean reference', new Array(N).fill(bkgd), css('--muted'),
+      { w: 2, dash: [5, 4], t: 0, order: 6 }),
+    // flat cool-slate tint = concentration excess above background, distinct from BAND.
+    { ...mkLine('Excess above background', obsLine, 'transparent', { t: 0.35, order: 7 }),
+      backgroundColor: EXCESS, fill: { target: 2, above: EXCESS, below: 'transparent' }, pointHitRadius: 0 },
     mkLine('Projection · status-quo', proj, css('--amber-soft'), { dash: [6, 5], order: 4 }),
-    mkLine('Observed (satellite)', obsData.concat(new Array(futureLabels.length).fill(null)),
-      css('--amber'), { w: 2.6, pr: 2.6, t: 0.35, order: 1 }),
+    mkLine('Observed (satellite)', obsLine, css('--amber'), { w: 2.6, pr: 2.6, t: 0.35, order: 1 }),
   ];
   if (anyLever) datasets.push(mkLine('With selected levers', bent, css('--green'), { dash: [5, 4], w: 2.4, order: 2 }));
   if (showGoal) datasets.push(mkLine('Goal line (your target)', goal, css('--muted'), { dash: [2, 4], w: 2, order: 3 }));
 
-  const HIDE_IN_TIP = new Set(['band-lo', 'Uncertainty band']);
+  const HIDE_IN_TIP = new Set(['band-lo', 'Uncertainty band', 'Excess above background']);
 
   if (trajChart) {
     trajChart.data.labels = labels;
