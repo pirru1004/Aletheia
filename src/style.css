@@ -1550,20 +1550,105 @@ html, body {
 
 @keyframes parallax-back {
   from {
-    transform: translateY(100px);
+    transform: translateY(200px);
   }
   to {
-    transform: translateY(-50px);
+    transform: translateY(-100px);
   }
 }
 
 @keyframes parallax-front {
   from {
-    transform: translateY(180px);
+    transform: translateY(350px);
   }
   to {
-    transform: translateY(-80px);
+    transform: translateY(-150px);
   }
+}
+
+/* Parallax Card Styles */
+.parallax-card {
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+/* Semi-transparent dark overlay so text is visible */
+.parallax-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6); /* Adjust opacity here */
+  z-index: 0;
+}
+
+/* Ensure content sits above the dark overlay */
+.parallax-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.parallax-card h3 {
+  font-family: var(--sans);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  margin: 0 0 1rem 0;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+.parallax-card-tags {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: auto;
+}
+
+.parallax-card-tag {
+  background: rgba(31, 111, 107, 0.2);
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.parallax-card-tag.live {
+  background: var(--accent-color);
+  color: #fff;
+}
+
+.parallax-card .btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 1rem;
+}
+
+.parallax-card .btn:hover {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 @media (max-width: 900px) {
