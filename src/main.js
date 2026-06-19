@@ -582,6 +582,19 @@ document.getElementById('toggle-vnf')?.addEventListener('change', (e) => {
 });
 
 // --- Simulated Oil Spill Detection for SAR ---
+const sarPopupContent = `
+  <div style="font-family: 'Inter', sans-serif; color: #E2E8F0; min-width: 200px;">
+    <h3 style="margin: 0 0 8px 0; color: #FF3366; font-size: 14px; font-weight: 600;">Detected Anomaly</h3>
+    <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.4;">
+      Potential Oil Spill Signature.
+    </p>
+    <p style="margin: 0; font-size: 11px; line-height: 1.4; color: #94A3B8;">
+      <b>AI Insight:</b> Low radar backscatter detected, indicating surface capillary wave dampening consistent with oil films.
+    </p>
+    <div style="margin-top: 8px; font-size: 12px; font-weight: 600; color: #10B981;">Confidence: 87%</div>
+  </div>
+`;
+
 const oilSpillMarker = L.circle([28.45, -94.15], {
   color: '#FF3366',
   fillColor: '#FF3366',
@@ -589,7 +602,7 @@ const oilSpillMarker = L.circle([28.45, -94.15], {
   weight: 3,
   radius: 3500,
   className: 'pulse-ring'
-}).bindTooltip('<b>Detected Anomaly</b><br>Potential Oil Spill Signature', { permanent: true, direction: 'top', className: 'sar-tooltip' });
+}).bindPopup(sarPopupContent, { className: 'sar-popup', closeButton: true });
 
 document.getElementById('toggle-sar')?.addEventListener('change', (e) => {
   if (e.target.checked) {
@@ -597,6 +610,7 @@ document.getElementById('toggle-sar')?.addEventListener('change', (e) => {
     oilSpillMarker.addTo(map);
     // Pan to the oil spill so they know where to go
     map.flyTo([28.45, -94.15], 12, { animate: true, duration: 1.5 });
+    setTimeout(() => oilSpillMarker.openPopup(), 1500);
   } else {
     map.removeLayer(sarLayer);
     map.removeLayer(oilSpillMarker);
