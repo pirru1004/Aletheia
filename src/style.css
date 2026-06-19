@@ -159,19 +159,21 @@ html, body {
   margin-right: 8px;
 }
 
-/* Futuristic Floating Layer Panel */
+/* Futuristic & Elegant Layer Panel */
 .floating-panel {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  width: 340px;
-  background: var(--surface);
-  border: 1px solid var(--hairline);
-  border-radius: 8px;
-  padding: 1.25rem;
+  top: 24px;
+  left: 24px;
+  width: 360px;
+  background: rgba(12, 17, 22, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
   z-index: 1000;
-  color: var(--ink);
-  box-shadow: var(--shadow-lg);
+  color: #FFFFFF;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
 }
@@ -179,13 +181,13 @@ html, body {
 .floating-panel .panel-title {
   font-family: var(--mono, monospace);
   font-size: 0.75rem;
-  font-weight: 600;
-  margin: 0 0 1.25rem 0;
-  color: var(--ink-2);
+  font-weight: 500;
+  margin: 0 0 1.5rem 0;
+  color: #A1B0C1;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  border-bottom: 1px solid var(--hairline);
-  padding-bottom: 0.5rem;
+  letter-spacing: 0.15em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.75rem;
 }
 
 .floating-panel .panel-subtitle {
@@ -193,42 +195,44 @@ html, body {
   font-size: 0.7rem;
   font-weight: 500;
   margin: 1.5rem 0 1rem 0;
-  color: var(--ink-3);
+  color: #6B7B8C;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .layer-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .layer-toggle {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   cursor: pointer;
   font-size: 0.85rem;
   font-family: var(--sans);
-  color: var(--ink);
-  transition: color 0.2s;
+  color: #FFFFFF;
+  transition: opacity 0.2s;
 }
 
 .layer-toggle:hover {
-  color: var(--accent);
+  opacity: 0.8;
 }
 
 .layer-toggle .lyr-num {
   display: inline-block;
-  background: var(--inset);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
   font-family: var(--mono, monospace);
-  font-size: 0.7rem;
-  color: var(--ink-2);
-  margin-right: 4px;
+  font-size: 0.65rem;
+  color: #5FD4CC;
+  margin-right: 6px;
+  letter-spacing: 0.05em;
 }
 
 .layer-toggle input[type="checkbox"],
@@ -236,12 +240,12 @@ html, body {
   appearance: none;
   width: 16px;
   height: 16px;
-  border: 1px solid var(--ink-3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 4px;
-  background: var(--paper);
+  background: transparent;
   cursor: pointer;
   position: relative;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .layer-toggle input[type="radio"] {
@@ -250,8 +254,9 @@ html, body {
 
 .layer-toggle input[type="checkbox"]:checked,
 .layer-toggle input[type="radio"]:checked {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: #5FD4CC;
+  border-color: #5FD4CC;
+  box-shadow: 0 0 10px rgba(95, 212, 204, 0.4);
 }
 
 .layer-toggle input[type="checkbox"]:checked::after {
@@ -261,7 +266,7 @@ html, body {
   left: 5px;
   width: 4px;
   height: 8px;
-  border: solid white;
+  border: solid #0C1116;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
@@ -273,20 +278,20 @@ html, body {
   left: 4px;
   width: 6px;
   height: 6px;
-  background: white;
+  background: #0C1116;
   border-radius: 50%;
 }
 
 .slider-group {
-  padding-left: 28px;
+  padding-left: 32px;
 }
 
 .slider-group input[type="range"] {
   width: 100%;
   appearance: none;
-  height: 4px;
-  background: var(--hairline);
-  border-radius: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 1px;
   cursor: pointer;
   outline: none;
 }
@@ -296,13 +301,15 @@ html, body {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #5FD4CC;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 8px rgba(95, 212, 204, 0.5);
 }
 
 .slider-group input[type="range"]:hover::-webkit-slider-thumb {
   transform: scale(1.2);
+  box-shadow: 0 0 12px rgba(95, 212, 204, 0.8);
 }
 
 /* Compliance Side Panel */
