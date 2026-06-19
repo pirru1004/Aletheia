@@ -119,10 +119,21 @@ function setMapMode(mode) {
       : mode === 'operational' ? 'Operational Efficiency — Site Map'
       : 'Aletheia Compliance Map';
   }
-  // The opacity panel is Sustainability/Operational-specific (methane layers);
-  // tuck it away in Asset Security mode so the shared map stays uncluttered.
-  const opacityPanel = document.querySelector('#view-map .opacity-panel');
-  if (opacityPanel) opacityPanel.style.display = mode === 'asset' ? 'none' : '';
+  // Filter the layer management panel items based on the active pillar
+  document.querySelectorAll('.dynamic-layer').forEach(layerGroup => {
+    const pillars = layerGroup.getAttribute('data-pillars');
+    if (pillars && pillars.includes(mode)) {
+      layerGroup.style.display = '';
+    } else {
+      layerGroup.style.display = 'none';
+      // Uncheck and trigger change to remove from map when switching away
+      const checkbox = layerGroup.querySelector('input[type="checkbox"]');
+      if (checkbox && checkbox.checked) {
+        checkbox.checked = false;
+        checkbox.dispatchEvent(new Event('change'));
+      }
+    }
+  });
   // Each pillar owns one right-pane panel; hide the two that don't belong to the
   // active pillar so only the relevant one can appear on a pin click.
   if (mode !== 'sustainability') document.getElementById('compliance-panel')?.classList.add('hidden');
@@ -487,10 +498,7 @@ const baseMaps = {
 };
 
 // We will add Planet, NASA, and SAR as overlays so you can toggle them on/off
-// Initialize map with default overlays enabled
-planetLayer.addTo(map);
-firmsLayer.addTo(map);
-sarLayer.addTo(map);
+// All layers are unchecked by default for a clean initial view
 
 // Wire custom Layer Toggle checkboxes
 document.getElementById('toggle-planet')?.addEventListener('change', (e) => {
@@ -501,6 +509,9 @@ document.getElementById('toggle-vnf')?.addEventListener('change', (e) => {
 });
 document.getElementById('toggle-sar')?.addEventListener('change', (e) => {
   e.target.checked ? sarLayer.addTo(map) : map.removeLayer(sarLayer);
+});
+document.getElementById('toggle-tropomi')?.addEventListener('change', (e) => {
+  e.target.checked ? methaneLayer.addTo(map) : map.removeLayer(methaneLayer);
 });
 
 // Wire custom Basemap radio buttons
@@ -570,19 +581,12 @@ const methaneLayer = L.heatLayer(buildHeatData(mapMode), {
   }
 });
 
-map.addControl(new L.Control.Layers(null, {
-  "TROPOMI Methane (Multi-Year Avg)": methaneLayer
-}, { position: 'topright' }));
-
-
 // NOTE: the previous "TROPOMI Methane (Multi-Year Avg)" heat layer was removed.
 // It synthesised plume geometry from a mock per-facility tonnage that no longer
 // exists in facilities.json, and presenting an invented plume as TROPOMI output
 // would violate the honesty rules (ALETHEIA_HANDOFF A4.5 — never fabricate).
 // A real gridded TROPOMI overlay can be added later when the pipeline emits one.
 
-// Turn on the NASA layer by default so it's immediately visible
-firmsLayer.addTo(map);
 
 // Add zoom control to the bottom right for a more dashboard-like feel
 L.control.zoom({
@@ -593,33 +597,33 @@ L.control.zoom({
 const planetOpacitySlider = document.getElementById('planet-opacity');
 const vnfOpacitySlider = document.getElementById('vnf-opacity');
 const sarOpacitySlider = document.getElementById('sar-opacity');
+const tropomiOpacitySlider = document.getElementById('tropomi-opacity');
 
 // Update Planet Labs layer opacity
-planetOpacitySlider.addEventListener('input', (e) => {
+planetOpacitySlider?.addEventListener('input', (e) => {
   const opacity = parseInt(e.target.value, 10) / 100;
   planetLayer.setOpacity(opacity);
 });
 
 // Update NASA FIRMS layer opacity
-vnfOpacitySlider.addEventListener('input', (e) => {
+vnfOpacitySlider?.addEventListener('input', (e) => {
   const opacity = parseInt(e.target.value, 10) / 100;
   firmsLayer.setOpacity(opacity);
 });
 
 // Update Sentinel-1 SAR layer opacity
-sarOpacitySlider.addEventListener('input', (e) => {
+sarOpacitySlider?.addEventListener('input', (e) => {
   const opacity = parseInt(e.target.value, 10) / 100;
   sarLayer.setOpacity(opacity);
 });
 
 // Update Methane layer opacity
-const methaneOpacitySlider = document.getElementById('methane-opacity');
-if (methaneOpacitySlider) {
-  methaneOpacitySlider.addEventListener('input', (e) => {
-    // leaflet.heat doesn't have a native setOpacity, but we can re-render it 
-    // by changing the canvas opacity through CSS or recreating it.
-    // For simplicity in this UI trial, we will adjust the CSS opacity of the canvas pane if needed, 
-    // but typically heatmaps are semi-transparent naturally.
+if (tropomiOpacitySlider) {
+  tropomiOpacitySlider.addEventListener('input', (e) => {
+    const opacity = parseInt(e.target.value, 10) / 100;
+    if (methaneLayer && methaneLayer._canvas) {
+      methaneLayer._canvas.style.opacity = opacity;
+    }
   });
 }
 

@@ -358,42 +358,52 @@
           </div>
         </header>
         
-        <div id="dashboard-layout" style="display: flex; height: calc(100vh - 64px); margin-top: 64px; width: 100vw; overflow: hidden;">
-          <!-- Left Sidebar for Layer Management -->
-          <aside class="layer-sidebar">
-            <h2>Layer Management</h2>
+        <div id="dashboard-layout" style="display: flex; height: calc(100vh - 64px); margin-top: 64px; width: 100vw; overflow: hidden; position: relative;">
+          <!-- Floating Widget for Layer Management -->
+          <aside id="floating-layer-panel" class="floating-panel opacity-panel">
+            <h2 class="panel-title">[CTRL_SYS] LAYER MGMT</h2>
             
-            <div class="layer-group">
+            <div class="layer-group dynamic-layer" data-pillars="operational,asset,sustainability">
               <label class="layer-toggle">
-                <input type="checkbox" id="toggle-planet" checked>
-                <span>Planet Satellite Imagery</span>
+                <input type="checkbox" id="toggle-planet">
+                <span><span class="lyr-num">[LYR-01]</span> Planet Satellite Imagery</span>
               </label>
               <div class="slider-group">
                 <input type="range" id="planet-opacity" min="0" max="100" value="100">
               </div>
             </div>
 
-            <div class="layer-group">
+            <div class="layer-group dynamic-layer" data-pillars="sustainability,operational">
               <label class="layer-toggle">
-                <input type="checkbox" id="toggle-vnf" checked>
-                <span>VIIRS Gas Flaring (VNF)</span>
+                <input type="checkbox" id="toggle-vnf">
+                <span><span class="lyr-num">[LYR-02]</span> VIIRS Gas Flaring (VNF)</span>
               </label>
               <div class="slider-group">
                 <input type="range" id="vnf-opacity" min="0" max="100" value="100">
               </div>
             </div>
 
-            <div class="layer-group">
+            <div class="layer-group dynamic-layer" data-pillars="asset">
               <label class="layer-toggle">
-                <input type="checkbox" id="toggle-sar" checked>
-                <span>Sentinel-1 SAR (Oil Spills)</span>
+                <input type="checkbox" id="toggle-sar">
+                <span><span class="lyr-num">[LYR-03]</span> Sentinel-1 SAR (Oil Spills)</span>
               </label>
               <div class="slider-group">
                 <input type="range" id="sar-opacity" min="0" max="100" value="100">
               </div>
             </div>
+
+            <div class="layer-group dynamic-layer" data-pillars="sustainability,operational">
+              <label class="layer-toggle">
+                <input type="checkbox" id="toggle-tropomi">
+                <span><span class="lyr-num">[LYR-04]</span> TROPOMI Methane (Multi-Year Avg)</span>
+              </label>
+              <div class="slider-group">
+                <input type="range" id="tropomi-opacity" min="0" max="100" value="100">
+              </div>
+            </div>
             
-            <h3 style="margin-top: 2rem; margin-bottom: 1rem; font-size: 0.75rem; text-transform: uppercase; color: var(--ink-3);">Basemap</h3>
+            <h3 class="panel-subtitle">BASEMAP</h3>
             <div class="layer-group basemap-toggles">
               <label class="layer-toggle">
                 <input type="radio" name="basemap" id="toggle-base-dark" value="dark" checked>
