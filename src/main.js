@@ -297,14 +297,16 @@ const map = L.map('map', {
 const lightBasemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   subdomains: 'abcd',
-  maxZoom: 20
+  maxZoom: 20,
+  zIndex: 1
 });
 
 // Dark CARTO Dark Matter basemap — matches the dark theme.
 const darkBasemap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   subdomains: 'abcd',
-  maxZoom: 20
+  maxZoom: 20,
+  zIndex: 1
 });
 
 // Automatically apply the correct basemap based on current theme
@@ -546,7 +548,8 @@ initOperationalEfficiency();
 // Add Planet Labs Satellite layer (Public Esri World Imagery fallback for Demo)
 const planetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',
-  maxZoom: 18
+  maxZoom: 18,
+  zIndex: 10
 });
 
 // Add NASA FIRMS VIIRS WMS layer (via NASA GIBS Public WMS)
@@ -554,14 +557,16 @@ const firmsLayer = L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857
   layers: 'VIIRS_SNPP_Thermal_Anomalies_375m_All', 
   format: 'image/png',
   transparent: true,
-  attribution: '&copy; <a href="https://firms.modaps.eosdis.nasa.gov/">NASA FIRMS</a> / GIBS'
+  attribution: '&copy; <a href="https://firms.modaps.eosdis.nasa.gov/">NASA FIRMS</a> / GIBS',
+  zIndex: 12
 });
 
 // Sentinel-1 SAR WMS layer (Simulated with inverted grayscale World Imagery for Demo)
 const sarLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Simulated SAR via Esri',
   maxZoom: 16,
-  className: 'sar-sim-layer'
+  className: 'sar-sim-layer',
+  zIndex: 10
 });
 
 // Set up Layer Control (Checkbox/Radio toggle)
@@ -583,15 +588,31 @@ document.getElementById('toggle-vnf')?.addEventListener('change', (e) => {
 
 // --- Simulated Oil Spill Detection for SAR ---
 const sarPopupContent = `
-  <div style="font-family: 'Inter', sans-serif; color: #E2E8F0; min-width: 200px;">
-    <h3 style="margin: 0 0 8px 0; color: #FF3366; font-size: 14px; font-weight: 600;">Detected Anomaly</h3>
-    <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.4;">
-      Potential Oil Spill Signature.
+  <div style="font-family: 'Inter', sans-serif; color: #E2E8F0; min-width: 260px; position: relative; padding: 4px;">
+    <!-- Explicit close button requested by user -->
+    <button onclick="map.closePopup()" style="position: absolute; right: -8px; top: -8px; background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 20px; z-index: 9999;">&times;</button>
+    
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+      <span style="display: inline-block; width: 10px; height: 10px; background: #FF3366; border-radius: 50%; box-shadow: 0 0 10px #FF3366;"></span>
+      <h3 style="margin: 0; color: #FF3366; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Anomaly Alert</h3>
+    </div>
+    
+    <p style="margin: 0 0 14px 0; font-size: 13px; line-height: 1.5; color: #F8FAFC;">
+      Potential maritime oil spill detected via Sentinel-1 Synthetic Aperture Radar (SAR).
     </p>
-    <p style="margin: 0; font-size: 11px; line-height: 1.4; color: #94A3B8;">
-      <b>AI Insight:</b> Low radar backscatter detected, indicating surface capillary wave dampening consistent with oil films.
-    </p>
-    <div style="margin-top: 8px; font-size: 12px; font-weight: 600; color: #10B981;">Confidence: 87%</div>
+
+    <!-- AI Evidence panel -->
+    <div style="background: rgba(15, 23, 42, 0.8); border-left: 3px solid #3B82F6; padding: 12px; margin-bottom: 14px; border-radius: 0 4px 4px 0;">
+      <h4 style="margin: 0 0 6px 0; font-size: 11px; color: #3B82F6; text-transform: uppercase; letter-spacing: 1px;">Aletheia AI Evidence</h4>
+      <p style="margin: 0; font-size: 12px; color: #CBD5E1; line-height: 1.5;">
+        Dark formation exhibits low backscatter characteristic of sea surface smoothing by oil films. Morphological analysis rules out natural biogenic slicks. Wind speed (4.2 m/s) confirms optimal SAR detection conditions.
+      </p>
+    </div>
+
+    <div style="font-size: 12px; color: #94A3B8; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+      <span>Confidence: <strong style="color: #10B981;">High (88%)</strong></span>
+      <span>Size: <strong>~2.4 km²</strong></span>
+    </div>
   </div>
 `;
 
@@ -1313,23 +1334,9 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && askDrawer?.classList.contains('open')) closeAskDrawer();
 });
 
-// Scope the chat launcher to the facility report only: it should never appear on the
-// landing page or the pillar launchpad, only while the report modal is open.
-if (askFab) askFab.hidden = true;
-const reportModal = document.getElementById('aletheia-report-modal');
-if (reportModal) {
-  const syncAskFabToModal = () => {
-    const modalOpen = reportModal.classList.contains('open');
-    if (!modalOpen) {
-      closeAskDrawer();             // tuck the drawer away when leaving the report
-      if (askFab) askFab.hidden = true;
-    } else if (askFab) {
-      askFab.hidden = askDrawer?.classList.contains('open') ? true : false;
-    }
-  };
-  new MutationObserver(syncAskFabToModal)
-    .observe(reportModal, { attributes: true, attributeFilter: ['class'] });
-  syncAskFabToModal();
+// The chatbot is now always visible across all pillars.
+if (askFab) {
+  askFab.hidden = askDrawer?.classList.contains('open');
 }
 
 // Render the default selection so the report is populated before any pin click.
@@ -1626,3 +1633,14 @@ onAuthStateChanged(auth, async (user) => {
   renderAuthUI(user);
 });
 
+
+window.addEventListener('languagechanged', () => {
+  if (typeof selectedFacility !== 'undefined' && selectedFacility) {
+    renderPanel(selectedFacility);
+    renderReport(selectedFacility);
+  }
+  // If the list renderer exists, we can re-render it.
+  if (typeof render === 'function') {
+    render();
+  }
+});

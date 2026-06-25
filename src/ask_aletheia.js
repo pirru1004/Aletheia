@@ -1,3 +1,4 @@
+import { currentLang } from "./i18n.js";
 // ask_aletheia.js
 // "Ask Aletheia" — a grounded, READ-ONLY chat for the facility dashboard.
 //
@@ -26,10 +27,10 @@ const LLM_ENABLED = !!LLM_ENDPOINT;   // presence of a backend endpoint = opt-in
 
 const SEEDS = [
   'Is this site elevated?',
-  'How was the magnitude measured?',
+  'What are the 3 pillars?',
   'What should we do next?',
+  'How was the magnitude measured?',
   'How certain is this?',
-  'What does the projection assume?',
 ];
 
 // ---------- small formatters ----------
@@ -99,9 +100,10 @@ export function buildSystemPrompt(f, scenario) {
     `2. ALWAYS surface uncertainty: cite ± ranges where given, the "no cloud-free retrieval" gaps, and that TROPOMI is a screening instrument.`,
     `3. Never put FACILITY method (Groundbirch, Korpezhe) and BASIN method (Permian) on one scale. State which method this site uses.`,
     `4. Published quantifications are CITED from the literature (Korpezhe = per-facility point-source; Permian = sub-basin), NOT produced by this pipeline — say so. If none exists (Groundbirch), say it is at background with nothing to quantify.`,
-    `5. NEVER invent a number, target, operator figure, or any fact not present below.`,
-    `6. If asked something not answerable from the data, reply exactly: "I don't have that in the data I'm grounded on." Do not guess.`,
-    `7. Projections/levers/goals are ILLUSTRATIVE scenarios that bend only the EXCESS ABOVE BACKGROUND, never the background column. A goal line is the USER'S OWN target, never an operator disclosure.`,
+    `5. You MUST reply in the user's selected language: ${currentLang || 'en'}`,
+    `6. NEVER invent a number, target, operator figure, or any fact not present below.`,
+    `7. If asked something not answerable from the data, reply exactly: "I don't have that in the data I'm grounded on." Do not guess.`,
+    `8. Projections/levers/goals are ILLUSTRATIVE scenarios that bend only the EXCESS ABOVE BACKGROUND, never the background column. A goal line is the USER'S OWN target, never an operator disclosure.`,
     ``,
     `FACILITY RECORD:`,
     JSON.stringify(record, null, 2),
@@ -112,22 +114,26 @@ export function buildSystemPrompt(f, scenario) {
 }
 
 // ---------- DETERMINISTIC GROUNDED ENGINE ----------
+// ---------- DETERMINISTIC GROUNDED ENGINE ----------
 // Keyword intents -> answers composed only from the record + scenario.
 function answerDeterministic(qRaw, f, scenario) {
   const q = qRaw.toLowerCase().trim();
   const has = (...ks) => ks.some(k => q.includes(k));
   const ul = arr => `<ul class="a-ul">${arr.map(x => `<li>${x}</li>`).join('')}</ul>`;
-  const role = `As a compliance-screening analyst I screen with TROPOMI and recommend finer-sensor confirmation.`;
+  const role = `As an Aletheia AI analyst, I assess multi-sensor orbital data across our 3 pillars: Sustainability (Methane), Operational Efficiency (Flaring), and Asset Security (Footprint & SAR).`;
 
   if (!q) return `Ask me about <b>${esc(f.name)}</b> — try one of the suggested questions below.`;
 
-  // greeting / help
-  if (has('hello', 'hi ', 'help', 'what can you', 'who are you')) {
-    return `I'm Aletheia, a methane compliance-screening analyst. I answer only from <b>${esc(f.name)}</b>'s record in <code>pipeline/facilities.json</code> plus the scenario shown above — read-only, no live data. ${role} Try: “Is this site elevated?”, “How was the magnitude measured?”, “How certain is this?”`;
+  // greeting / help / pillars
+  if (has('hello', 'hi ', 'help', 'what can you', 'who are you', 'pillars')) {
+    return `I'm Aletheia. ${role} I answer only from <b>${esc(f.name)}</b>'s observed record plus the current scenario — read-only, no live data. Try: “Is this site elevated?”, “How was the magnitude measured?”, or ask about our 3 pillars.`;
   }
 
   // elevated / excess / status
   if (has('elevated', 'high', 'excess', 'enhanc', 'leak', 'emit', 'status', 'how bad', 'is it ok')) {
+    if (f.method === 'asset-security' || f.pillar === 'Asset Security') {
+      return `For Asset Security, we look at physical footprint. ${esc(f.metric_summary || f.note || 'The footprint is being actively monitored via Sentinel-2 and SAR anomalies.')}`;
+    }
     const verdict = f.verdict === 'performant'
       ? `Verdict: <b>at background</b> — no excess to explain.`
       : `Verdict: <b>elevated vs baseline — investigate</b>.`;
@@ -140,19 +146,28 @@ function answerDeterministic(qRaw, f, scenario) {
       const scale = f.isBasin ? `This is a BASIN-scale figure, not a single facility.` : `This is a per-facility, point-source figure.`;
       return `${esc(f.quant.magnitude)}.<br>Source: <b>${esc(f.quant.source)}</b>${f.quant.method ? ` · ${esc(f.quant.method)}` : ''}.<br><span class="a-soft">${esc(f.quant.note)} ${scale} It is CITED from the literature — our pipeline performs TROPOMI screening only and did not produce this number.</span>`;
     }
+    if (f.method === 'asset-security' || f.pillar === 'Asset Security') {
+      return `Physical footprint measurements: ${esc(f.metric_summary || 'Monitored via optical and SAR.')}`;
+    }
     return `There is <b>no published point-source quantification</b> for ${esc(f.name)}. Observed methane sits at local background (${sgn(f.excessPct)}%), so there is no enhancement to quantify — ${esc(f.quant?.note || 'consistent with a well-managed or idle site')}.`;
   }
 
   // next steps / recommend / action
   if (has('next', 'should we', 'do now', 'recommend', 'action', 'fix', 'what do')) {
-    if (f.verdict === 'performant') {
-      return `${esc(f.name)} reads at local background, so no abatement is indicated — the screening recommendation is continued monitoring. ${role} If you want to confirm, a drone or OGI pass would ground-truth, but there is no excess flagged here.`;
+    if (f.pillar === 'Asset Security' || f.method === 'asset-security') {
+      return `For Asset Security anomalies: ${ul([
+        `dispatch a <b>drone photogrammetry pass</b> to inspect the footprint change`,
+        `verify <b>SAR anomalies</b> for potential spills or unauthorized infrastructure`,
+      ])}`;
     }
-    return `${role} Concretely: ${ul([
+    if (f.verdict === 'performant') {
+      return `${esc(f.name)} reads at local background, so no abatement is indicated — the screening recommendation is continued monitoring. If you want to confirm, a drone or OGI pass would ground-truth, but there is no excess flagged here.`;
+    }
+    return `Concretely: ${ul([
       `dispatch a <b>drone photogrammetry pass</b> (24–48 h) to localise and characterise the source`,
       `follow with an <b>OGI field survey</b> (3–5 days) for component-level, regulatory-grade evidence`,
       `the abatement-lever panel is <b>illustrative only</b> — efficacy ranges are literature figures, not commitments`,
-    ])}<span class="a-soft">TROPOMI screening flags magnitude/where to look; finer sensors confirm.</span>`;
+    ])}<span class="a-soft">Satellite screening flags magnitude/where to look; finer sensors confirm.</span>`;
   }
 
   // certainty / uncertainty / confidence
@@ -162,6 +177,9 @@ function answerDeterministic(qRaw, f, scenario) {
 
   // projection / forecast / trend / future
   if (has('project', 'forecast', 'trend', 'future', 'extrapol', 'going to', 'will it')) {
+    if (f.pillar === 'Asset Security' || f.method === 'asset-security') {
+      return `The trend shows ${esc(f.metric_note || 'historical footprint changes over time')}.`;
+    }
     const parts = [
       `The dashed line is an <b>illustrative status-quo extrapolation</b> of the observed trend (~${scenario.projMonths} months), with a shaded band that widens with time. It is a <b>scenario, not a prediction</b>, and it bends only the <b>excess above background</b> — never the background column.`,
       `Observed history is ${trendWord(f)} over the window.`,
@@ -196,8 +214,12 @@ function answerDeterministic(qRaw, f, scenario) {
   }
 
   // method / tropomi / how it works
-  if (has('method', 'tropomi', 'how does', 'how do you', 'satellite', 'instrument', 'work')) {
-    return `${esc(f.name)} uses the <b>${f.isBasin ? 'BASIN' : 'FACILITY'}</b> method (${esc(f.basisLabel)}). ${role} Source for this record: ${esc(f.source)}. I screen for where to look and roughly how big — confirmation needs finer sensors.`;
+  if (has('method', 'tropomi', 'how does', 'how do you', 'satellite', 'instrument', 'work', 'sar', 'sentinel')) {
+    return `We use multiple sensors depending on the pillar: ${ul([
+      `<b>Sustainability:</b> TROPOMI (Methane) to detect excess vs local background.`,
+      `<b>Operational Efficiency:</b> VIIRS Nightfire to measure Flaring volume and thermal anomalies.`,
+      `<b>Asset Security:</b> Sentinel-2 (Optical) for footprint changes and Sentinel-1 (SAR) for dark-vessel or oil spill anomalies.`
+    ])}Source for this record: ${esc(f.source || 'Multi-sensor satellite fusion')}.`;
   }
 
   // NO2 / CO
@@ -211,8 +233,17 @@ function answerDeterministic(qRaw, f, scenario) {
     return `Flaring at ${esc(f.name)}: ${f.flaringBcm != null ? `<b>${f.flaringBcm} BCM/yr</b>` : '—'} (VIIRS Nightfire 2024). <span class="a-soft">Combined with the methane reading, this places the site on the flare-vs-methane matrix — but it remains a screening signal.</span>`;
   }
 
+  // 3 pillars overview
+  if (has('pillar', 'sustainability', 'operational', 'asset', 'security')) {
+    return `Aletheia is built on 3 core pillars: ${ul([
+      `<b>Sustainability:</b> Independent methane and co-pollutant tracking vs background.`,
+      `<b>Operational Efficiency:</b> Flaring monitoring and asset uptime tracking.`,
+      `<b>Asset Security:</b> Physical footprint tracking, surface anomalies, and SAR-based oil spill detection.`
+    ])}I dynamically adapt to whatever pillar you are currently viewing.`;
+  }
+
   // fallback — never guess
-  return `I don't have that in the data I'm grounded on. I can only answer from <b>${esc(f.name)}</b>'s record in <code>pipeline/facilities.json</code> and the scenario shown above. Try one of the suggested questions below.`;
+  return `I don't have that in the data I'm grounded on. I assess Sustainability (Methane), Operational Efficiency (Flaring), and Asset Security (Footprint & SAR). Ask me about the specific pillar you're interested in!`;
 }
 
 // ---------- optional LLM backend (opt-in; never called if not configured) ----------

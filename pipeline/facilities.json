@@ -20,7 +20,11 @@
     "quantification_magnitude": null,
     "quantification_source": null,
     "quantification_method": null,
-    "quantification_note": "No detectable enhancement above local background — consistent with a well-managed or idle site.",
+    "quantification_note": {
+      "en": "No detectable enhancement above local background — consistent with a well-managed or idle site.",
+      "es": "No hay aumento detectable sobre el fondo local — consistente con un sitio bien administrado o inactivo.",
+      "fr": "Aucune augmentation détectable au-dessus du bruit de fond local — cohérent avec un site bien géré ou inactif."
+    },
     "trajectory": [
       {
         "month": "2025-05",
@@ -74,7 +78,11 @@
     "verdict": "performant",
     "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
     "generated": "2026-06-11",
-    "note": "Public satellite data. Reference/benchmark sites, not a specific operator's assets."
+    "note": {
+      "en": "Public satellite data. Reference/benchmark sites, not a specific operator's assets.",
+      "es": "Datos satelitales públicos. Sitios de referencia/evaluación, no activos de un operador específico.",
+      "fr": "Données satellitaires publiques. Sites de référence/d'évaluation, pas d'actifs d'un opérateur spécifique."
+    }
   },
   {
     "name": "Korpezhe",
@@ -94,10 +102,18 @@
     "methane_excess_pct": 0.624,
     "flaring_bcm_yr": 0.0093,
     "quantification_published": true,
-    "quantification_magnitude": "≈120 ± 27 kt CH₄ over 11 months (compressor station) · 10–43 t/h",
+    "quantification_magnitude": {
+      "en": "≈120 ± 27 kt CH₄ over 11 months (compressor station) · 10–43 t/h",
+      "es": "≈120 ± 27 kt CH₄ en 11 meses (estación compresora) · 10–43 t/h",
+      "fr": "≈120 ± 27 kt CH₄ sur 11 mois (station de compression) · 10–43 t/h"
+    },
     "quantification_source": "Varon et al. 2019, GHGSat-D + TROPOMI",
     "quantification_method": "point-source instruments",
-    "quantification_note": "Magnitude cited from published literature (point-source instruments). Our pipeline performs TROPOMI screening only.",
+    "quantification_note": {
+      "en": "Magnitude cited from published literature (point-source instruments). Our pipeline performs TROPOMI screening only.",
+      "es": "Magnitud citada de la literatura publicada (instrumentos de fuente puntual). Nuestro sistema solo realiza el análisis con TROPOMI.",
+      "fr": "Ampleur citée d'après la littérature publiée (instruments à source ponctuelle). Notre système effectue uniquement l'analyse TROPOMI."
+    },
     "trajectory": [
       {
         "month": "2025-05",
@@ -151,7 +167,11 @@
     "verdict": "progress",
     "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
     "generated": "2026-06-11",
-    "note": "Public satellite data. Reference/benchmark sites, not a specific operator's assets."
+    "note": {
+      "en": "Public satellite data. Reference/benchmark sites, not a specific operator's assets.",
+      "es": "Datos satelitales públicos. Sitios de referencia/evaluación, no activos de un operador específico.",
+      "fr": "Données satellitaires publiques. Sites de référence/d'évaluation, pas d'actifs d'un opérateur spécifique."
+    }
   },
   {
     "name": "Permian Basin (Delaware)",
@@ -173,7 +193,11 @@
     "quantification_magnitude": "Delaware sub-basin ≈1.4 ± 0.3 Tg CH₄/yr (2019) · basin leakage ~4.1%",
     "quantification_source": "Zhang et al. 2020 / Liu et al. 2021",
     "quantification_method": "basin-scale aircraft + satellite inversion",
-    "quantification_note": "BASIN-scale figure, not a single facility.",
+    "quantification_note": {
+      "en": "BASIN-scale figure, not a single facility.",
+      "es": "Cifra a escala de CUENCA, no es de una sola instalación.",
+      "fr": "Chiffre à l'échelle du BASSIN, pas pour une seule installation."
+    },
     "trajectory": [
       {
         "month": "2025-05",
@@ -227,6 +251,10 @@
     "verdict": "progress",
     "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
     "generated": "2026-06-11",
-    "note": "Public satellite data. Reference/benchmark sites, not a specific operator's assets."
+    "note": {
+      "en": "Public satellite data. Reference/benchmark sites, not a specific operator's assets.",
+      "es": "Datos satelitales públicos. Sitios de referencia/evaluación, no activos de un operador específico.",
+      "fr": "Données satellitaires publiques. Sites de référence/d'évaluation, pas d'actifs d'un opérateur spécifique."
+    }
   }
 ]

@@ -52,16 +52,16 @@ const FOOTER_YEAR = '2026';
     <div class="af-cols">
 
       <section class="af-col" aria-labelledby="af-h-contact">
-        <h2 class="af-h" id="af-h-contact">Contact</h2>
+        <h2 class="af-h" id="af-h-contact" data-i18n="footer.contact">Contact</h2>
         <ul class="af-list">
-          <li><a class="af-link" href="${L.contact}">Contact us</a></li>
-          <li><a class="af-link" href="${L.bookDemo}">Book a demo</a></li>
-          <li><a class="af-link" href="${L.feedback}">Feedback</a></li>
+          <li><a class="af-link" href="${L.contact}" data-i18n="footer.contact_us">Contact us</a></li>
+          <li><a class="af-link" href="${L.bookDemo}" data-i18n="footer.book_demo">Book a demo</a></li>
+          <li><a class="af-link" href="${L.feedback}" data-i18n="footer.feedback">Feedback</a></li>
         </ul>
       </section>
 
       <section class="af-col" aria-labelledby="af-h-social">
-        <h2 class="af-h" id="af-h-social">Social</h2>
+        <h2 class="af-h" id="af-h-social" data-i18n="footer.social">Social</h2>
         <ul class="af-list af-list--social">
           <li>${socialItem('LinkedIn', L.social.linkedin)}</li>
           <li>${socialItem('Facebook', L.social.facebook)}</li>
@@ -70,19 +70,29 @@ const FOOTER_YEAR = '2026';
       </section>
 
       <section class="af-col" aria-labelledby="af-h-legal">
-        <h2 class="af-h" id="af-h-legal">Terms &amp; Policies</h2>
+        <h2 class="af-h" id="af-h-legal" data-i18n="footer.legal">Terms &amp; Policies</h2>
         <ul class="af-list">
-          <li><a class="af-link" href="${L.legal.terms}" target="_blank" rel="noopener">Terms of Use</a></li>
-          <li><a class="af-link" href="${L.legal.privacy}" target="_blank" rel="noopener">Privacy Policy</a></li>
-          <li><a class="af-link" href="${L.legal.disclaimer}" target="_blank" rel="noopener">Disclaimer</a></li>
+          <li><a class="af-link" href="${L.legal.terms}" target="_blank" rel="noopener" data-i18n="footer.terms">Terms of Use</a></li>
+          <li><a class="af-link" href="${L.legal.privacy}" target="_blank" rel="noopener" data-i18n="footer.privacy">Privacy Policy</a></li>
+          <li><a class="af-link" href="${L.legal.disclaimer}" target="_blank" rel="noopener" data-i18n="footer.disclaimer">Disclaimer</a></li>
         </ul>
       </section>
 
     </div>
 
     <div class="af-bottom">
-      <span class="af-mark">ALETHEIA</span>
-      <span class="af-copy">&copy; ${FOOTER_YEAR} Aletheia — ${FOOTER_ENTITY}</span>
+      <div style="display:flex; align-items:center; gap: 16px;">
+        <span class="af-mark">ALETHEIA</span>
+        <span class="af-copy">&copy; ${FOOTER_YEAR} Aletheia — ${FOOTER_ENTITY}</span>
+      </div>
+      <div class="af-lang" style="display:flex; align-items:center; gap: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px; opacity: 0.6;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <select class="lang-picker" aria-label="Select Language" style="background:transparent; color:inherit; border:none; font-family:inherit; font-size:14px; outline:none; cursor:pointer;">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
     </div>
   </div>`;
   }

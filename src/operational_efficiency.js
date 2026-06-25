@@ -727,62 +727,9 @@ export function selectOperationalFacility(f) {
 
 // ---------- Ask Aletheia drawer (independent oe- instance) ----------
 function wireAskDrawer() {
-  const askFab = document.getElementById('oe-askFab');
-  const askCloseBtn = document.getElementById('oe-askClose');
-  const askDrawer = document.getElementById('oe-askPanel');
-  const askToggleEl = document.getElementById('oe-askToggle');
-  const askBodyEl = document.getElementById('oe-askBody');
-
-  function openAskDrawer() {
-    askDrawer?.classList.add('open');
-    askDrawer?.setAttribute('aria-hidden', 'false');
-    if (askFab) askFab.hidden = true;
-    if (askBodyEl?.hidden && askToggleEl) askToggleEl.click();
-  }
-  function closeAskDrawer() {
-    askDrawer?.classList.remove('open');
-    askDrawer?.setAttribute('aria-hidden', 'true');
-    if (askFab) askFab.hidden = false;
-  }
-  askFab?.addEventListener('click', openAskDrawer);
-  askCloseBtn?.addEventListener('click', closeAskDrawer);
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && askDrawer?.classList.contains('open')) closeAskDrawer();
-  });
-
-  askApi = initAskAletheia({
-    getContext: () => ({
-      f: currentTrajFacility,
-      scenario: {
-        levers: abatement.filter(l => activeLevers.has(l.id)),
-        combinedEff: combinedEfficacy(),
-        userGoal,
-        projMonths: PROJ_MONTHS,
-      },
-    }),
-    ids: {
-      toggle: 'oe-askToggle', body: 'oe-askBody', log: 'oe-askLog', seeds: 'oe-askSeeds',
-      form: 'oe-askForm', input: 'oe-askInput', mode: 'oe-askMode', grounding: 'oe-askGrounding',
-    },
-  });
-
-  // Scope the launcher to the report modal only.
-  if (askFab) askFab.hidden = true;
-  const reportModal = document.getElementById('operational-report-modal');
-  if (reportModal) {
-    const syncAskFabToModal = () => {
-      const modalOpen = reportModal.classList.contains('open');
-      if (!modalOpen) {
-        closeAskDrawer();
-        if (askFab) askFab.hidden = true;
-      } else if (askFab) {
-        askFab.hidden = askDrawer?.classList.contains('open') ? true : false;
-      }
-    };
-    new MutationObserver(syncAskFabToModal)
-      .observe(reportModal, { attributes: true, attributeFilter: ['class'] });
-    syncAskFabToModal();
-  }
+  // The drawer and chat button are now fully shared and global.
+  // We just tell the unified chatbot to refresh its context.
+  window.askApi?.refresh();
 }
 
 // ---------- one-time wiring ----------
@@ -869,3 +816,10 @@ export function initOperationalEfficiency() {
   // Render the default selection so the report is populated before any pin click.
   renderReport(selectedFacility);
 }
+
+window.addEventListener('languagechanged', () => {
+  if (typeof selectedFacility !== 'undefined' && selectedFacility) {
+    renderPanel(selectedFacility);
+    renderReport(selectedFacility);
+  }
+});

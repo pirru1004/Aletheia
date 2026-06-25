@@ -10,6 +10,7 @@
 // reported/disclosure baseline in the data; the defensible comparison is
 // observed-vs-background (facility) / observed-vs-reference (basin).
 
+import { tObj } from './i18n.js';
 import facilitiesRaw from '../pipeline/facilities.json';
 
 // Build a stable id from the name (Korpezhe -> "korpezhe").
@@ -82,15 +83,19 @@ function adapt(raw) {
 
 // ---- derived honesty helpers (verdict-driven, no fabrication) ----
 
+import { t, tObj } from './i18n.js';
+
+// ... other imports and adaptFacility ...
+
 // Map verdict -> status presentation. 'alert' tier is reserved for the future.
 export function statusFor(verdict) {
   switch (verdict) {
     case 'performant':
-      return { key: 'good', word: 'No action', tone: 'green', sub: 'no excess detected' };
+      return { key: 'good', word: t('status.good.word'), tone: 'green', sub: t('status.good.sub') };
     case 'progress':
-      return { key: 'watch', word: 'Investigate', tone: 'amber', sub: 'elevated vs baseline' };
+      return { key: 'watch', word: t('status.progress.word'), tone: 'amber', sub: t('status.progress.sub') };
     default:
-      return { key: 'watch', word: 'Review', tone: 'amber', sub: '' };
+      return { key: 'watch', word: t('status.default.word'), tone: 'amber', sub: '' };
   }
 }
 
@@ -99,14 +104,16 @@ export function headlineFor(f) {
   const pct = f.excessPct;
   const mag = Math.abs(pct).toFixed(pct % 1 === 0 ? 0 : (Math.abs(pct) < 1 ? 1 : 2));
   if (f.isBasin) {
-    return `Observed methane shows a ${mag}% enhancement vs a clean reference region.`;
+    return t('headline.basin').replace('{mag}', mag);
   }
   // facility
   if (pct < 0.15 && pct > -0.5) {
     // effectively at background (covers Groundbirch's -0.1%)
-    return `Observed methane sits at local background — no excess detected (${pct > 0 ? '+' : ''}${pct}%).`;
+    return t('headline.fac.bg').replace('{pct}', `${pct > 0 ? '+' : ''}${pct}`);
   }
-  return `Observed methane is ${pct > 0 ? '+' : ''}${mag}% ${pct >= 0 ? 'above' : 'below'} local background.`;
+  return pct >= 0 
+    ? t('headline.fac.above').replace('{pct}', `+${mag}`)
+    : t('headline.fac.below').replace('{pct}', `-${mag}`);
 }
 
 // Which cell of the flare-vs-methane 2x2 the data lands on (A4.2).
@@ -116,13 +123,13 @@ export function matrixStateFor(f) {
   const highMethane = f.verdict === 'progress';        // excess above baseline
   if (highMethane) {
     return flareLit
-      ? { cell: 'flare-high', label: 'Poor combustion', desc: 'incomplete burn', tone: 'amber' }
-      : { cell: 'noflare-high', label: 'Venting / leak', desc: 'or unlit flare', tone: 'amber' };
+      ? { cell: 'flare-high', label: t('matrix.flare.high.label'), desc: t('matrix.flare.high.desc'), tone: 'amber' }
+      : { cell: 'noflare-high', label: t('matrix.noflare.high.label'), desc: t('matrix.noflare.high.desc'), tone: 'amber' };
   }
   // performant / low methane
   return flareLit
-    ? { cell: 'flare-low', label: 'Burning cleanly', desc: 'efficient combustion', tone: 'green' }
-    : { cell: 'noflare-low', label: 'Site idle', desc: 'genuinely inactive · no excess', tone: 'green' };
+    ? { cell: 'flare-low', label: t('matrix.flare.low.label'), desc: t('matrix.flare.low.desc'), tone: 'green' }
+    : { cell: 'noflare-low', label: t('matrix.noflare.low.label'), desc: t('matrix.noflare.low.desc'), tone: 'green' };
 }
 
 export const facilities = facilitiesRaw.map(adapt);
