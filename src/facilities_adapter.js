@@ -10,7 +10,7 @@
 // reported/disclosure baseline in the data; the defensible comparison is
 // observed-vs-background (facility) / observed-vs-reference (basin).
 
-import { tObj } from './i18n.js';
+import { t, tObj } from './i18n.js';
 import facilitiesRaw from '../pipeline/facilities.json';
 
 // Build a stable id from the name (Korpezhe -> "korpezhe").
@@ -83,7 +83,7 @@ function adapt(raw) {
 
 // ---- derived honesty helpers (verdict-driven, no fabrication) ----
 
-import { t, tObj } from './i18n.js';
+
 
 // ... other imports and adaptFacility ...
 

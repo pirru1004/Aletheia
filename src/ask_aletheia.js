@@ -1,4 +1,4 @@
-import { currentLang } from "./i18n.js";
+import { getLang } from './i18n.js';
 // ask_aletheia.js
 // "Ask Aletheia" — a grounded, READ-ONLY chat for the facility dashboard.
 //
@@ -100,7 +100,7 @@ export function buildSystemPrompt(f, scenario) {
     `2. ALWAYS surface uncertainty: cite ± ranges where given, the "no cloud-free retrieval" gaps, and that TROPOMI is a screening instrument.`,
     `3. Never put FACILITY method (Groundbirch, Korpezhe) and BASIN method (Permian) on one scale. State which method this site uses.`,
     `4. Published quantifications are CITED from the literature (Korpezhe = per-facility point-source; Permian = sub-basin), NOT produced by this pipeline — say so. If none exists (Groundbirch), say it is at background with nothing to quantify.`,
-    `5. You MUST reply in the user's selected language: ${currentLang || 'en'}`,
+    `5. You MUST reply in the user's selected language: ${getLang() || 'en'}`,
     `6. NEVER invent a number, target, operator figure, or any fact not present below.`,
     `7. If asked something not answerable from the data, reply exactly: "I don't have that in the data I'm grounded on." Do not guess.`,
     `8. Projections/levers/goals are ILLUSTRATIVE scenarios that bend only the EXCESS ABOVE BACKGROUND, never the background column. A goal line is the USER'S OWN target, never an operator disclosure.`,
