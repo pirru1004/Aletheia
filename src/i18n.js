@@ -9,7 +9,7 @@ export const dictionaries = {
     "btn.enter": "Enter platform",
     
     // Splash / Landing
-    "landing.tagline": "A decision intelligence company fusing satellite and ground data for predictable &amp; <span class=\"tagline-accent\">sustainable operations</span>.",
+    "landing.tagline": "We provide decision intelligence by fusing satellite and ground data.",
     
     // Slide 2: OE
     "slide.oe.tag": "live",
@@ -20,6 +20,11 @@ export const dictionaries = {
     "slide.as.tag": "monitoring",
     "slide.as.title": "Asset Security",
     "slide.as.desc": "Physical footprint expansion, border integrity, and critical infrastructure tracking.",
+
+    // Slide 4: Sustainability
+    "slide.sus.tag": "live",
+    "slide.sus.title": "Sustainability &amp; Compliance",
+    "slide.sus.desc": "Independent satellite verification of methane and flaring — measured against what operators disclose.",
 
     // Pillars Selector
     "pillars.title": "Select a pillar to explore",
