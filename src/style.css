@@ -632,6 +632,46 @@ html, body {
   transition: color .18s ease;
 }
 .landing-nav-link:hover { color: #F4F1EC; }
+/* About dropdown — a nav-link-styled trigger with a small dark menu on click */
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 168px;
+  display: none;
+  flex-direction: column;
+  padding: 6px;
+  background: rgba(10,15,18,.96);
+  border: 1px solid rgba(244,241,236,.14);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.45);
+  z-index: 60;
+}
+.nav-dropdown.open .nav-dropdown-menu { display: flex; }
+.nav-dropdown-item {
+  font-family: var(--mono, 'IBM Plex Mono', monospace);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+  color: rgba(244,241,236,.82);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.nav-dropdown-item:hover {
+  background: rgba(244,241,236,.08);
+  color: #F4F1EC;
+}
 /* Login / CTA buttons read on dark */
 .landing-login.primary-btn.outline {
   border-color: rgba(255,255,255,.5);
@@ -1057,6 +1097,14 @@ html, body {
   font-size: 0.92rem;
   line-height: 1.6;
   margin: 0 0 1.4rem;
+}
+/* mono role line under a team member's name */
+.pillar-card p.pillar-role {
+  font-family: var(--mono, 'IBM Plex Mono', monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-3);
+  margin: 0 0 0.9rem;
 }
 
 /* state row pinned to the bottom of each card */

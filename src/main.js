@@ -90,6 +90,38 @@ document.querySelectorAll('.btn-goto-home').forEach(btn => {
   btn.addEventListener('click', () => navigateTo('view-home'));
 });
 
+// About dropdown in the landing nav: toggle open, close on outside click,
+// and route each item into its view via the shared SPA router.
+(function aboutDropdown() {
+  const dropdown = document.querySelector('.nav-dropdown');
+  const toggle = dropdown?.querySelector('.nav-dropdown-toggle');
+  if (!dropdown || !toggle) return;
+
+  const close = () => {
+    dropdown.classList.remove('open');
+    toggle.setAttribute('aria-expanded', 'false');
+  };
+
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = dropdown.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target)) close();
+  });
+
+  document.getElementById('nav-about-overview')?.addEventListener('click', () => {
+    close();
+    navigateTo('view-overview');
+  });
+  document.getElementById('nav-about-team')?.addEventListener('click', () => {
+    close();
+    navigateTo('view-team');
+  });
+})();
+
 document.querySelectorAll('.btn-back-dashboard').forEach(btn => {
   btn.addEventListener('click', () => navigateTo('view-pillars'));
 });

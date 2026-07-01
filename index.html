@@ -54,6 +54,13 @@
           <span class="landing-nav-mark">ALETHEIA</span>
           <div style="display:flex; gap:16px; align-items:center;">
             <a class="landing-nav-link" href="/subscription.html" data-i18n="nav.product">Product &amp; Services</a>
+            <div class="nav-dropdown">
+              <button class="landing-nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">About ▾</button>
+              <div class="nav-dropdown-menu" role="menu">
+                <button class="nav-dropdown-item" id="nav-about-overview" role="menuitem">Overview</button>
+                <button class="nav-dropdown-item" id="nav-about-team" role="menuitem">Team</button>
+              </div>
+            </div>
             <div class="auth-slot">
               <button class="primary-btn outline js-login-btn" data-i18n="nav.login">Login</button>
             </div>
@@ -335,6 +342,114 @@
           <div class="provenance">
             <span class="prov-label">Data sources</span>
             <span class="prov-items"><span>TROPOMI</span><span>VIIRS</span><span>Sentinel</span><span>ERA5</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           ABOUT: OVERVIEW
+           ========================================== -->
+      <section id="view-overview" class="view hidden">
+        <header class="dashboard-header">
+          <div class="header-left">
+            <button class="back-btn btn-goto-home">← Home</button>
+            <h1>About Aletheia</h1>
+          </div>
+          <div class="header-controls" style="display:flex; gap:16px; align-items:center;">
+            <button class="theme-toggle" aria-label="Toggle theme" style="background:transparent; border:none; cursor:pointer; font-size:16px;">☀️</button>
+            <div class="auth-slot">
+              <button class="primary-btn outline js-login-btn">Login</button>
+            </div>
+          </div>
+        </header>
+
+        <div class="pillars-container">
+          <div class="pillars-head">
+            <span class="pillars-eyebrow">About Aletheia</span>
+            <h2 class="section-title">We don't own a single satellite. We just learned to read the ones already in orbit.</h2>
+            <p class="pillars-sub">Aletheia is a decision-intelligence company. We fuse satellite data with your ground data and turn it into the one thing you can act on — where to look, what to verify, what to prove.</p>
+          </div>
+
+          <div class="works">
+            <h3 class="works-title">Why we exist</h3>
+            <p class="pillars-sub">Most companies don't have a data problem. They have a decision problem. Petabytes of Earth-observation data come down every day — and almost no operator has ever opened a single file of it. The cost of looking has gone to zero; the only thing still scarce is knowing where to look.</p>
+            <p class="pillars-sub">Aletheia began at the International Space University in Strasbourg, where three operators — from oil &amp; gas, automotive, and medical devices — spent twelve months learning to turn that free, orbiting data into decisions. A satellite tells you something changed; your ground data tells you why it matters. Neither is enough alone. Fused, it's a decision. That's the whole company.</p>
+          </div>
+
+          <div class="works">
+            <h3 class="works-title">How we work</h3>
+            <ol class="works-steps">
+              <li>
+                <span class="works-n">1</span>
+                <div class="works-body"><b>Screen</b><span>Global satellite screening on free data. Screening-grade: we point, we don't adjudicate.</span></div>
+              </li>
+              <li>
+                <span class="works-n">2</span>
+                <div class="works-body"><b>Confirm</b><span>Finer instruments, tasked data, drone survey and your own ground sensors verify anything that must stand up to a regulator. We always label which is which.</span></div>
+              </li>
+              <li>
+                <span class="works-n">3</span>
+                <div class="works-body"><b>Act</b><span>We draft the report; your experts review and sign it. We are never the filer of record — and we stay strictly to observation and decision-support. We flag it for your people; we never touch your controls.</span></div>
+              </li>
+            </ol>
+          </div>
+
+          <div class="works">
+            <p class="pillars-sub">That honesty isn't a disclaimer. It's the product. A number you report about yourself, a regulator distrusts. A number measured independently from orbit, they can't argue with.</p>
+          </div>
+
+          <!-- Data-provenance strip -->
+          <div class="provenance">
+            <span class="prov-label">Data sources</span>
+            <span class="prov-items"><span>TROPOMI</span><span>VIIRS</span><span>Sentinel</span><span>ERA5</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           ABOUT: TEAM
+           ========================================== -->
+      <section id="view-team" class="view hidden">
+        <header class="dashboard-header">
+          <div class="header-left">
+            <button class="back-btn btn-goto-home">← Home</button>
+            <h1>Team</h1>
+          </div>
+          <div class="header-controls" style="display:flex; gap:16px; align-items:center;">
+            <button class="theme-toggle" aria-label="Toggle theme" style="background:transparent; border:none; cursor:pointer; font-size:16px;">☀️</button>
+            <div class="auth-slot">
+              <button class="primary-btn outline js-login-btn">Login</button>
+            </div>
+          </div>
+        </header>
+
+        <div class="pillars-container">
+          <div class="pillars-head">
+            <span class="pillars-eyebrow">Team</span>
+            <h2 class="section-title">Three co-founders, three continents, one lens — forged at ISU.</h2>
+          </div>
+
+          <div class="pillars-grid">
+            <div class="pillar-card">
+              <div class="pillar-num">01</div>
+              <h3>David Guevara Razo</h3>
+              <p class="pillar-role">Co-founder · Space Systems Engineering, EO Software &amp; Image Authenticity</p>
+              <p>Space systems engineer (ISU) specializing in MBSE, CubeSat development and operations, ground-station software, and satellite applications across EO, remote sensing, GIS, and navigation. Built the AI image-authenticity (anti-spoofing) detector at the core of Aletheia's true-image checker. Comes from enterprise AI software — a multi-cloud Salesforce solution engineer who led the first LATAM Salesforce Einstein (generative AI) implementation, holds five Salesforce certifications, and is an Agentblazer Champion — bringing commercial, customer-facing delivery to the team.</p>
+            </div>
+
+            <div class="pillar-card">
+              <div class="pillar-num">02</div>
+              <h3>Ludivine Euranie</h3>
+              <p class="pillar-role">Co-founder · Geoscience, Programme Delivery &amp; Ground Verification</p>
+              <p>Geoscientist and programme manager with 10+ years leading complex technical projects across Europe — subsurface exploration, applied geophysics, and digital transformation across 100+ projects. At ISU, focused on space systems engineering, Earth Observation, and programme management; her work includes AI-based EO vegetation mapping and the drone photogrammetry pipeline behind Aletheia's ground-verification layer.</p>
+            </div>
+
+            <div class="pillar-card">
+              <div class="pillar-num">03</div>
+              <h3>Vinay Lakshman</h3>
+              <p class="pillar-role">Co-founder · Operations, Finance &amp; Strategy</p>
+              <p>Two decades of P&amp;L leadership as CEO/CFO across three continents. Grew Rane Brake Lining (NSE-listed) to a Deming Grand Prize, ran post-acquisition integration at Thoratec (now Abbott), and led SOX and risk advisory at KPMG. Completing a Master of Space Studies at ISU, with two papers accepted at IAC 2026. Brings the economics and operating discipline to get Earth-observation capability funded, flown, and trusted.</p>
+            </div>
           </div>
         </div>
       </section>
