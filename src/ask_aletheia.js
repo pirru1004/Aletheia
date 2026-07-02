@@ -113,11 +113,56 @@ export function buildSystemPrompt(f, scenario) {
   ].join('\n');
 }
 
-// ---------- DETERMINISTIC GROUNDED ENGINE ----------
+// ---------- ASSET SECURITY responder ----------
+// Asset sites carry a FOOTPRINT record (method_label, metric_summary, metric_note),
+// not a methane one. This responder answers ONLY from those fields so no methane /
+// TROPOMI framing or invented numbers can leak into an Asset Security answer.
+// Anything outside the record -> the honest "I don't have that" fallback.
+function answerAsset(qRaw, f) {
+  const q = qRaw.toLowerCase().trim();
+  const has = (...ks) => ks.some(k => q.includes(k));
+  const name = esc(f.name);
+  const method = esc(f.method_label || 'optical (Sentinel-2) + SAR (Sentinel-1) footprint monitoring');
+  const summary = esc(f.metric_summary || f.note || 'The physical footprint is actively monitored from optical and SAR imagery.');
+  const noteSoft = f.metric_note ? ` <span class="a-soft">${esc(f.metric_note)}</span>` : '';
+
+  if (!q) return `Ask me about <b>${name}</b>'s monitored footprint — its status, the method, or next steps.`;
+
+  if (has('hello', 'hi ', 'help', 'what can you', 'who are you'))
+    return `I'm Aletheia. For Asset Security I track the physical footprint of <b>${name}</b> from optical and SAR imagery — read-only and grounded only in this site's record. Ask about its footprint status, the method, or what to do next.`;
+
+  if (has('pillar', 'sustainab', 'operational efficiency', 'other pillar'))
+    return `Aletheia has 3 pillars: ${`<ul class="a-ul">` +
+      `<li><b>Sustainability</b> — methane vs local background</li>` +
+      `<li><b>Operational Efficiency</b> — flaring & asset uptime</li>` +
+      `<li><b>Asset Security</b> — physical footprint from optical + SAR</li></ul>`}Right now I'm grounded on <b>${name}</b> under Asset Security.`;
+
+  if (has('method', 'how do', 'how does', 'how was', 'measur', 'magnitude', 'quantif', 'satellite', 'sentinel', 'sar', 'optical', 'instrument', 'work'))
+    return `Method: ${method}.${noteSoft || ` <span class="a-soft">Footprint is derived from optical (Sentinel-2) and SAR (Sentinel-1) imagery — screening-grade, not a legal survey.</span>`}`;
+
+  if (has('next', 'should', 'do now', 'recommend', 'action', 'fix', 'investigat'))
+    return `For a footprint change: ${`<ul class="a-ul">` +
+      `<li>dispatch a <b>drone photogrammetry pass</b> to inspect the change on the ground</li>` +
+      `<li>cross-check <b>SAR anomalies</b> for new structures or surface disturbance</li></ul>`}<span class="a-soft">Satellite screening flags where to look; a ground survey confirms.</span>`;
+
+  if (has('certain', 'uncertain', 'confiden', 'how sure', 'reliab', 'accura', 'error', 'margin'))
+    return `${f.metric_note ? esc(f.metric_note) : 'Footprint readings come from optical + SAR imagery; year-to-year wobble can reflect vegetation phenology and residual haze.'} This is screening-grade observation, not a legal survey.`;
+
+  if (has('footprint', 'expand', 'grow', 'area', 'change', 'status', 'elevated', 'anomal', 'secur', 'stable', 'risk', 'how bad', 'is it ok', 'summary', 'km'))
+    return `${summary}${noteSoft}`;
+
+  return `I don't have that in the data I'm grounded on. For <b>${name}</b> I can speak to its monitored physical footprint (method: ${method}). Ask about the footprint status, the method, or recommended next steps.`;
+}
+
 // ---------- DETERMINISTIC GROUNDED ENGINE ----------
 // Keyword intents -> answers composed only from the record + scenario.
 function answerDeterministic(qRaw, f, scenario) {
   const q = qRaw.toLowerCase().trim();
+  // Asset Security sites use a footprint record, not a methane one — route them to
+  // the asset-only responder so no methane framing/numbers leak in.
+  if (f && (f.pillar === 'Asset Security' || f.method === 'asset-security')) {
+    return answerAsset(qRaw, f);
+  }
   const has = (...ks) => ks.some(k => q.includes(k));
   const ul = arr => `<ul class="a-ul">${arr.map(x => `<li>${x}</li>`).join('')}</ul>`;
   const role = `As an Aletheia AI analyst, I assess multi-sensor orbital data across our 3 pillars: Sustainability (Methane), Operational Efficiency (Flaring), and Asset Security (Footprint & SAR).`;

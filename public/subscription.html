@@ -85,18 +85,15 @@
   @media(max-width:900px){.wrap{padding:26px 20px 48px}.tiers,.pillars{grid-template-columns:1fr}.intro h1{font-size:36px}.cta{flex-direction:column}.ctaright{align-items:flex-start;text-align:left}}
 </style>
 <link rel="stylesheet" href="/demo_scheduler.css" />
+<link rel="stylesheet" href="/af-header.css" />
 <link rel="stylesheet" href="/af-footer.css" />
 </head>
 <body>
-<div class="wrap">
 
-  <div class="head">
-    <div class="logo">Aletheia</div>
-    <div class="hbtns">
-      <a class="btn ghost" href="/">← Back to dashboard</a>
-      <a class="btn solid" href="#demo">Request a demo</a>
-    </div>
-  </div>
+<!-- Shared public-site top nav (same component as the landing / About pages). -->
+<div data-af-header></div>
+
+<div class="wrap">
 
   <div class="intro">
     <span class="eyebrow">Plans</span>
@@ -187,6 +184,7 @@
 <!-- Public site footer — full-bleed, mounts via /af-footer.js -->
 <div data-af-footer></div>
 
+<script src="/af-header.js"></script>
 <script src="/af-footer.js"></script>
 <script src="/demo_scheduler.js"></script>
 </body>

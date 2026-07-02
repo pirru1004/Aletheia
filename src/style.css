@@ -539,6 +539,26 @@ html, body {
   display: block; /* Overrides .view flex layout so children stack normally */
 }
 
+/* About pages (Overview + Team): one full-height scrollbar on the VIEW itself,
+   exactly like #view-home.landing. The body is height:100vh; overflow:hidden, so
+   the page never scrolls — the active view must be the scroller. Previously the
+   inner .pillars-container was the scroller (nested scrollbar mid-page); making
+   the view the scroller and letting the container flow fixes that without
+   clipping content (height:auto here would grow past the clipped body and hide
+   the footer/last section). */
+#view-overview,
+#view-team {
+  display: block;              /* stack header + content as normal blocks */
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#view-overview .pillars-container,
+#view-team .pillars-container {
+  flex: none;                  /* not a flex child anymore */
+  overflow: visible;           /* let content flow into the view's scroll */
+}
+
 /* ==========================================
    BUTTONS & FORMS
    ========================================== */
