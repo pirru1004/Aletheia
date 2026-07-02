@@ -20,7 +20,7 @@
 import './operational_efficiency.css';
 import Chart from 'chart.js/auto';
 import { facilities, statusFor, headlineFor, matrixStateFor } from './facilities_adapter.js';
-import { initAskAletheia } from './ask_aletheia.js';
+import { setGrounding, clearGrounding } from './ask_grounding.js';
 
 // Status -> hex, mirroring the desaturated verdict colours (shared token set).
 const STATUS_COLOR = { green: '#3F7E5E', amber: '#B5863C' };
@@ -59,7 +59,21 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 let currentTrajFacility = null;
 const activeLevers = new Set();
 let userGoal = null;
-let askApi = null;
+
+// Operational Efficiency's LIVE context provider for the shared Ask Aletheia
+// drawer (facility + on-page scenario). Registered via setGrounding() when a
+// facility dashboard opens; the drawer reads only from ask_grounding.js.
+function oeAskContext() {
+  return {
+    f: currentTrajFacility,
+    scenario: {
+      levers: abatement.filter(l => activeLevers.has(l.id)),
+      combinedEff: combinedEfficacy(),
+      userGoal,
+      projMonths: PROJ_MONTHS,
+    },
+  };
+}
 
 const ABATE_ICON = {
   valve:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v6M7 6l5 3 5-3"/><circle cx="12" cy="14" r="5"/><path d="M12 19v2M9 21h6"/></svg>',
@@ -686,8 +700,8 @@ function renderReport(f) {
   // --- published-quantification callout (cited) ---
   renderQuantCallout(f);
 
-  // --- keep "Ask Aletheia" grounded on the current facility ---
-  askApi?.refresh();
+  // Ask Aletheia grounding is handled centrally: selectOperationalFacility()
+  // registers this pillar's provider via setGrounding() (ask_grounding.js).
 
   // --- provenance footer ---
   document.getElementById('oe-rep-footer').innerHTML =
@@ -723,13 +737,8 @@ export function selectOperationalFacility(f) {
   selectedFacility = f;
   renderPanel(f);
   renderReport(f);
-}
-
-// ---------- Ask Aletheia drawer (independent oe- instance) ----------
-function wireAskDrawer() {
-  // The drawer and chat button are now fully shared and global.
-  // We just tell the unified chatbot to refresh its context.
-  window.askApi?.refresh();
+  // Facility dashboard open -> ground the shared chat on THIS facility.
+  setGrounding(oeAskContext);
 }
 
 // ---------- one-time wiring ----------
@@ -738,9 +747,11 @@ export function initOperationalEfficiency() {
   if (initialised) return;
   initialised = true;
 
-  // Side panel close
-  document.getElementById('oe-cp-close')?.addEventListener('click', () =>
-    document.getElementById('operational-panel')?.classList.add('hidden'));
+  // Side panel close -> back to bare map, clear the grounded chat.
+  document.getElementById('oe-cp-close')?.addEventListener('click', () => {
+    document.getElementById('operational-panel')?.classList.add('hidden');
+    clearGrounding();
+  });
 
   // Open / close the full report modal
   document.getElementById('oe-btn-open-report')?.addEventListener('click', () => {
@@ -810,8 +821,6 @@ export function initOperationalEfficiency() {
       });
       if (currentTrajFacility) renderTrajectory(currentTrajFacility);
     }));
-
-  wireAskDrawer();
 
   // Render the default selection so the report is populated before any pin click.
   renderReport(selectedFacility);

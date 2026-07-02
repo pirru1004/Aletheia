@@ -46,7 +46,22 @@ const FOOTER_YEAR = '2026';
     return `<span class="af-social af-social--disabled" role="link" aria-disabled="true" title="Coming soon">${label}</span>`;
   }
 
-  function template() {
+  // The language switcher is rendered ONLY in the landing footer (mount carries
+  // data-af-lang). Only the landing is translated, so a switcher on the other
+  // public pages would be a dead / misleading control (see B3).
+  function langBlock() {
+    return `
+      <div class="af-lang" style="display:flex; align-items:center; gap: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px; opacity: 0.6;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <select class="lang-picker" aria-label="Select Language" style="background:transparent; color:inherit; border:none; font-family:inherit; font-size:14px; outline:none; cursor:pointer;">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>`;
+  }
+
+  function template(withLang) {
     return `
   <div class="af-inner">
     <div class="af-cols">
@@ -85,14 +100,7 @@ const FOOTER_YEAR = '2026';
         <span class="af-mark">ALETHEIA</span>
         <span class="af-copy">&copy; ${FOOTER_YEAR} Aletheia — ${FOOTER_ENTITY}</span>
       </div>
-      <div class="af-lang" style="display:flex; align-items:center; gap: 8px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px; height:16px; opacity: 0.6;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <select class="lang-picker" aria-label="Select Language" style="background:transparent; color:inherit; border:none; font-family:inherit; font-size:14px; outline:none; cursor:pointer;">
-          <option value="en">English</option>
-          <option value="es">Español</option>
-          <option value="fr">Français</option>
-        </select>
-      </div>
+      ${withLang ? langBlock() : ''}
     </div>
   </div>`;
   }
@@ -105,7 +113,7 @@ const FOOTER_YEAR = '2026';
       footer.className = 'af-footer';
       footer.setAttribute('role', 'contentinfo');
       footer.setAttribute('aria-label', 'Site footer');
-      footer.innerHTML = template();
+      footer.innerHTML = template(mount.hasAttribute('data-af-lang'));
       mount.appendChild(footer);
       mount.dataset.afFooterDone = '1';
     });

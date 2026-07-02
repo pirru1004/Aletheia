@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -22,6 +22,7 @@
     <!-- Editorial serif for the landing hero headline only -->
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/demo_scheduler.css" />
+    <link rel="stylesheet" href="/af-header.css" />
     <link rel="stylesheet" href="/af-footer.css" />
     <script type="module" src="/src/i18n.js"></script>
 </head>
@@ -49,23 +50,9 @@
            dashboard) stays the light/neutral theme. -->
       <section id="view-home" class="view active landing">
 
-        <!-- Persistent top nav: wordmark + Login (enters the platform) -->
-        <nav class="landing-nav">
-          <span class="landing-nav-mark">ALETHEIA</span>
-          <div style="display:flex; gap:16px; align-items:center;">
-            <a class="landing-nav-link" href="/subscription.html" data-i18n="nav.product">Product &amp; Services</a>
-            <div class="nav-dropdown">
-              <button class="landing-nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false">About ▾</button>
-              <div class="nav-dropdown-menu" role="menu">
-                <button class="nav-dropdown-item" id="nav-about-overview" role="menuitem">Overview</button>
-                <button class="nav-dropdown-item" id="nav-about-team" role="menuitem">Team</button>
-              </div>
-            </div>
-            <div class="auth-slot">
-              <button class="primary-btn outline js-login-btn" data-i18n="nav.login">Login</button>
-            </div>
-          </div>
-        </nav>
+        <!-- Shared public-site top nav (hero variant, over the dark carousel).
+             Rendered by /af-header.js — same component as the other public pages. -->
+        <div data-af-header data-af-hero></div>
 
         <div class="carousel" id="carousel">
           <div class="carousel-track" id="carousel-track">
@@ -261,9 +248,10 @@
       </div>
     </div>
 
-    <!-- Public site footer (landing only; mounts via /af-footer.js).
-         Lives inside #view-home so it never appears on authenticated views. -->
-    <div data-af-footer></div>
+    <!-- Public site footer. data-af-lang => this (landing) footer carries the
+         language switcher; the other public footers (About, Product) omit it,
+         since only the landing is translated (B3). -->
+    <div data-af-footer data-af-lang></div>
   </section>
 
       <!-- ==========================================
@@ -276,7 +264,6 @@
             <h1 data-i18n="dashboard.title">Aletheia Dashboard</h1>
           </div>
           <div class="header-controls" style="display:flex; gap:16px; align-items:center;">
-            <button class="theme-toggle" aria-label="Toggle theme" style="background:transparent; border:none; cursor:pointer; line-height:0; padding:0; outline:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg></button>
             <span class="status-indicator online"></span>
             <span data-i18n="dashboard.auth">Authenticated</span>
             <div class="auth-slot">
@@ -310,7 +297,7 @@
               <span class="pillar-state state-available" data-i18n="dashboard.open_workspace">Open workspace →</span>
             </button>
 
-            <button class="pillar-card is-available" id="btn-goto-map">
+            <button class="pillar-card is-available" id="btn-goto-esg">
               <div class="pillar-num">03</div>
               <h3 data-i18n="pillars.sustainability">Sustainability</h3>
               <p data-i18n="pillars.sustainability_desc">Methane tracking and independent verification</p>
@@ -350,18 +337,8 @@
            ABOUT: OVERVIEW
            ========================================== -->
       <section id="view-overview" class="view hidden">
-        <header class="dashboard-header">
-          <div class="header-left">
-            <button class="back-btn btn-goto-home">← Home</button>
-            <h1>About Aletheia</h1>
-          </div>
-          <div class="header-controls" style="display:flex; gap:16px; align-items:center;">
-            <button class="theme-toggle" aria-label="Toggle theme" style="background:transparent; border:none; cursor:pointer; line-height:0; padding:0; outline:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg></button>
-            <div class="auth-slot">
-              <button class="primary-btn outline js-login-btn">Login</button>
-            </div>
-          </div>
-        </header>
+        <!-- Shared public-site top nav (light variant) — same component as landing. -->
+        <div data-af-header></div>
 
         <div class="pillars-container">
           <div class="pillars-head">
@@ -404,24 +381,16 @@
             <span class="prov-items"><span>TROPOMI</span><span>VIIRS</span><span>Sentinel</span><span>ERA5</span></span>
           </div>
         </div>
+        <!-- Shared public footer (no language switcher — landing only, B3) -->
+        <div data-af-footer></div>
       </section>
 
       <!-- ==========================================
            ABOUT: TEAM
            ========================================== -->
       <section id="view-team" class="view hidden">
-        <header class="dashboard-header">
-          <div class="header-left">
-            <button class="back-btn btn-goto-home">← Home</button>
-            <h1>Team</h1>
-          </div>
-          <div class="header-controls" style="display:flex; gap:16px; align-items:center;">
-            <button class="theme-toggle" aria-label="Toggle theme" style="background:transparent; border:none; cursor:pointer; line-height:0; padding:0; outline:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg></button>
-            <div class="auth-slot">
-              <button class="primary-btn outline js-login-btn">Login</button>
-            </div>
-          </div>
-        </header>
+        <!-- Shared public-site top nav (light variant) — same component as landing. -->
+        <div data-af-header></div>
 
         <div class="pillars-container">
           <div class="pillars-head">
@@ -452,6 +421,8 @@
             </div>
           </div>
         </div>
+        <!-- Shared public footer (no language switcher — landing only, B3) -->
+        <div data-af-footer></div>
       </section>
 
       <!-- ==========================================
@@ -465,7 +436,6 @@
             <h1>Aletheia Compliance Map</h1>
           </div>
           <div class="header-controls" style="display:flex; gap:16px; align-items:center;">
-            <button class="theme-toggle" aria-label="Toggle theme" style="background:transparent; border:none; cursor:pointer; line-height:0; padding:0; outline:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg></button>
             <span class="status-indicator online"></span>
             <span>Live Monitoring</span>
             <div class="auth-slot">
@@ -767,8 +737,10 @@
     </div>
 
     <!-- Scripts -->
-    <!-- Leaflet Heatmap Plugin -->
-    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <!-- Leaflet heat plugin is bundled via `import 'leaflet.heat'` in main.js.
+         The old CDN <script> here ran in global scope and referenced a global `L`
+         that doesn't exist in the module build ("L is not defined"), so it was
+         removed. -->
     <script type="module" src="/src/main.js"></script>
   
   <!-- Full Screen Aletheia Report Modal -->
@@ -1214,13 +1186,16 @@
     </div>
   </aside>
 
-  <!-- Floating launcher — opens the Ask Aletheia drawer; hidden while the drawer is open -->
-  <button class="ask-fab" id="askFab" type="button" aria-label="Open Ask Aletheia">
+  <!-- Floating launcher — opens the Ask Aletheia drawer. Starts hidden; only the
+       in-app facility dashboard (view-map) reveals it via navigateTo(). Never on
+       the landing / About / public views. Also hidden while the drawer is open. -->
+  <button class="ask-fab" id="askFab" type="button" aria-label="Open Ask Aletheia" hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12Z"/><path d="M8.5 11h7M8.5 14h4"/></svg>
   </button>
 
 
 
+  <script src="/af-header.js"></script>
   <script src="/af-footer.js"></script>
   <script src="/demo_scheduler.js"></script>
 </body>

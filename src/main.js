@@ -12,51 +12,19 @@ import { openAssetDashboard } from './asset_security.js';
 import { assetSiteByNearest, assetSites } from './asset_security_adapter.js';
 import { initOperationalEfficiency, selectOperationalFacility } from './operational_efficiency.js';
 import { initSustainabilityCompliance, openSustainabilityCompliance } from './sustainability_compliance.js';
+import { setGrounding, clearGrounding, getGroundingContext, hasGrounding, onGroundingChange, registerDrawer } from './ask_grounding.js';
 
 // Which pillar opened the shared compliance map. Determines what clicking a pin
 // does: 'sustainability' -> methane report; 'asset' -> Asset Security dashboard;
 // 'operational' -> Operational Efficiency report (a copy of the sustainability one).
 let mapMode = 'sustainability';
 
-// --- THEME TOGGLE LOGIC ---
-// Monochrome Tabler-style line icons (inherit currentColor), matching the inline
-// SVG idiom used elsewhere in the app. No emoji. In light theme we show the moon
-// ("switch to dark"); in dark theme the sun ("switch to light").
-const THEME_ICON = {
-  sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M3 12h2M19 12h2M5.2 18.8l1.4-1.4M17.4 6.6l1.4-1.4"/></svg>',
-  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:block"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg>'
-};
-const themeGlyph = theme => theme === 'dark' ? THEME_ICON.sun : THEME_ICON.moon;
-
-function initTheme() {
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const savedTheme = localStorage.getItem('aletheia-theme');
-  const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-  document.documentElement.setAttribute('data-theme', currentTheme);
-
-  document.querySelectorAll('.theme-toggle').forEach(btn => {
-    btn.innerHTML = themeGlyph(currentTheme);
-    btn.addEventListener('click', () => {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      const newTheme = isDark ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('aletheia-theme', newTheme);
-      document.querySelectorAll('.theme-toggle').forEach(b => b.innerHTML = themeGlyph(newTheme));
-      
-      // Attempt to toggle the leaflet map basemap if it exists
-      if (typeof map !== 'undefined' && typeof lightBasemap !== 'undefined' && typeof darkBasemap !== 'undefined') {
-        if (newTheme === 'dark') {
-          map.removeLayer(lightBasemap);
-          darkBasemap.addTo(map);
-        } else {
-          map.removeLayer(darkBasemap);
-          lightBasemap.addTo(map);
-        }
-      }
-    });
-  });
-}
-initTheme();
+// --- THEME: locked to the light ("paper") theme ---
+// The dark/light toggle was removed: it only ever flipped [data-theme] but there
+// is no dark stylesheet, so it did nothing visible. The app now ships a single
+// light theme. We force it on load and no longer read any saved preference, so
+// there are no toggle controls or dead handlers left anywhere.
+document.documentElement.setAttribute('data-theme', 'light');
 
 // --- SPA ROUTING LOGIC ---
 function navigateTo(viewId) {
@@ -80,6 +48,33 @@ function navigateTo(viewId) {
       }, 300);
     }
   }
+
+  // "Ask Aletheia" is grounded on ONE selected facility, so it only belongs to an
+  // OPEN facility dashboard/report (opened by clicking a pin in ANY pillar), never
+  // to the bare site map, the launchpad or any public view. Any view change clears
+  // the grounding, which hides the launcher and closes the drawer (see the
+  // onGroundingChange listener). Opening a facility dashboard re-grounds it.
+  clearGrounding();
+}
+
+// --- Ask Aletheia launcher visibility ---------------------------------------
+// showAskChat(): a facility dashboard just opened (a pin was clicked and the
+// report is grounded on it) -> reveal the launcher (unless the drawer is already
+// open). hideAskChat(): leaving the facility -> close the drawer and hide it.
+// Declarations are hoisted, so selectFacility()/navigateTo() above can call them.
+function showAskChat() {
+  const fab = document.getElementById('askFab');
+  const panel = document.getElementById('askPanel');
+  if (fab) fab.hidden = !!panel?.classList.contains('open');
+}
+function hideAskChat() {
+  const fab = document.getElementById('askFab');
+  const panel = document.getElementById('askPanel');
+  if (panel?.classList.contains('open')) {
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+  }
+  if (fab) fab.hidden = true;
 }
 
 // Bind Navigation Buttons
@@ -90,43 +85,26 @@ document.querySelectorAll('.btn-goto-home').forEach(btn => {
   btn.addEventListener('click', () => navigateTo('view-home'));
 });
 
-// About dropdown in the landing nav: toggle open, close on outside click,
-// and route each item into its view via the shared SPA router.
-(function aboutDropdown() {
-  const dropdown = document.querySelector('.nav-dropdown');
-  const toggle = dropdown?.querySelector('.nav-dropdown-toggle');
-  if (!dropdown || !toggle) return;
-
-  const close = () => {
-    dropdown.classList.remove('open');
-    toggle.setAttribute('aria-expanded', 'false');
-  };
-
-  toggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const open = dropdown.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!dropdown.contains(e.target)) close();
-  });
-
-  document.getElementById('nav-about-overview')?.addEventListener('click', () => {
-    close();
-    navigateTo('view-overview');
-  });
-  document.getElementById('nav-about-team')?.addEventListener('click', () => {
-    close();
-    navigateTo('view-team');
-  });
-})();
+// Public-site nav routing. The shared header (af-header.js) links About items as
+// hash routes (/#overview, /#team) and the wordmark to "/", so they work from the
+// SPA and from the standalone subscription.html alike. The header owns its own
+// dropdown open/close behaviour.
+function routeFromHash() {
+  const h = (location.hash || '').replace('#', '').toLowerCase();
+  if (h === 'overview') navigateTo('view-overview');
+  else if (h === 'team') navigateTo('view-team');
+  else if (h === '' || h === 'home') navigateTo('view-home');
+}
+window.addEventListener('hashchange', routeFromHash);
+// On initial load only route when the hash targets a public sub-view (e.g. a deep
+// link from subscription.html) — otherwise leave the default view / auth logic be.
+if (['#overview', '#team'].includes((location.hash || '').toLowerCase())) routeFromHash();
 
 document.querySelectorAll('.btn-back-dashboard').forEach(btn => {
   btn.addEventListener('click', () => navigateTo('view-pillars'));
 });
 
-document.getElementById('btn-goto-map')?.addEventListener('click', () => {
+document.getElementById('btn-goto-esg')?.addEventListener('click', () => {
   setMapMode('sustainability');
   navigateTo('view-map');
 });
@@ -359,7 +337,9 @@ const STATUS_COLOR = { green: '#3F7E5E', amber: '#B5863C' };
 
 let selectedFacility = facilities[0] || null;
 
-closeBtn.addEventListener('click', () => panel.classList.add('hidden'));
+// Closing the facility side panel returns to the bare site map -> no facility in
+// focus, so clear the grounding (hides the chat + closes the drawer).
+closeBtn.addEventListener('click', () => { panel.classList.add('hidden'); clearGrounding(); });
 
 // --- ASSET SECURITY: intermediary "Monitoring workflow" pane ---
 // In Asset Security mode a pin click opens this right-side pane first (reusing
@@ -482,6 +462,10 @@ function selectFacility(f) {
   selectedFacility = f;
   renderPanel(f);
   renderReport(f); // keep the full report in sync with the selected pin
+  // Pin clicked -> Sustainability facility dashboard open -> ground the shared
+  // chat on THIS facility (via the shared grounding source). The onGroundingChange
+  // listener reveals the launcher.
+  setGrounding(susAskContext);
 }
 
 // Pillar 03 now opens on the compliance FRONT PAGE. The "Open report" button on
@@ -675,18 +659,18 @@ document.getElementById('toggle-tropomi')?.addEventListener('change', (e) => {
 });
 
 // Wire custom Basemap radio buttons
+// Basemap radios switch the map TILES only (Positron vs Dark Matter). They no
+// longer touch the app [data-theme] — the app is locked to the light theme.
 document.getElementById('toggle-base-dark')?.addEventListener('change', (e) => {
   if (e.target.checked) {
     map.removeLayer(lightBasemap);
     darkBasemap.addTo(map);
-    document.documentElement.setAttribute('data-theme', 'dark');
   }
 });
 document.getElementById('toggle-base-light')?.addEventListener('change', (e) => {
   if (e.target.checked) {
     map.removeLayer(darkBasemap);
     lightBasemap.addTo(map);
-    document.documentElement.setAttribute('data-theme', 'light');
   }
 });
 
@@ -1326,11 +1310,21 @@ document.querySelectorAll('.hz-opt').forEach(btn =>
     if (currentTrajFacility) renderTrajectory(currentTrajFacility);
   }));
 
-// --- "Ask Aletheia": grounded, read-only chat. getContext() returns the LIVE
-// facility view-model + on-page scenario state, so answers always reflect the
-// current selection, active levers and goal — and nothing else. ---
-askApi = initAskAletheia({
-  getContext: () => ({
+// --- "Ask Aletheia": grounded, read-only chat. It reads its grounding from the
+// SHARED source (ask_grounding.js), so any pillar that opens a facility dashboard
+// grounds this one drawer. getGroundingContext() returns the LIVE facility
+// view-model + on-page scenario for whatever pillar is currently in focus. ---
+askApi = initAskAletheia({ getContext: getGroundingContext });
+
+// Let any pillar's setGrounding()/clearGrounding() re-paint the drawer, and toggle
+// the launcher: visible only while a real facility is grounded.
+registerDrawer(() => askApi?.refresh());
+onGroundingChange(() => { if (hasGrounding()) showAskChat(); else hideAskChat(); });
+
+// The Sustainability pillar's LIVE context provider (facility + on-page scenario:
+// active levers, combined efficacy, user goal, projection horizon).
+function susAskContext() {
+  return {
     f: currentTrajFacility,
     scenario: {
       levers: abatement.filter(l => activeLevers.has(l.id)),
@@ -1338,8 +1332,8 @@ askApi = initAskAletheia({
       userGoal,
       projMonths: PROJ_MONTHS,
     },
-  }),
-});
+  };
+}
 
 // Ask Aletheia drawer: floating launcher <-> right-docked overlay panel.
 // initAskAletheia is untouched — we only drive open/close + the launcher visibility,
@@ -1366,10 +1360,9 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && askDrawer?.classList.contains('open')) closeAskDrawer();
 });
 
-// The chatbot is now always visible across all pillars.
-if (askFab) {
-  askFab.hidden = askDrawer?.classList.contains('open');
-}
+// The launcher starts hidden (see the [hidden] attribute in index.html) and is
+// only revealed by navigateTo() when the user is inside the facility dashboard
+// (view-map). Nothing to do here on load — we stay hidden on the landing.
 
 // Render the default selection so the report is populated before any pin click.
 renderReport(selectedFacility);
@@ -1634,7 +1627,7 @@ function renderPillarsDashboard() {
   }
 
   // Sustainability Pillar
-  const mapBtn = document.getElementById('btn-goto-map');
+  const mapBtn = document.getElementById('btn-goto-esg');
   if (mapBtn) {
     if (!currentUserPermissions.sustainability) {
       mapBtn.classList.add('is-soon');

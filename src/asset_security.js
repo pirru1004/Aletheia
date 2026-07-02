@@ -12,6 +12,25 @@
 
 import './asset_security.css';
 import { assetPillar, frameCaption, windowLabel, metricForYear } from './asset_security_adapter.js';
+import { setGrounding, clearGrounding } from './ask_grounding.js';
+
+// Build the Ask Aletheia grounding view-model for an Asset Security site. Asset
+// records are FOOTPRINT-shaped (not methane), so we tag the pillar/method and pass
+// only real manifest fields. ask_aletheia.js routes this to a footprint-only
+// responder — no methane/TROPOMI framing or invented numbers leak in.
+function assetAskContext(s) {
+  return () => ({
+    f: {
+      ...s,
+      pillar: 'Asset Security',
+      method: 'asset-security',
+      name: s.name,
+      basisLabel: s.method_label,   // shown in the "Grounded on: …" line + greeting
+      note: s.metric_summary,       // footprint responder falls back to this
+    },
+    scenario: {},
+  });
+}
 
 const PLAY_MS = 750; // auto-advance cadence (single view)
 
@@ -90,6 +109,8 @@ export function openAssetDashboard(s) {
   update();
   overlay.classList.add('open');
   overlay.setAttribute('aria-hidden', 'false');
+  // Facility dashboard open -> ground the shared Ask Aletheia chat on THIS site.
+  setGrounding(assetAskContext(s));
 }
 
 export function closeAssetDashboard() {
@@ -99,6 +120,8 @@ export function closeAssetDashboard() {
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden', 'true');
   }
+  // Left the dashboard -> clear grounding (hides launcher + closes drawer).
+  clearGrounding();
 }
 
 // ---------------------------------------------------------------------------

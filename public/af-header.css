@@ -1,0 +1,120 @@
+/* ============================================================================
+ * af-header.css — Aletheia shared PUBLIC-site top nav (namespace: af-nav)
+ * ----------------------------------------------------------------------------
+ * One component for every public page: the landing (hero variant, over the dark
+ * carousel) and the light public pages (About Overview/Team, Product & Services).
+ * The IN-APP pillar dashboards keep their own contextual nav and never use this.
+ * Colours are explicit (not app CSS vars) so it looks identical on index.html
+ * and the standalone subscription.html.
+ * ==========================================================================*/
+
+.af-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 1.1rem 2.2rem;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(35, 36, 31, 0.10);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  position: relative;
+  z-index: 40;
+}
+.af-nav-mark {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: #23241f;
+  text-decoration: none;
+}
+.af-nav-menu { display: flex; align-items: center; gap: 20px; }
+.af-nav-link {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: rgba(35, 36, 31, 0.72);
+  text-decoration: none;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color .18s ease;
+}
+.af-nav-link:hover { color: #23241f; }
+
+.af-nav-dd { position: relative; }
+.af-nav-dd-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 168px;
+  display: none;
+  flex-direction: column;
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid rgba(35, 36, 31, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .18);
+  z-index: 60;
+}
+.af-nav-dd.open .af-nav-dd-menu { display: flex; }
+.af-nav-dd-item {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-align: left;
+  color: rgba(35, 36, 31, 0.82);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.af-nav-dd-item:hover { background: rgba(35, 36, 31, 0.06); color: #23241f; }
+
+.af-nav .auth-slot { display: flex; align-items: center; }
+.af-nav-login {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: #2f5d4d;
+  border: 1px solid rgba(47, 93, 77, 0.5);
+  border-radius: 8px;
+  padding: 8px 16px;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+}
+.af-nav-login:hover { background: rgba(47, 93, 77, 0.08); }
+
+/* ---- HERO variant: over the dark landing carousel ---- */
+.af-nav--hero {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  background: linear-gradient(to bottom, rgba(5, 8, 10, .78), rgba(5, 8, 10, 0));
+  border-bottom: none;
+}
+.af-nav--hero .af-nav-mark { color: #F4F1EC; }
+.af-nav--hero .af-nav-link { color: rgba(244, 241, 236, .82); }
+.af-nav--hero .af-nav-link:hover { color: #F4F1EC; }
+.af-nav--hero .af-nav-dd-menu {
+  background: rgba(10, 15, 18, .96);
+  border-color: rgba(244, 241, 236, .14);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .45);
+}
+.af-nav--hero .af-nav-dd-item { color: rgba(244, 241, 236, .82); }
+.af-nav--hero .af-nav-dd-item:hover { background: rgba(244, 241, 236, .08); color: #F4F1EC; }
+/* main.js fills .auth-slot with .primary-btn.outline (Login) or an avatar — make
+   the Login button read on the dark hero. */
+.af-nav--hero .auth-slot .primary-btn.outline { border-color: rgba(255, 255, 255, .5); color: #F4F1EC; }
+.af-nav--hero .auth-slot .primary-btn.outline:hover { background: rgba(255, 255, 255, .12); border-color: #fff; }
+
+@media (max-width: 640px) {
+  .af-nav { padding: 0.9rem 1.1rem; }
+  .af-nav-menu { gap: 12px; }
+}
