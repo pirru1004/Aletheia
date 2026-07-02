@@ -11,6 +11,25 @@ export const dictionaries = {
     // Splash / Landing
     "landing.tagline": "We provide decision intelligence by fusing satellite and ground data.",
     
+    // Parallax Section
+    "parallax.utilities.title": "Utilities &amp; Energy Solutions",
+    "parallax.utilities.desc": "Monitor the operational efficiency of your sites",
+    "parallax.tag.live": "● LIVE",
+    "parallax.tag.coming": "COMING SOON",
+    "parallax.card.plants": "PLANTS &amp; FACILITIES EFFICIENCY",
+    "parallax.card.solar": "SOLAR POWER EFFICIENCY",
+    "parallax.btn.demo": "TRY DEMO",
+    "parallax.security.title": "Security Solutions",
+    "parallax.security.desc": "Keep an eye on assets including true image checker with our anti spoofing tech.",
+    "parallax.card.site": "SITE MONITORING",
+    "parallax.card.site.sub": "including alert to drone survey",
+    "parallax.card.ground": "GROUND SUBSIDENCE",
+    "parallax.card.maritime": "MARITIME ACTIVITY",
+    "parallax.sustainability.title": "Sustainability Solutions",
+    "parallax.sustainability.desc": "Independent satellite verification of methane and flaring — measured against what operators disclose.",
+    "parallax.card.filing": "Filing as a service",
+    "parallax.card.disaster": "Disaster management",
+
     // Slide 2: OE
     "slide.oe.tag": "live",
     "slide.oe.title": "Operational Efficiency",
@@ -105,6 +124,25 @@ export const dictionaries = {
     // Splash / Landing
     "landing.tagline": "Una empresa de inteligencia de decisiones que fusiona datos satelitales y terrestres para <span class=\"tagline-accent\">operaciones sostenibles y predecibles</span>.",
     
+    // Parallax Section
+    "parallax.utilities.title": "Soluciones de Energía y Servicios Públicos",
+    "parallax.utilities.desc": "Monitoree la eficiencia operativa de sus sitios",
+    "parallax.tag.live": "● EN VIVO",
+    "parallax.tag.coming": "PRÓXIMAMENTE",
+    "parallax.card.plants": "EFICIENCIA EN PLANTAS E INSTALACIONES",
+    "parallax.card.solar": "EFICIENCIA EN ENERGÍA SOLAR",
+    "parallax.btn.demo": "PROBAR DEMO",
+    "parallax.security.title": "Soluciones de Seguridad",
+    "parallax.security.desc": "Vigile sus activos, incluido el verificador de imágenes reales con nuestra tecnología anti-falsificación.",
+    "parallax.card.site": "MONITOREO DE SITIOS",
+    "parallax.card.site.sub": "incluyendo alerta para inspección con drones",
+    "parallax.card.ground": "HUNDIMIENTO DEL TERRENO",
+    "parallax.card.maritime": "ACTIVIDAD MARÍTIMA",
+    "parallax.sustainability.title": "Soluciones de Sostenibilidad",
+    "parallax.sustainability.desc": "Verificación satelital independiente de metano y quema de gas, comparada con las declaraciones de los operadores.",
+    "parallax.card.filing": "Presentación de informes como servicio",
+    "parallax.card.disaster": "Gestión de desastres",
+
     // Slide 2: OE
     "slide.oe.tag": "en vivo",
     "slide.oe.title": "Eficiencia Operativa",
@@ -199,6 +237,25 @@ export const dictionaries = {
     // Splash / Landing
     "landing.tagline": "Une société d'intelligence décisionnelle fusionnant les données satellitaires et terrestres pour des <span class=\"tagline-accent\">opérations durables et prévisibles</span>.",
     
+    // Parallax Section
+    "parallax.utilities.title": "Solutions pour l'Énergie et les Services Publics",
+    "parallax.utilities.desc": "Surveillez l'efficacité opérationnelle de vos sites",
+    "parallax.tag.live": "● EN DIRECT",
+    "parallax.tag.coming": "BIENTÔT DISPONIBLE",
+    "parallax.card.plants": "EFFICACITÉ DES USINES ET INSTALLATIONS",
+    "parallax.card.solar": "EFFICACITÉ DE L'ÉNERGIE SOLAIRE",
+    "parallax.btn.demo": "ESSAYER LA DÉMO",
+    "parallax.security.title": "Solutions de Sécurité",
+    "parallax.security.desc": "Gardez un œil sur vos actifs, y compris le vérificateur d'images réelles avec notre technologie anti-usurpation.",
+    "parallax.card.site": "SURVEILLANCE DES SITES",
+    "parallax.card.site.sub": "y compris l'alerte pour l'inspection par drone",
+    "parallax.card.ground": "AFFAISSEMENT DU SOL",
+    "parallax.card.maritime": "ACTIVITÉ MARITIME",
+    "parallax.sustainability.title": "Solutions de Durabilité",
+    "parallax.sustainability.desc": "Vérification par satellite indépendante du méthane et du torchage, mesurée par rapport aux déclarations des opérateurs.",
+    "parallax.card.filing": "Dépôt de rapports en tant que service",
+    "parallax.card.disaster": "Gestion des catastrophes",
+
     // Slide 2: OE
     "slide.oe.tag": "en direct",
     "slide.oe.title": "Efficacité Opérationnelle",
