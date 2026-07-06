@@ -347,3 +347,37 @@
   background: var(--inset);
   color: var(--ink);
 }
+
+/* ==========================================
+   MOBILE RESPONSIVENESS (Aletheia Components)
+   ========================================== */
+@media (max-width: 768px) {
+  .ask-drawer {
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
+  .ask-fab {
+    bottom: 30px; /* Shift up slightly on mobile to avoid overlapping browser UI */
+    right: 15px;
+  }
+  .aletheia-close-btn {
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+  /* Ensure modal content fits on small screens */
+  .wrap {
+    padding: 16px 16px 40px;
+  }
+  .badge {
+    min-width: auto; /* Allow badges to shrink */
+  }
+  header.top {
+    gap: 12px;
+  }
+  .brand h1 {
+    font-size: 1.25rem;
+  }
+}

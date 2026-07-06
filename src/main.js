@@ -1471,10 +1471,14 @@ function openProfileModal() {
   document.getElementById('profile-name').textContent = currentUser.displayName || 'Unknown User';
   document.getElementById('profile-email').textContent = currentUser.email || 'No email';
   
-  // Hide Admin button if user is not an admin
+  // Hide Admin & Settings buttons if user is not an admin
   const btnAdmin = document.getElementById('btn-goto-admin');
+  const btnSettings = document.getElementById('btn-goto-settings');
   if (btnAdmin) {
     btnAdmin.style.display = (currentUserRole === 'admin') ? 'block' : 'none';
+  }
+  if (btnSettings) {
+    btnSettings.style.display = (currentUserRole === 'admin') ? 'block' : 'none';
   }
   
   document.getElementById('profile-modal').classList.remove('hidden');
@@ -1508,6 +1512,15 @@ document.getElementById('btn-goto-admin')?.addEventListener('click', () => {
   closeProfileModal();
   navigateTo('view-admin');
   loadAdminUsers();
+});
+
+document.getElementById('btn-goto-settings')?.addEventListener('click', () => {
+  closeProfileModal();
+  navigateTo('view-settings');
+});
+
+document.getElementById('btn-back-from-settings')?.addEventListener('click', () => {
+  navigateTo('view-map');
 });
 
 async function loadAdminUsers() {

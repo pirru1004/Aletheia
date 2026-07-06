@@ -2076,3 +2076,113 @@ html, body {
       .top-actions .btn-ghost{display:none;}
     }
   
+/* ==========================================
+   MOBILE RESPONSIVENESS (Global)
+   ========================================== */
+@media (max-width: 768px) {
+  /* --- Landing Page --- */
+  .landing-nav {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .landing-nav-mark {
+    font-size: 0.9rem;
+  }
+  .landing-hero h1 {
+    font-size: 2.2rem;
+    line-height: 1.1;
+  }
+  .landing-hero p {
+    font-size: 1rem;
+  }
+  .parallax-section, .parallax-section.reverse {
+    flex-direction: column;
+    padding: 0 1rem;
+  }
+  .images-side {
+    height: 250px;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .img-back, .img-front, .img-middle {
+    width: 100% !important;
+    position: relative !important;
+    transform: none !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-bottom: 1rem;
+    height: auto !important;
+  }
+
+  /* --- Dashboard --- */
+  .dashboard-header {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .dashboard-header h1 {
+    font-size: 1.1rem;
+  }
+  .header-controls {
+    font-size: 0.65rem;
+    padding: 0.35rem 0.6rem;
+  }
+  
+  /* --- Floating Layer Panel (Bottom Sheet on Mobile) --- */
+  .floating-panel {
+    top: auto !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    padding: 1.25rem !important;
+    max-height: 50vh !important;
+    overflow-y: auto !important;
+  }
+  /* Drag handle indicator */
+  .floating-panel::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 2px;
+    margin: 0 auto 1rem auto;
+  }
+
+  /* --- Side Panel (Reporting) --- */
+  .side-panel {
+    width: 100vw !important;
+    border-left: none;
+  }
+  
+  /* --- Data Grid --- */
+  .data-grid {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed var(--border-color);
+    margin-bottom: 0.75rem;
+  }
+  .grid-header {
+    display: none;
+  }
+  .grid-val {
+    text-align: left;
+  }
+  
+  /* --- Map Legend --- */
+  .map-legend {
+    bottom: 60px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+    min-width: auto;
+    padding: 0.75rem;
+  }
+}
