@@ -1425,7 +1425,8 @@ async function syncUserToFirestore(user) {
       const defaultPermissions = {
         operationalEfficiency: true,
         assetSecurity: true,
-        sustainability: true
+        sustainability: true,
+        apiManagement: false
       };
       await setDoc(userRef, {
         uid: user.uid,
@@ -1444,7 +1445,8 @@ async function syncUserToFirestore(user) {
       currentUserPermissions = data.permissions || {
         operationalEfficiency: true,
         assetSecurity: true,
-        sustainability: true
+        sustainability: true,
+        apiManagement: false
       };
     }
   } catch (err) {
@@ -1471,12 +1473,8 @@ function openProfileModal() {
   document.getElementById('profile-name').textContent = currentUser.displayName || 'Unknown User';
   document.getElementById('profile-email').textContent = currentUser.email || 'No email';
   
-  // Hide Admin & Settings buttons if user is not an admin
-  const btnAdmin = document.getElementById('btn-goto-admin');
+  // Hide Settings button if user is not an admin
   const btnSettings = document.getElementById('btn-goto-settings');
-  if (btnAdmin) {
-    btnAdmin.style.display = (currentUserRole === 'admin') ? 'block' : 'none';
-  }
   if (btnSettings) {
     btnSettings.style.display = (currentUserRole === 'admin') ? 'block' : 'none';
   }
@@ -1508,15 +1506,29 @@ document.getElementById('btn-goto-my-profile')?.addEventListener('click', () => 
   navigateTo('view-my-profile');
 });
 
-document.getElementById('btn-goto-admin')?.addEventListener('click', () => {
-  closeProfileModal();
-  navigateTo('view-admin');
-  loadAdminUsers();
-});
+
 
 document.getElementById('btn-goto-settings')?.addEventListener('click', () => {
   closeProfileModal();
   navigateTo('view-settings');
+  // Load the admin users immediately since the Profiles tab is default
+  loadAdminUsers();
+  // Ensure API actions are properly secured
+  updateApiTabSecurity();
+});
+
+// Tab Switching Logic for Settings
+document.querySelectorAll('.settings-tabs .tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Remove active class from all buttons and panes
+    document.querySelectorAll('.settings-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.settings-container .tab-pane').forEach(p => p.classList.remove('active'));
+    
+    // Add active class to clicked button and target pane
+    btn.classList.add('active');
+    const targetTabId = btn.getAttribute('data-tab');
+    document.getElementById(targetTabId).classList.add('active');
+  });
 });
 
 document.getElementById('btn-back-from-settings')?.addEventListener('click', () => {
@@ -1550,11 +1562,7 @@ async function loadAdminUsers() {
           </select>
         </td>
         <td>
-          <div class="permissions-checks">
-            <label><input type="checkbox" class="perm-check" data-uid="${data.uid}" data-perm="operationalEfficiency" ${perms.operationalEfficiency ? 'checked' : ''}> Op. Efficiency</label>
-            <label><input type="checkbox" class="perm-check" data-uid="${data.uid}" data-perm="assetSecurity" ${perms.assetSecurity ? 'checked' : ''}> Asset Security</label>
-            <label><input type="checkbox" class="perm-check" data-uid="${data.uid}" data-perm="sustainability" ${perms.sustainability ? 'checked' : ''}> Sustainability</label>
-          </div>
+          <button class="primary-btn outline small btn-manage-perms" data-uid="${data.uid}">Manage Permissions</button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -1578,24 +1586,24 @@ async function loadAdminUsers() {
       });
     });
 
-    // Add listeners to permission checkboxes
-    document.querySelectorAll('.perm-check').forEach(checkbox => {
-      checkbox.addEventListener('change', async (e) => {
+    // Add listeners to 'Manage Permissions' buttons
+    document.querySelectorAll('.btn-manage-perms').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
         const uid = e.target.getAttribute('data-uid');
-        const permKey = e.target.getAttribute('data-perm');
-        const isChecked = e.target.checked;
+        window.currentEditingUid = uid;
         const userRef = doc(db, 'users', uid);
-        try {
-          await updateDoc(userRef, {
-            [`permissions.${permKey}`]: isChecked
-          });
-          if (uid === currentUser?.uid) {
-            currentUserPermissions[permKey] = isChecked;
-            renderPillarsDashboard();
-          }
-        } catch (err) {
-          console.error("Failed to update permission:", err);
-          alert("Error updating permission. Check console.");
+        const userSnap = await getDoc(userRef);
+        if(userSnap.exists()) {
+          const data = userSnap.data();
+          const perms = data.permissions || {};
+          
+          document.getElementById('perms-user-name').textContent = 'Editing: ' + (data.displayName || data.email || 'User');
+          document.getElementById('perm-op-efficiency').checked = !!perms.operationalEfficiency;
+          document.getElementById('perm-asset-sec').checked = !!perms.assetSecurity;
+          document.getElementById('perm-sustainability').checked = !!perms.sustainability;
+          document.getElementById('perm-api-mgmt').checked = !!perms.apiManagement;
+          
+          document.getElementById('permissions-modal').classList.remove('hidden');
         }
       });
     });
@@ -1682,3 +1690,42 @@ window.addEventListener('languagechanged', () => {
     render();
   }
 });
+
+// Permissions Modal Handlers
+document.getElementById('close-permissions-modal')?.addEventListener('click', () => {
+  document.getElementById('permissions-modal').classList.add('hidden');
+});
+
+document.getElementById('btn-save-permissions')?.addEventListener('click', async () => {
+  if(!window.currentEditingUid) return;
+  const userRef = doc(db, 'users', window.currentEditingUid);
+  
+  const updatedPerms = {
+    operationalEfficiency: document.getElementById('perm-op-efficiency').checked,
+    assetSecurity: document.getElementById('perm-asset-sec').checked,
+    sustainability: document.getElementById('perm-sustainability').checked,
+    apiManagement: document.getElementById('perm-api-mgmt').checked
+  };
+  
+  try {
+    await updateDoc(userRef, { permissions: updatedPerms });
+    if (window.currentEditingUid === currentUser?.uid) {
+      currentUserPermissions = updatedPerms;
+      renderPillarsDashboard();
+      updateApiTabSecurity();
+    }
+    document.getElementById('permissions-modal').classList.add('hidden');
+  } catch (err) {
+    console.error("Failed to update permissions:", err);
+    alert("Error updating permissions.");
+  }
+});
+
+function updateApiTabSecurity() {
+  const isApiAdmin = !!currentUserPermissions.apiManagement;
+  document.querySelectorAll('.api-actions button').forEach(btn => {
+    btn.disabled = !isApiAdmin;
+    btn.style.opacity = isApiAdmin ? '1' : '0.3';
+    btn.style.cursor = isApiAdmin ? 'pointer' : 'not-allowed';
+  });
+}

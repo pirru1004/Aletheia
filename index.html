@@ -684,40 +684,11 @@
         </div>
       </section>
 
-      <!-- ==========================================
-           VIEW 5: PROFILES MANAGEMENT (ADMIN)
-           ========================================== -->
-      <section id="view-admin" class="view hidden">
-        <header class="app-header">
-          <div class="logo">
-            <img src="/aletheia_logo_on_light.svg" alt="Aletheia Logo" height="32">
-          </div>
-          <div class="header-nav">
-            <button class="icon-btn btn-back-dashboard" aria-label="Close">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            <div class="auth-slot"></div>
-          </div>
-        </header>
-        <div class="admin-container">
-          <h2>Profiles Management</h2>
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Permissions</th>
-              </tr>
-            </thead>
-            <tbody id="admin-users-tbody">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
-        </div>
-      </section>
 
       <!-- Admin Settings View -->
+      <!-- ==========================================
+           VIEW 5: SYSTEM SETTINGS (ADMIN)
+           ========================================== -->
       <section id="view-settings" class="view hidden">
         <div class="dashboard-header">
           <div class="header-left">
@@ -729,11 +700,89 @@
             Authenticated
           </div>
         </div>
-        <div style="padding: 2rem;">
-          <p style="color: var(--text-secondary); max-width: 600px;">
-            This section is only visible to administrators. Future global settings, integrations, and configuration toggles will be placed here.
-          </p>
-          <!-- Placeholder for settings controls -->
+        
+        <div class="settings-container">
+          <!-- Tab Navigation -->
+          <div class="settings-tabs">
+            <button class="tab-btn active" data-tab="tab-profiles">Profiles Settings</button>
+            <button class="tab-btn" data-tab="tab-api">API Connections</button>
+          </div>
+
+          <!-- Tab Content: Profiles -->
+          <div id="tab-profiles" class="tab-pane active">
+            <div class="admin-container" style="padding: 0; box-shadow: none;">
+              <h2>Profiles Management</h2>
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Permissions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-users-tbody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab Content: API Connections -->
+          <div id="tab-api" class="tab-pane">
+            <div class="api-grid">
+              <!-- Mock Card: Planet Labs -->
+              <div class="api-card">
+                <div class="api-card-header">
+                  <h3 class="api-name">Planet Labs</h3>
+                  <span class="api-status badge-success">Connected</span>
+                </div>
+                <p class="api-desc">High-frequency, high-resolution global satellite imagery daily.</p>
+                <div class="api-details">
+                  <p><strong>Endpoint:</strong> api.planet.com/data/v1</p>
+                  <p><strong>Last Sync:</strong> Just now</p>
+                </div>
+                <div class="api-actions">
+                  <button class="primary-btn outline small">Configure</button>
+                  <button class="btn-ghost small text-error">Disconnect</button>
+                </div>
+              </div>
+
+              <!-- Mock Card: Airbus -->
+              <div class="api-card">
+                <div class="api-card-header">
+                  <h3 class="api-name">Airbus Intelligence</h3>
+                  <span class="api-status badge-success">Connected</span>
+                </div>
+                <p class="api-desc">Access to Pléiades Neo and SPOT satellite constellations.</p>
+                <div class="api-details">
+                  <p><strong>Endpoint:</strong> api.oneatlas.airbus.com</p>
+                  <p><strong>Last Sync:</strong> 2 hours ago</p>
+                </div>
+                <div class="api-actions">
+                  <button class="primary-btn outline small">Configure</button>
+                  <button class="btn-ghost small text-error">Disconnect</button>
+                </div>
+              </div>
+
+              <!-- Mock Card: AWS S3 -->
+              <div class="api-card">
+                <div class="api-card-header">
+                  <h3 class="api-name">AWS S3 (Internal Storage)</h3>
+                  <span class="api-status badge-warning">Sync Pending</span>
+                </div>
+                <p class="api-desc">Internal object storage bucket for processed analytical products.</p>
+                <div class="api-details">
+                  <p><strong>Bucket:</strong> s3://aletheia-analytics-prod</p>
+                  <p><strong>Last Sync:</strong> Waiting for trigger...</p>
+                </div>
+                <div class="api-actions">
+                  <button class="primary-btn outline small">Configure</button>
+                  <button class="primary-btn outline small">Force Sync</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -751,9 +800,40 @@
         </div>
         <div class="profile-actions">
           <button id="btn-goto-my-profile" class="primary-btn outline full-width">Manage My Profile</button>
-          <button id="btn-goto-admin" class="primary-btn outline full-width">Profiles Management</button>
           <button id="btn-goto-settings" class="primary-btn outline full-width">Settings</button>
           <button id="btn-sign-out" class="primary-btn full-width">Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permissions Modal -->
+    <div id="permissions-modal" class="profile-modal hidden">
+      <div class="profile-modal-content" style="max-width: 400px;">
+        <button class="close-profile-btn" id="close-permissions-modal">&times;</button>
+        <h2>Manage Permissions</h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;" id="perms-user-name">Loading...</p>
+        
+        <div class="permissions-form">
+          <label class="perm-row">
+            <input type="checkbox" id="perm-op-efficiency">
+            <span class="perm-label">Operational Efficiency</span>
+          </label>
+          <label class="perm-row">
+            <input type="checkbox" id="perm-asset-sec">
+            <span class="perm-label">Asset Security</span>
+          </label>
+          <label class="perm-row">
+            <input type="checkbox" id="perm-sustainability">
+            <span class="perm-label">Sustainability</span>
+          </label>
+          <label class="perm-row">
+            <input type="checkbox" id="perm-api-mgmt">
+            <span class="perm-label">API Management</span>
+          </label>
+        </div>
+
+        <div class="profile-actions" style="margin-top: 2rem;">
+          <button id="btn-save-permissions" class="primary-btn full-width">Save Permissions</button>
         </div>
       </div>
     </div>
