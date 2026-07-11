@@ -9,6 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(express.json());
 
 // Proxy endpoint for Planet Labs tiles
 app.get('/api/planet-tiles/:mosaic/:z/:x/:y', (req, res) => {
@@ -83,6 +84,67 @@ app.get('/api/sar-wms', (req, res) => {
     console.error('Error fetching WMS tile from Sentinel Hub:', e.message);
     res.status(500).send('Error fetching SAR tile');
   });
+});
+
+// --- CDSE Sentinel Hub Catalog Token Management ---
+let cdseTokenCache = null;
+let cdseTokenExpiry = null;
+
+async function getCdseToken() {
+  if (cdseTokenCache && cdseTokenExpiry && Date.now() < cdseTokenExpiry) {
+    return cdseTokenCache;
+  }
+  const clientId = process.env.SH_CLIENT_ID;
+  const clientSecret = process.env.SH_CLIENT_SECRET;
+  if (!clientId || !clientSecret || clientId === 'YOUR_SH_CLIENT_ID_HERE') {
+    throw new Error('SH_CLIENT_ID or SH_CLIENT_SECRET not configured in .env');
+  }
+
+  const response = await fetch('https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: clientId,
+      client_secret: clientSecret
+    })
+  });
+  
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Failed to fetch CDSE token (${response.status}): ${errText}`);
+  }
+  
+  const data = await response.json();
+  cdseTokenCache = data.access_token;
+  // Expire 1 minute before actual expiration for safety
+  cdseTokenExpiry = Date.now() + (data.expires_in - 60) * 1000;
+  return cdseTokenCache;
+}
+
+// Secure Proxy endpoint for Copernicus Sentinel Hub Catalog API (STAC search)
+app.post('/api/sh-catalog', async (req, res) => {
+  try {
+    const token = await getCdseToken();
+    const response = await fetch('https://sh.dataspace.copernicus.eu/catalog/v1/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(req.body)
+    });
+    
+    if (!response.ok) {
+      const errText = await response.text();
+      return res.status(response.status).json({ error: errText });
+    }
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching from SH Catalog:', error.message);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 app.listen(PORT, () => {

@@ -458,9 +458,85 @@ function renderPanel(f) {
   if (oePanel && mapMode === 'operational') oePanel.classList.remove('hidden');
 }
 
+async function searchCopernicusCatalog(f) {
+  const stacContainers = [
+    document.getElementById('cp-stac-results'),
+    document.getElementById('oe-cp-stac-results')
+  ].filter(el => el != null);
+  
+  if (stacContainers.length === 0) return;
+  
+  stacContainers.forEach(el => {
+    el.innerHTML = '<div style="text-align:center; padding:10px; color:var(--ink-3); font-size:13px;">Searching Copernicus Catalog...</div>';
+  });
+
+  try {
+    const lat = f.lat;
+    const lng = f.lng;
+    // Bounding box around the facility (+/- 0.05 degrees approx 5km)
+    const bbox = [lng - 0.05, lat - 0.05, lng + 0.05, lat + 0.05];
+    
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const requestBody = {
+      bbox: bbox,
+      datetime: `${thirtyDaysAgo.toISOString()}/${new Date().toISOString()}`,
+      collections: ['sentinel-2-l2a', 'sentinel-1-grd'],
+      limit: 5
+    };
+    
+    const res = await fetch('/api/sh-catalog', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+    
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    
+    if (!data.features || data.features.length === 0) {
+      stacContainers.forEach(el => {
+        el.innerHTML = '<div style="text-align:center; padding:10px; color:var(--ink-3); font-size:13px;">No recent imagery found.</div>';
+      });
+      return;
+    }
+    
+    let html = '';
+    data.features.forEach(item => {
+      const date = new Date(item.properties.datetime).toLocaleDateString();
+      const collection = item.collection === 'sentinel-2-l2a' ? 'S2-Optical' : 'S1-Radar';
+      const cloudCover = item.properties['eo:cloud_cover'] !== undefined ? `☁️ ${item.properties['eo:cloud_cover'].toFixed(1)}%` : '';
+      
+      html += `
+        <div class="stac-item">
+          <div>
+            <div class="stac-item-title">${date}</div>
+            <div class="stac-item-meta" style="font-size: 9px;">${item.id}</div>
+          </div>
+          <div style="text-align: right;">
+            <span class="stac-badge">${collection}</span>
+            ${cloudCover ? `<span class="stac-badge">${cloudCover}</span>` : ''}
+          </div>
+        </div>
+      `;
+    });
+    
+    stacContainers.forEach(el => {
+      el.innerHTML = html;
+    });
+  } catch (error) {
+    console.error("Copernicus Catalog Error:", error);
+    stacContainers.forEach(el => {
+      el.innerHTML = '<div style="text-align:center; padding:10px; color:#D9534F; font-size:13px;">Failed to fetch catalog data. Configure SH_CLIENT_ID and SH_CLIENT_SECRET in .env.</div>';
+    });
+  }
+}
+
 function selectFacility(f) {
   selectedFacility = f;
   renderPanel(f);
+  searchCopernicusCatalog(f);
   renderReport(f); // keep the full report in sync with the selected pin
   // Pin clicked -> Sustainability facility dashboard open -> ground the shared
   // chat on THIS facility (via the shared grounding source). The onGroundingChange

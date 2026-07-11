@@ -2333,3 +2333,33 @@ html, body {
     padding: 0.75rem;
   }
 }
+
+/* STAC Results Styling */
+.stac-item {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--sans);
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.stac-item:last-child {
+  border-bottom: none;
+}
+.stac-item-title {
+  font-weight: 600;
+  color: var(--ink);
+}
+.stac-item-meta {
+  color: var(--ink-2);
+  font-size: 11px;
+}
+.stac-badge {
+  background: rgba(0,0,0,0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-2);
+}
