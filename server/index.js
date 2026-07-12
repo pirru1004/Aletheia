@@ -62,8 +62,8 @@ app.get('/api/firms-wms', (req, res) => {
   });
 });
 
-// Secure Proxy endpoint for Sentinel-1 SAR WMS data
-app.get('/api/sar-wms', (req, res) => {
+// Secure Proxy endpoint for Copernicus WMS data
+app.get('/api/copernicus-wms', (req, res) => {
   const instanceId = process.env.SH_INSTANCE_ID;
   
   if (!instanceId || instanceId === 'YOUR_SH_INSTANCE_ID_HERE') {
@@ -73,16 +73,37 @@ app.get('/api/sar-wms', (req, res) => {
   // Extract the original WMS query parameters (bbox, width, height, layers, etc.)
   const queryString = req.url.split('?')[1] || '';
   
-  // Construct the target URL for Sentinel Hub
-  const targetUrl = `https://services.sentinel-hub.com/ogc/wms/${instanceId}?${queryString}`;
+  // Construct the target URL for Copernicus Data Space Ecosystem (CDSE)
+  const targetUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${instanceId}?${queryString}`;
 
   https.get(targetUrl, (apiRes) => {
     res.set(apiRes.headers);
     res.status(apiRes.statusCode);
     apiRes.pipe(res);
   }).on('error', (e) => {
-    console.error('Error fetching WMS tile from Sentinel Hub:', e.message);
-    res.status(500).send('Error fetching SAR tile');
+    console.error('Error fetching WMS tile from CDSE:', e.message);
+    res.status(500).send('Error fetching Sentinel tile');
+  });
+});
+
+// Secure Proxy endpoint for Sentinel-5P TROPOMI WMS data
+app.get('/api/s5p-wms', (req, res) => {
+  const instanceId = process.env.SH_S5P_INSTANCE_ID;
+  
+  if (!instanceId) {
+    return res.status(500).send('Sentinel-5P Instance ID not configured');
+  }
+
+  const queryString = req.url.split('?')[1] || '';
+  const targetUrl = `https://sh.dataspace.copernicus.eu/ogc/wms/${instanceId}?${queryString}`;
+
+  https.get(targetUrl, (apiRes) => {
+    res.set(apiRes.headers);
+    res.status(apiRes.statusCode);
+    apiRes.pipe(res);
+  }).on('error', (e) => {
+    console.error('Error fetching S5P WMS tile from CDSE:', e.message);
+    res.status(500).send('Error fetching S5P tile');
   });
 });
 
@@ -143,6 +164,36 @@ app.post('/api/sh-catalog', async (req, res) => {
     res.json(data);
   } catch (error) {
     console.error('Error fetching from SH Catalog:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
+// Secure Proxy endpoint for Copernicus Sentinel Hub Process API
+app.post('/api/sh-process', async (req, res) => {
+  try {
+    const token = await getCdseToken();
+    const response = await fetch('https://sh.dataspace.copernicus.eu/api/v1/process', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(req.body)
+    });
+    
+    if (!response.ok) {
+      const errText = await response.text();
+      return res.status(response.status).json({ error: errText });
+    }
+    
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    // Copy the content-type from the API response (usually image/png, image/jpeg, or application/tar)
+    const contentType = response.headers.get('content-type') || 'image/png';
+    res.setHeader('Content-Type', contentType);
+    res.send(buffer);
+  } catch (error) {
+    console.error('Error fetching from SH Process API:', error.message);
     res.status(500).json({ error: error.message });
   }
 });

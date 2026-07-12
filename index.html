@@ -450,46 +450,84 @@
           <aside id="floating-layer-panel" class="floating-panel opacity-panel">
             <h2 class="panel-title">[CTRL_SYS] LAYER MGMT</h2>
             
-            <div class="layer-group dynamic-layer" data-pillars="operational,asset,sustainability">
-              <label class="layer-toggle">
-                <input type="checkbox" id="toggle-planet">
-                <span><span class="lyr-num">[LYR-01]</span> Planet Satellite Imagery</span>
-              </label>
-              <div class="slider-group">
-                <input type="range" id="planet-opacity" min="0" max="100" value="100">
+            <div id="layer-list">
+              <div class="layer-group dynamic-layer" data-pillars="operational,asset,sustainability" data-layer-id="planetLayer">
+                <label class="layer-toggle">
+                  <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                  <input type="checkbox" id="toggle-planet">
+                  <span><span class="lyr-num">[LYR-01]</span> Planet Satellite Imagery</span>
+                </label>
+                <div class="slider-group">
+                  <input type="range" id="planet-opacity" min="0" max="100" value="100">
+                </div>
               </div>
-            </div>
 
-            <div class="layer-group dynamic-layer" data-pillars="sustainability,operational">
-              <label class="layer-toggle">
-                <input type="checkbox" id="toggle-vnf">
-                <span><span class="lyr-num">[LYR-02]</span> VIIRS Gas Flaring (VNF)</span>
-              </label>
-              <div class="slider-group">
-                <input type="range" id="vnf-opacity" min="0" max="100" value="100">
+              <div class="layer-group dynamic-layer" data-pillars="operational,sustainability" data-layer-id="copernicusLayer">
+                <label class="layer-toggle">
+                  <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                  <input type="checkbox" id="toggle-copernicus">
+                  <span><span class="lyr-num">[LYR-04]</span> Copernicus Sentinel-2 (Optical)</span>
+                </label>
+                <div class="slider-group">
+                  <input type="range" id="copernicus-opacity" min="0" max="100" value="100">
+                </div>
               </div>
-            </div>
 
-            <div class="layer-group dynamic-layer" data-pillars="asset">
-              <label class="layer-toggle">
-                <input type="checkbox" id="toggle-sar">
-                <span><span class="lyr-num">[LYR-03]</span> Sentinel-1 SAR (Oil Spills)</span>
-              </label>
-              <div class="slider-group">
-                <input type="range" id="sar-opacity" min="0" max="100" value="100">
+              <div class="layer-group dynamic-layer" data-pillars="sustainability,operational" data-layer-id="firmsLayer">
+                <label class="layer-toggle">
+                  <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                  <input type="checkbox" id="toggle-vnf">
+                  <span><span class="lyr-num">[LYR-02]</span> VIIRS Gas Flaring (VNF)</span>
+                </label>
+                <div class="slider-group">
+                  <input type="range" id="vnf-opacity" min="0" max="100" value="100">
+                </div>
               </div>
-            </div>
 
-            <div class="layer-group dynamic-layer" data-pillars="sustainability,operational">
-              <label class="layer-toggle">
-                <input type="checkbox" id="toggle-tropomi">
-                <span><span class="lyr-num">[LYR-04]</span> TROPOMI Methane (Multi-Year Avg)</span>
-              </label>
-              <div class="slider-group">
-                <input type="range" id="tropomi-opacity" min="0" max="100" value="100">
+              <div class="layer-group dynamic-layer" data-pillars="asset" data-layer-id="sarLayer">
+                <label class="layer-toggle">
+                  <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                  <input type="checkbox" id="toggle-sar">
+                  <span><span class="lyr-num">[LYR-03]</span> Sentinel-1 SAR (Oil Spills)</span>
+                </label>
+                <div class="slider-group">
+                  <input type="range" id="sar-opacity" min="0" max="100" value="100">
+                </div>
+              </div>
+
+              <div class="layer-group dynamic-layer" data-pillars="sustainability,operational" data-layer-id="methaneLayer">
+                <label class="layer-toggle">
+                  <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                  <input type="checkbox" id="toggle-tropomi">
+                  <span><span class="lyr-num">[LYR-04]</span> TROPOMI Methane (AI Localized)</span>
+                </label>
+                <div class="slider-group">
+                  <input type="range" id="tropomi-opacity" min="0" max="100" value="100">
+                </div>
+              </div>
+
+              <div class="layer-group dynamic-layer" data-pillars="sustainability,operational" data-layer-id="tropomiLayer">
+                <label class="layer-toggle">
+                  <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                  <input type="checkbox" id="toggle-s5p">
+                  <span><span class="lyr-num">[LYR-05]</span> Sentinel-5 TROPOMI (WMS Global)</span>
+                </label>
+                <div class="slider-group">
+                  <input type="range" id="s5p-opacity" min="0" max="100" value="70">
+                </div>
+              </div>
+
+              <div class="layer-group dynamic-layer" data-pillars="sustainability" data-layer-id="s2WaterLayer">
+                <label class="layer-toggle">
+                  <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                  <input type="checkbox" id="toggle-s2-water">
+                  <span><span class="lyr-num">[LYR-06]</span> Sentinel-2 Water Quality (CHL)</span>
+                </label>
+                <div class="slider-group">
+                  <input type="range" id="s2-water-opacity" min="0" max="100" value="100">
+                </div>
               </div>
             </div>
-            
 
           </aside>
 
@@ -542,6 +580,12 @@
               </div>
               <p id="cp-headline" style="margin: 0; color: var(--ink-2); font-size: 14px; line-height: 1.5; font-weight: 500;"></p>
               <div id="cp-note" style="margin-top: 12px; color: var(--ink-2); font-size: 13px; line-height: 1.6; border-top: 1px dashed var(--hairline); padding-top: 12px;"></div>
+            </div>
+
+            <h3 style="color: var(--ink-3); margin-bottom: 12px; font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;">Facility Satellite View (Optical)</h3>
+            <div id="cp-process-container" style="background: var(--inset); border: 1px solid var(--hairline); border-radius: 12px; margin-bottom: 24px; overflow: hidden; height: 180px; position: relative; display: flex; align-items: center; justify-content: center;">
+              <div id="cp-process-loading" style="color:var(--ink-3); font-size:13px;">Select a facility to fetch imagery.</div>
+              <img id="cp-process-image" src="" alt="Satellite View" style="width: 100%; height: 100%; object-fit: cover; display: none;" />
             </div>
 
             <h3 style="color: var(--ink-3); margin-bottom: 12px; font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;">Recent Satellite Imagery (Copernicus)</h3>
@@ -630,6 +674,12 @@
               </div>
               <p id="oe-cp-headline" style="margin: 0; color: var(--ink-2); font-size: 14px; line-height: 1.5; font-weight: 500;"></p>
               <div id="oe-cp-note" style="margin-top: 12px; color: var(--ink-2); font-size: 13px; line-height: 1.6; border-top: 1px dashed var(--hairline); padding-top: 12px;"></div>
+            </div>
+
+            <h3 style="color: var(--ink-3); margin-bottom: 12px; font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;">Facility Satellite View (Optical)</h3>
+            <div id="oe-cp-process-container" style="background: var(--inset); border: 1px solid var(--hairline); border-radius: 12px; margin-bottom: 24px; overflow: hidden; height: 180px; position: relative; display: flex; align-items: center; justify-content: center;">
+              <div id="oe-cp-process-loading" style="color:var(--ink-3); font-size:13px;">Select a facility to fetch imagery.</div>
+              <img id="oe-cp-process-image" src="" alt="Satellite View" style="width: 100%; height: 100%; object-fit: cover; display: none;" />
             </div>
 
             <h3 style="color: var(--ink-3); margin-bottom: 12px; font-family: 'IBM Plex Sans', sans-serif; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em;">Recent Satellite Imagery (Copernicus)</h3>

@@ -533,10 +533,111 @@ async function searchCopernicusCatalog(f) {
   }
 }
 
+async function fetchFacilityImage(f) {
+  const imgContainers = [
+    { loading: document.getElementById('cp-process-loading'), img: document.getElementById('cp-process-image') },
+    { loading: document.getElementById('oe-cp-process-loading'), img: document.getElementById('oe-cp-process-image') }
+  ].filter(c => c.loading != null && c.img != null);
+
+  if (imgContainers.length === 0) return;
+
+  imgContainers.forEach(c => {
+    c.loading.style.display = 'block';
+    c.loading.innerHTML = '<div style="text-align:center; padding:10px; color:var(--ink-3); font-size:13px;">Rendering Satellite View...</div>';
+    c.img.style.display = 'none';
+    if (c.img.src && c.img.src.startsWith('blob:')) {
+      URL.revokeObjectURL(c.img.src);
+    }
+    c.img.src = '';
+  });
+
+  try {
+    const lat = f.lat;
+    const lng = f.lng;
+    const offset = 0.02; // Roughly 2km bounding box
+    const bbox = [lng - offset, lat - offset, lng + offset, lat + offset];
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const requestBody = {
+      input: {
+        bounds: {
+          bbox: bbox,
+          properties: { crs: "http://www.opengis.net/def/crs/EPSG/0/4326" }
+        },
+        data: [{
+          type: "sentinel-2-l2a",
+          dataFilter: {
+            timeRange: {
+              from: thirtyDaysAgo.toISOString(),
+              to: new Date().toISOString()
+            },
+            maxCloudCoverage: 20
+          }
+        }]
+      },
+      output: {
+        width: 512,
+        height: 512,
+        responses: [{ identifier: "default", format: { type: "image/jpeg" } }]
+      },
+      evalscript: `
+        //VERSION=3
+        function setup() {
+          return {
+            input: ["B04", "B03", "B02", "dataMask"],
+            output: { bands: 3 }
+          };
+        }
+        const colorBlend = 2.5;
+        function evaluatePixel(sample) {
+          if (sample.dataMask == 0) return [0,0,0];
+          return [
+            colorBlend * sample.B04,
+            colorBlend * sample.B03,
+            colorBlend * sample.B02
+          ];
+        }
+      `
+    };
+
+    const res = await fetch('/api/sh-process', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+    const blob = await res.blob();
+    
+    // Check if the response is actually an image or if Copernicus returned an error image/message in the blob
+    if (blob.type.includes('json')) {
+        const text = await blob.text();
+        throw new Error(text);
+    }
+
+    const imageUrl = URL.createObjectURL(blob);
+    imgContainers.forEach(c => {
+      c.loading.style.display = 'none';
+      c.img.src = imageUrl;
+      c.img.style.display = 'block';
+    });
+  } catch (error) {
+    console.error("Copernicus Process API Error:", error);
+    imgContainers.forEach(c => {
+      c.loading.style.display = 'block';
+      c.loading.innerHTML = '<div style="text-align:center; padding:10px; color:#D9534F; font-size:13px;">Failed to fetch image. Check console for details.</div>';
+      c.img.style.display = 'none';
+    });
+  }
+}
+
 function selectFacility(f) {
   selectedFacility = f;
   renderPanel(f);
   searchCopernicusCatalog(f);
+  fetchFacilityImage(f);
   renderReport(f); // keep the full report in sync with the selected pin
   // Pin clicked -> Sustainability facility dashboard open -> ground the shared
   // chat on THIS facility (via the shared grounding source). The onGroundingChange
@@ -592,7 +693,7 @@ facilities.forEach(f => {
   });
   marker.bindTooltip(`<b>${f.name}</b><br>${f.basisLabel}`);
   marker.on('click', () => {
-    map.setView([f.lat, f.lon], f.isBasin ? 7 : 9, { animate: true });
+    map.setView([f.lat, f.lon], f.isBasin ? 7 : 10, { animate: true });
     selectFacility(f);
   });
   marker.addTo(sustainabilityPins);
@@ -621,7 +722,7 @@ facilities.forEach(f => {
   });
   marker.bindTooltip(`<b>${f.name}</b><br>${f.basisLabel}`);
   marker.on('click', () => {
-    map.setView([f.lat, f.lon], f.isBasin ? 7 : 9, { animate: true });
+    map.setView([f.lat, f.lon], f.isBasin ? 7 : 10, { animate: true });
     selectOperationalFacility(f);
   });
   marker.addTo(operationalPins);
@@ -642,6 +743,64 @@ const planetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/ser
   attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',
   maxZoom: 18,
   zIndex: 10
+});
+
+// Add Copernicus Sentinel WMS layer (via CDSE Process proxy)
+const copernicusLayer = L.tileLayer.wms('/api/copernicus-wms', {
+  layers: 'TRUE_COLOR', // The default True Color layer in the Full WMS template
+  format: 'image/png',
+  transparent: true,
+  maxcc: 20, // Cloud masking: Only use imagery with less than 20% cloud cover
+  attribution: '&copy; <a href="https://dataspace.copernicus.eu/">Copernicus Data Space Ecosystem</a>',
+  zIndex: 11,
+  minZoom: 10 // Prevent requesting huge areas that exceed Sentinel Hub's 200m/pixel limit
+});
+
+const turbidityScript = `
+//VERSION=3
+function setup() {
+  return {
+    input: ["B03", "B04", "B08", "dataMask"],
+    output: { bands: 4 }
+  };
+}
+function evaluatePixel(sample) {
+  let ndwi = (sample.B03 - sample.B08) / (sample.B03 + sample.B08);
+  if (ndwi <= 0 || sample.dataMask === 0) return [0, 0, 0, 0]; // Mask land and no-data
+  
+  let ndti = (sample.B04 - sample.B03) / (sample.B04 + sample.B03);
+  
+  if (ndti < -0.1) return [0.0, 0.2, 0.5, 0.7]; // Deep/Clear water
+  if (ndti < 0.0) return [0.0, 0.5, 0.8, 0.8]; // Slight turbidity
+  if (ndti < 0.05) return [0.2, 0.8, 0.8, 0.9]; // Moderate
+  if (ndti < 0.1) return [0.6, 0.8, 0.2, 0.9]; // High turbidity
+  if (ndti < 0.2) return [0.8, 0.5, 0.1, 1.0]; // Very High
+  return [0.8, 0.1, 0.0, 1.0]; // Extreme
+}
+`;
+
+// Add Sentinel-2 Water Quality layer (Custom Turbidity/NDTI)
+const s2WaterLayer = L.tileLayer.wms('/api/copernicus-wms', {
+  layers: 'TRUE_COLOR', 
+  EVALSCRIPT: btoa(turbidityScript),
+  format: 'image/png',
+  transparent: true,
+  maxcc: 20, 
+  attribution: '&copy; <a href="https://dataspace.copernicus.eu/">Copernicus (Turbidity Index)</a>',
+  zIndex: 11,
+  minZoom: 10 
+});
+
+// Add Sentinel-5P TROPOMI Methane WMS layer
+const tropomiLayer = L.tileLayer.wms('/api/s5p-wms', {
+  layers: 'METHANE', // The Methane layer in the S5P template
+  format: 'image/png',
+  transparent: true,
+  opacity: 0.7,
+  maxcc: 20, // Cloud masking for methane retrievals
+  time: '2023-01-01/2024-01-01', // Request a 1-year window to ensure sufficient cloud-free data
+  attribution: '&copy; <a href="https://dataspace.copernicus.eu/">Copernicus Data Space Ecosystem (S5P)</a>',
+  zIndex: 13
 });
 
 // Add NASA FIRMS VIIRS WMS layer (via NASA GIBS Public WMS)
@@ -673,6 +832,18 @@ const baseMaps = {
 // Wire custom Layer Toggle checkboxes
 document.getElementById('toggle-planet')?.addEventListener('change', (e) => {
   e.target.checked ? planetLayer.addTo(map) : map.removeLayer(planetLayer);
+});
+document.getElementById('toggle-copernicus')?.addEventListener('change', (e) => {
+  e.target.checked ? copernicusLayer.addTo(map) : map.removeLayer(copernicusLayer);
+});
+document.getElementById('toggle-tropomi')?.addEventListener('change', (e) => {
+  e.target.checked ? methaneLayer.addTo(map) : map.removeLayer(methaneLayer);
+});
+document.getElementById('toggle-s5p')?.addEventListener('change', (e) => {
+  e.target.checked ? tropomiLayer.addTo(map) : map.removeLayer(tropomiLayer);
+});
+document.getElementById('toggle-s2-water')?.addEventListener('change', (e) => {
+  e.target.checked ? s2WaterLayer.addTo(map) : map.removeLayer(s2WaterLayer);
 });
 document.getElementById('toggle-vnf')?.addEventListener('change', (e) => {
   e.target.checked ? firmsLayer.addTo(map) : map.removeLayer(firmsLayer);
@@ -730,9 +901,6 @@ document.getElementById('toggle-sar')?.addEventListener('change', (e) => {
   }
 });
 
-document.getElementById('toggle-tropomi')?.addEventListener('change', (e) => {
-  e.target.checked ? methaneLayer.addTo(map) : map.removeLayer(methaneLayer);
-});
 
 // Wire custom Basemap radio buttons
 // Basemap radios switch the map TILES only (Positron vs Dark Matter). They no
@@ -815,6 +983,7 @@ L.control.zoom({
 
 // --- Opacity Control Logic ---
 const planetOpacitySlider = document.getElementById('planet-opacity');
+const copernicusOpacitySlider = document.getElementById('copernicus-opacity');
 const vnfOpacitySlider = document.getElementById('vnf-opacity');
 const sarOpacitySlider = document.getElementById('sar-opacity');
 const tropomiOpacitySlider = document.getElementById('tropomi-opacity');
@@ -823,6 +992,12 @@ const tropomiOpacitySlider = document.getElementById('tropomi-opacity');
 planetOpacitySlider?.addEventListener('input', (e) => {
   const opacity = parseInt(e.target.value, 10) / 100;
   planetLayer.setOpacity(opacity);
+});
+
+// Update Copernicus layer opacity
+copernicusOpacitySlider?.addEventListener('input', (e) => {
+  const opacity = parseInt(e.target.value, 10) / 100;
+  copernicusLayer.setOpacity(opacity);
 });
 
 // Update NASA FIRMS layer opacity
@@ -837,14 +1012,113 @@ sarOpacitySlider?.addEventListener('input', (e) => {
   sarLayer.setOpacity(opacity);
 });
 
-// Update Methane layer opacity
-if (tropomiOpacitySlider) {
-  tropomiOpacitySlider.addEventListener('input', (e) => {
-    const opacity = parseInt(e.target.value, 10) / 100;
-    if (methaneLayer && methaneLayer._canvas) {
-      methaneLayer._canvas.style.opacity = opacity;
+// Update TROPOMI (Mock AI) layer opacity
+tropomiOpacitySlider?.addEventListener('input', (e) => {
+  const opacity = parseInt(e.target.value, 10) / 100;
+  if (methaneLayer && methaneLayer._canvas) {
+    methaneLayer._canvas.style.opacity = opacity;
+  }
+});
+
+// Update Sentinel-5 (WMS) layer opacity
+const s5pOpacitySlider = document.getElementById('s5p-opacity');
+s5pOpacitySlider?.addEventListener('input', (e) => {
+  const opacity = parseInt(e.target.value, 10) / 100;
+  tropomiLayer.setOpacity(opacity);
+});
+
+// Update Sentinel-2 Water Quality opacity
+const s2WaterOpacitySlider = document.getElementById('s2-water-opacity');
+s2WaterOpacitySlider?.addEventListener('input', (e) => {
+  const opacity = parseInt(e.target.value, 10) / 100;
+  s2WaterLayer.setOpacity(opacity);
+});
+
+// --- Drag and Drop Layer Reordering ---
+function updateLayerZIndices() {
+  const layerGroups = document.querySelectorAll('#layer-list .layer-group');
+  const totalLayers = layerGroups.length;
+  const baseZIndex = 10;
+  
+  const layerMap = {
+    'planetLayer': planetLayer,
+    'copernicusLayer': copernicusLayer,
+    'firmsLayer': firmsLayer,
+    'sarLayer': sarLayer,
+    'methaneLayer': methaneLayer, 
+    'tropomiLayer': tropomiLayer,
+    's2WaterLayer': s2WaterLayer
+  };
+
+  layerGroups.forEach((group, index) => {
+    const layerId = group.getAttribute('data-layer-id');
+    const leafletLayer = layerMap[layerId];
+    if (leafletLayer && typeof leafletLayer.setZIndex === 'function') {
+      const newZIndex = baseZIndex + (totalLayers - index);
+      leafletLayer.setZIndex(newZIndex);
     }
   });
+}
+
+const layerList = document.getElementById('layer-list');
+let draggedItem = null;
+
+if (layerList) {
+  // Only make the row draggable if they click the drag handle
+  layerList.addEventListener('mousedown', (e) => {
+    const group = e.target.closest('.layer-group');
+    if (!group) return;
+    
+    if (e.target.closest('.drag-handle')) {
+      group.setAttribute('draggable', 'true');
+    } else {
+      group.removeAttribute('draggable');
+    }
+  });
+
+  // Also remove draggable if mouse is released anywhere just in case
+  layerList.addEventListener('mouseup', (e) => {
+    const group = e.target.closest('.layer-group');
+    if (group) group.removeAttribute('draggable');
+  });
+
+  layerList.addEventListener('dragstart', (e) => {
+    const target = e.target.closest('.layer-group');
+    if (!target) return;
+    draggedItem = target;
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(() => target.classList.add('dragging'), 0);
+  });
+
+  layerList.addEventListener('dragend', (e) => {
+    const target = e.target.closest('.layer-group');
+    if (target) {
+      target.classList.remove('dragging');
+      target.removeAttribute('draggable');
+    }
+    draggedItem = null;
+    updateLayerZIndices();
+  });
+
+  layerList.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const draggingGroup = document.querySelector('.dragging');
+    if (!draggingGroup) return;
+    
+    const targetGroup = e.target.closest('.layer-group');
+    if (targetGroup && targetGroup !== draggingGroup) {
+      const box = targetGroup.getBoundingClientRect();
+      const offset = e.clientY - box.top - (box.height / 2);
+      if (offset < 0) {
+        targetGroup.parentNode.insertBefore(draggingGroup, targetGroup);
+      } else {
+        targetGroup.parentNode.insertBefore(draggingGroup, targetGroup.nextSibling);
+      }
+    }
+  });
+
+  // Set initial z-indices based on the HTML order
+  updateLayerZIndices();
 }
 
 // In the future, this is where we will load our GeoJSON data,

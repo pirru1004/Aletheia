@@ -218,6 +218,25 @@ html, body {
   transition: opacity 0.2s;
 }
 
+.drag-handle {
+  cursor: grab;
+  color: #6B7B8C;
+  font-size: 1rem;
+  line-height: 1;
+  padding-right: 0.25rem;
+  user-select: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.layer-group.dragging {
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
 .layer-toggle:hover {
   opacity: 0.8;
 }
