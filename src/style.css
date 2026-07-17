@@ -2382,3 +2382,9 @@ html, body {
   font-size: 10px;
   color: var(--ink-2);
 }
+
+/* Chemplast Demo highlights */
+.layer-group.chemplast-demo {
+  background: rgba(0, 102, 204, 0.1);
+  border-left: 3px solid #0066cc;
+}

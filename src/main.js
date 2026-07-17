@@ -687,7 +687,10 @@ const operationalPins = L.layerGroup();
 
 // --- Sustainability markers: the real AOIs from facilities.json, coloured by verdict ---
 facilities.forEach(f => {
-  const fill = PIN_COLOR[statusFor(f.verdict).tone] || '#7A5A1E';
+  let fill = PIN_COLOR[statusFor(f.verdict).tone] || '#7A5A1E';
+  if (f.operator === 'Chemplast Sanmar' || (f.region && f.region.includes('India'))) {
+    fill = '#0066cc'; // Blue for demo
+  }
   const marker = L.circleMarker([f.lat, f.lon], {
     radius: 9, color: '#FFFFFF', weight: 3, fillColor: fill, fillOpacity: 1, className: 'aoi-pin'
   });
@@ -702,8 +705,12 @@ facilities.forEach(f => {
 // --- Asset Security markers: placed from the asset_security.json lat/lon so the
 // pin overlays the monitored footprint, and clicking zooms to that same point. ---
 assetSites.forEach(site => {
+  let fill = '#7A5A1E';
+  if (site.operator === 'Chemplast Sanmar' || (site.region && site.region.includes('India'))) {
+    fill = '#0066cc'; // Blue for demo
+  }
   const marker = L.circleMarker([site.lat, site.lon], {
-    radius: 9, color: '#FFFFFF', weight: 3, fillColor: '#7A5A1E', fillOpacity: 1, className: 'aoi-pin'
+    radius: 9, color: '#FFFFFF', weight: 3, fillColor: fill, fillOpacity: 1, className: 'aoi-pin'
   });
   marker.bindTooltip(`<b>${site.name}</b><br>${site.basin}`);
   marker.on('click', () => {
@@ -716,7 +723,10 @@ assetSites.forEach(site => {
 // --- Operational Efficiency markers: same AOIs as Sustainability (same data),
 // but a click opens the Operational Efficiency report instead. ---
 facilities.forEach(f => {
-  const fill = PIN_COLOR[statusFor(f.verdict).tone] || '#7A5A1E';
+  let fill = PIN_COLOR[statusFor(f.verdict).tone] || '#7A5A1E';
+  if (f.operator === 'Chemplast Sanmar' || (f.region && f.region.includes('India'))) {
+    fill = '#0066cc'; // Blue for demo
+  }
   const marker = L.circleMarker([f.lat, f.lon], {
     radius: 9, color: '#FFFFFF', weight: 3, fillColor: fill, fillOpacity: 1, className: 'aoi-pin'
   });
@@ -820,6 +830,55 @@ const sarLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/servic
   zIndex: 10
 });
 
+const ndviScript = `
+//VERSION=3
+function setup() {
+  return { input: ["B04", "B08", "dataMask"], output: { bands: 4 } };
+}
+function evaluatePixel(sample) {
+  if (sample.dataMask === 0) return [0,0,0,0];
+  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
+  if (ndvi < 0.1) return [0,0,0,0];
+  if (ndvi < 0.3) return [0.6, 0.8, 0.6, 0.7]; 
+  if (ndvi < 0.6) return [0.3, 0.7, 0.3, 0.7];
+  return [0.0, 0.5, 0.0, 0.7];
+}
+`;
+const ndviLayer = L.tileLayer.wms('/api/copernicus-wms', {
+  layers: 'TRUE_COLOR', 
+  EVALSCRIPT: btoa(ndviScript),
+  format: 'image/png',
+  transparent: true,
+  maxcc: 20, 
+  attribution: '&copy; <a href="https://dataspace.copernicus.eu/">Copernicus (Greenbelt/NDVI)</a>',
+  zIndex: 14,
+  minZoom: 10 
+});
+
+const ndwiScript = `
+//VERSION=3
+function setup() {
+  return { input: ["B03", "B08", "dataMask"], output: { bands: 4 } };
+}
+function evaluatePixel(sample) {
+  if (sample.dataMask === 0) return [0,0,0,0];
+  let ndwi = (sample.B03 - sample.B08) / (sample.B03 + sample.B08);
+  if (ndwi > 0.1) return [0.0, 0.3, 0.8, 0.8]; 
+  if (ndwi > -0.1) return [0.0, 0.6, 0.9, 0.8]; 
+  return [0,0,0,0];
+}
+`;
+const ndwiLayer = L.tileLayer.wms('/api/copernicus-wms', {
+  layers: 'TRUE_COLOR', 
+  EVALSCRIPT: btoa(ndwiScript),
+  format: 'image/png',
+  transparent: true,
+  maxcc: 20, 
+  attribution: '&copy; <a href="https://dataspace.copernicus.eu/">Copernicus (Reservoir/NDWI)</a>',
+  zIndex: 15,
+  minZoom: 10 
+});
+
 // Set up Layer Control (Checkbox/Radio toggle)
 const baseMaps = {
   "Light (Positron)": lightBasemap,
@@ -847,6 +906,15 @@ document.getElementById('toggle-s2-water')?.addEventListener('change', (e) => {
 });
 document.getElementById('toggle-vnf')?.addEventListener('change', (e) => {
   e.target.checked ? firmsLayer.addTo(map) : map.removeLayer(firmsLayer);
+});
+document.getElementById('toggle-sar')?.addEventListener('change', (e) => {
+  e.target.checked ? sarLayer.addTo(map) : map.removeLayer(sarLayer);
+});
+document.getElementById('toggle-ndvi')?.addEventListener('change', (e) => {
+  e.target.checked ? ndviLayer.addTo(map) : map.removeLayer(ndviLayer);
+});
+document.getElementById('toggle-ndwi')?.addEventListener('change', (e) => {
+  e.target.checked ? ndwiLayer.addTo(map) : map.removeLayer(ndwiLayer);
 });
 
 // --- Simulated Oil Spill Detection for SAR ---
@@ -1034,6 +1102,18 @@ s2WaterOpacitySlider?.addEventListener('input', (e) => {
   s2WaterLayer.setOpacity(opacity);
 });
 
+const ndviOpacitySlider = document.getElementById('ndvi-opacity');
+ndviOpacitySlider?.addEventListener('input', (e) => {
+  const opacity = parseInt(e.target.value, 10) / 100;
+  ndviLayer.setOpacity(opacity);
+});
+
+const ndwiOpacitySlider = document.getElementById('ndwi-opacity');
+ndwiOpacitySlider?.addEventListener('input', (e) => {
+  const opacity = parseInt(e.target.value, 10) / 100;
+  ndwiLayer.setOpacity(opacity);
+});
+
 // --- Drag and Drop Layer Reordering ---
 function updateLayerZIndices() {
   const layerGroups = document.querySelectorAll('#layer-list .layer-group');
@@ -1047,7 +1127,9 @@ function updateLayerZIndices() {
     'sarLayer': sarLayer,
     'methaneLayer': methaneLayer, 
     'tropomiLayer': tropomiLayer,
-    's2WaterLayer': s2WaterLayer
+    's2WaterLayer': s2WaterLayer,
+    'ndviLayer': ndviLayer,
+    'ndwiLayer': ndwiLayer
   };
 
   layerGroups.forEach((group, index) => {

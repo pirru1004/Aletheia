@@ -11,11 +11,11 @@
       "methane_site_ppb": 1862.95,
       "methane_bkgd_ppb": 1864.99,
       "methane_excess_pct": -0.109,
-      "no2_mol_m2": 1.1528536208611025e-05,
+      "no2_mol_m2": 0.000011528536208611025,
       "co_mol_m2": 0.02796838491574994
     },
     "methane_excess_pct": -0.109,
-    "flaring_bcm_yr": 0.0,
+    "flaring_bcm_yr": 0,
     "quantification_published": false,
     "quantification_magnitude": null,
     "quantification_source": null,
@@ -94,9 +94,9 @@
       "lat": 38.499,
       "lon": 54.199,
       "methane_site_ppb": 1972.22,
-      "methane_bkgd_ppb": 1960.0,
+      "methane_bkgd_ppb": 1960,
       "methane_excess_pct": 0.624,
-      "no2_mol_m2": 1.686045977798825e-05,
+      "no2_mol_m2": 0.00001686045977798825,
       "co_mol_m2": 0.03188264804535826
     },
     "methane_excess_pct": 0.624,
@@ -256,5 +256,117 @@
       "es": "Datos satelitales públicos. Sitios de referencia/evaluación, no activos de un operador específico.",
       "fr": "Données satellitaires publiques. Sites de référence/d'évaluation, pas d'actifs d'un opérateur spécifique."
     }
+  },
+  {
+    "name": "Cuddalore Site",
+    "operator": "Chemplast Sanmar",
+    "region": "Tamil Nadu, India",
+    "method": "facility",
+    "is_reference_site": false,
+    "snapshot": {
+      "lat": 11.645926,
+      "lon": 79.738381,
+      "methane_site_ppb": 0,
+      "methane_bkgd_ppb": 0,
+      "methane_excess_pct": 0,
+      "no2_mol_m2": null,
+      "co_mol_m2": null
+    },
+    "verdict": "performant",
+    "source": "Aletheia Zero Liquid Discharge (ZLD) Monitoring",
+    "generated": "2026-07-17",
+    "note": {
+      "en": "Coastal PVC facility with marine terminal and desalination plant. Key anchor for ZLD receiving-water verification."
+    },
+    "trajectory": [],
+    "quantification_published": false
+  },
+  {
+    "name": "Mettur Plant",
+    "operator": "Chemplast Sanmar",
+    "region": "Tamil Nadu, India",
+    "method": "facility",
+    "is_reference_site": false,
+    "snapshot": {
+      "lat": 11.8028,
+      "lon": 77.8016,
+      "methane_site_ppb": 0,
+      "methane_bkgd_ppb": 0,
+      "methane_excess_pct": 0
+    },
+    "verdict": "progress",
+    "source": "Aletheia Reservoir & Greenbelt Monitoring",
+    "generated": "2026-07-17",
+    "note": {
+      "en": "Inland facility. Premium paste PVC, caustic soda, coal power plant. Relies on Kaveri river (Stanley Reservoir)."
+    },
+    "trajectory": [],
+    "quantification_published": false
+  },
+  {
+    "name": "Karaikal Terminal",
+    "operator": "Chemplast Sanmar",
+    "region": "Puducherry, India",
+    "method": "facility",
+    "is_reference_site": false,
+    "snapshot": {
+      "lat": 10.8754,
+      "lon": 79.838,
+      "methane_site_ppb": 0,
+      "methane_bkgd_ppb": 0,
+      "methane_excess_pct": 0
+    },
+    "verdict": "performant",
+    "source": "Aletheia Marine Vessel & Hazard Monitoring",
+    "generated": "2026-07-17",
+    "note": {
+      "en": "Coastal facility producing caustic soda and EDC. Contains marine terminal and desalination plant."
+    },
+    "trajectory": [],
+    "quantification_published": false
+  },
+  {
+    "name": "Vedaranyam Salt Pans",
+    "operator": "Chemplast Sanmar",
+    "region": "Tamil Nadu, India",
+    "method": "facility",
+    "is_reference_site": false,
+    "snapshot": {
+      "lat": 10.3725,
+      "lon": 79.8447,
+      "methane_site_ppb": 0,
+      "methane_bkgd_ppb": 0,
+      "methane_excess_pct": 0
+    },
+    "verdict": "performant",
+    "source": "Aletheia Salt-Pan Flooding & SWIR Monitor",
+    "generated": "2026-07-17",
+    "note": {
+      "en": "Coastal salt pans. Large shallow ponds where seawater dries in the sun to leave salt. Starting raw material for the chain."
+    },
+    "trajectory": [],
+    "quantification_published": false
+  },
+  {
+    "name": "Berigai Speciality",
+    "operator": "Chemplast Sanmar",
+    "region": "Tamil Nadu, India",
+    "method": "facility",
+    "is_reference_site": false,
+    "snapshot": {
+      "lat": 12.6366,
+      "lon": 77.962,
+      "methane_site_ppb": 0,
+      "methane_bkgd_ppb": 0,
+      "methane_excess_pct": 0
+    },
+    "verdict": "performant",
+    "source": "Aletheia Land-Use Monitoring",
+    "generated": "2026-07-17",
+    "note": {
+      "en": "Inland facility making highly specialised chemicals for global medicine and farm-chemical companies."
+    },
+    "trajectory": [],
+    "quantification_published": false
   }
 ]
