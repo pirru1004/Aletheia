@@ -1846,6 +1846,8 @@ function renderAuthUI(user) {
   });
 }
 
+let currentUserStatus = 'approved';
+
 async function syncUserToFirestore(user) {
   if (!user) return;
   try {
@@ -1853,27 +1855,37 @@ async function syncUserToFirestore(user) {
     const userSnap = await getDoc(userRef);
     
     if (!userSnap.exists()) {
-      // Create new user profile, default role is 'admin' as requested for now
+      // New users default to 'pending' access approval, unless initial admin
+      const isInitialAdmin = user.email === 'contactus@alythia.com' || user.email === 'davidrazo@gmail.com';
+      const initialStatus = isInitialAdmin ? 'approved' : 'pending';
+      const initialRole = isInitialAdmin ? 'admin' : 'user';
       const defaultPermissions = {
-        operationalEfficiency: true,
-        assetSecurity: true,
-        sustainability: true,
-        apiManagement: false
+        operationalEfficiency: isInitialAdmin,
+        assetSecurity: isInitialAdmin,
+        sustainability: isInitialAdmin,
+        apiManagement: isInitialAdmin
       };
-      await setDoc(userRef, {
+
+      const newUserData = {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
-        role: 'admin',
-        permissions: defaultPermissions
-      });
-      currentUserRole = 'admin';
+        status: initialStatus,
+        role: initialRole,
+        permissions: defaultPermissions,
+        requestedAt: new Date().toISOString()
+      };
+
+      await setDoc(userRef, newUserData);
+      currentUserRole = initialRole;
+      currentUserStatus = initialStatus;
       currentUserPermissions = defaultPermissions;
     } else {
-      // User exists, just update their current role in memory
+      // User exists, retrieve role, status, and permissions
       const data = userSnap.data();
       currentUserRole = data.role || 'user';
+      currentUserStatus = data.status || 'approved'; // legacy users default to approved
       currentUserPermissions = data.permissions || {
         operationalEfficiency: true,
         assetSecurity: true,
@@ -1883,21 +1895,57 @@ async function syncUserToFirestore(user) {
     }
   } catch (err) {
     console.error("Firestore sync failed (database might not be set up):", err);
-    // Default to admin so they can still see the UI, even if it doesn't save
     currentUserRole = 'admin';
+    currentUserStatus = 'approved';
   }
+}
+
+function showPendingApprovalScreen(user) {
+  const avatar = document.getElementById('pending-user-avatar');
+  const name = document.getElementById('pending-user-name');
+  const email = document.getElementById('pending-user-email');
+  if (avatar) avatar.src = user.photoURL || 'https://via.placeholder.com/150';
+  if (name) name.textContent = `Welcome, ${user.displayName || 'User'}!`;
+  if (email) email.textContent = user.email || '';
+  navigateTo('view-pending-approval');
 }
 
 function handleLogin() {
   signInWithPopup(auth, googleProvider).then(async (result) => {
     console.log("Logged in:", result.user);
+    currentUser = result.user;
     await syncUserToFirestore(result.user);
-    navigateTo('view-pillars');
+    
+    if (currentUserStatus === 'pending' || currentUserStatus === 'rejected') {
+      showPendingApprovalScreen(result.user);
+    } else {
+      navigateTo('view-pillars');
+    }
   }).catch((error) => {
     console.error("Login Error:", error);
     alert("Failed to login. Please ensure Google Sign-In is enabled in the Firebase Console.");
   });
 }
+
+document.getElementById('btn-pending-sign-out')?.addEventListener('click', () => {
+  signOut(auth).then(() => {
+    currentUser = null;
+    currentUserRole = 'user';
+    currentUserStatus = 'approved';
+    navigateTo('view-landing');
+  });
+});
+
+document.getElementById('btn-pending-refresh')?.addEventListener('click', async () => {
+  if (currentUser) {
+    await syncUserToFirestore(currentUser);
+    if (currentUserStatus === 'approved') {
+      navigateTo('view-pillars');
+    } else {
+      alert("Your account is still pending administrator approval. Please check back shortly.");
+    }
+  }
+});
 
 function openProfileModal() {
   if (!currentUser) return;
@@ -1924,6 +1972,7 @@ document.getElementById('btn-sign-out')?.addEventListener('click', () => {
     closeProfileModal();
     currentUser = null;
     currentUserRole = 'user';
+    currentUserStatus = 'approved';
     navigateTo('view-landing');
   });
 });
@@ -1937,8 +1986,6 @@ document.getElementById('btn-goto-my-profile')?.addEventListener('click', () => 
   document.getElementById('my-profile-role').textContent = currentUserRole.toUpperCase();
   navigateTo('view-my-profile');
 });
-
-
 
 document.getElementById('btn-goto-settings')?.addEventListener('click', () => {
   closeProfileModal();
@@ -1969,15 +2016,28 @@ document.getElementById('btn-back-from-settings')?.addEventListener('click', () 
 
 async function loadAdminUsers() {
   const tbody = document.getElementById('admin-users-tbody');
-  tbody.innerHTML = '<tr><td colspan="4">Loading users...</td></tr>';
+  const countBadge = document.getElementById('pending-users-count');
+  tbody.innerHTML = '<tr><td colspan="5">Loading users...</td></tr>';
   
   try {
     const querySnapshot = await getDocs(collection(db, "users"));
     tbody.innerHTML = '';
+    let pendingCount = 0;
+
     querySnapshot.forEach((docSnap) => {
       const data = docSnap.data();
-      const perms = data.permissions || { operationalEfficiency: false, assetSecurity: false, sustainability: false };
-      
+      const status = data.status || 'approved';
+      if (status === 'pending') pendingCount++;
+
+      let statusBadgeHtml = '';
+      if (status === 'pending') {
+        statusBadgeHtml = `<span class="api-status badge-warning">Pending Approval</span>`;
+      } else if (status === 'approved') {
+        statusBadgeHtml = `<span class="api-status badge-success">Approved</span>`;
+      } else {
+        statusBadgeHtml = `<span class="api-status text-error" style="border: 1px solid currentColor; padding: 2px 8px; border-radius: 12px; font-size: 11px;">Rejected</span>`;
+      }
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>
@@ -1987,6 +2047,7 @@ async function loadAdminUsers() {
           </div>
         </td>
         <td>${data.email || 'No email'}</td>
+        <td>${statusBadgeHtml}</td>
         <td>
           <select class="role-select" data-uid="${data.uid}">
             <option value="user" ${data.role === 'user' ? 'selected' : ''}>User</option>
@@ -1994,10 +2055,62 @@ async function loadAdminUsers() {
           </select>
         </td>
         <td>
-          <button class="primary-btn outline small btn-manage-perms" data-uid="${data.uid}">Manage Permissions</button>
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+            ${status !== 'approved' ? `<button class="primary-btn small btn-approve-user" data-uid="${data.uid}">Approve Access</button>` : `<button class="btn-ghost small text-error btn-toggle-status" data-uid="${data.uid}" data-status="rejected">Revoke</button>`}
+            ${status === 'rejected' ? `<button class="primary-btn outline small btn-toggle-status" data-uid="${data.uid}" data-status="approved">Re-Approve</button>` : ''}
+            <button class="primary-btn outline small btn-manage-perms" data-uid="${data.uid}">Permissions</button>
+          </div>
         </td>
       `;
       tbody.appendChild(tr);
+    });
+
+    if (countBadge) {
+      if (pendingCount > 0) {
+        countBadge.textContent = `${pendingCount} Pending Approval${pendingCount > 1 ? 's' : ''}`;
+        countBadge.style.display = 'inline-block';
+      } else {
+        countBadge.style.display = 'none';
+      }
+    }
+
+    // Add listeners to 'Approve Access' buttons
+    document.querySelectorAll('.btn-approve-user').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const uid = e.target.getAttribute('data-uid');
+        const userRef = doc(db, 'users', uid);
+        try {
+          await updateDoc(userRef, {
+            status: 'approved',
+            permissions: {
+              operationalEfficiency: true,
+              assetSecurity: true,
+              sustainability: true,
+              apiManagement: false
+            }
+          });
+          loadAdminUsers();
+        } catch (err) {
+          console.error("Failed to approve user:", err);
+          alert("Error approving user access.");
+        }
+      });
+    });
+
+    // Add listeners to Revoke / Re-approve status toggle buttons
+    document.querySelectorAll('.btn-toggle-status').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const uid = e.target.getAttribute('data-uid');
+        const newStatus = e.target.getAttribute('data-status');
+        const userRef = doc(db, 'users', uid);
+        try {
+          await updateDoc(userRef, { status: newStatus });
+          loadAdminUsers();
+        } catch (err) {
+          console.error("Failed to update status:", err);
+          alert("Error updating user status.");
+        }
+      });
     });
 
     // Add listeners to role selects

@@ -767,6 +767,42 @@
       </section>
 
 
+      <!-- ==========================================
+           VIEW: ACCESS PENDING APPROVAL
+           ========================================== -->
+      <section id="view-pending-approval" class="view hidden">
+        <header class="app-header">
+          <div class="logo">
+            <img src="/aletheia_logo_on_light.svg" alt="Aletheia Logo" height="32">
+          </div>
+          <div class="header-nav">
+            <button id="btn-pending-sign-out" class="primary-btn outline small">Sign Out</button>
+          </div>
+        </header>
+        <div class="admin-container" style="max-width: 600px; margin: 40px auto; text-align: center;">
+          <div class="my-profile-card" style="padding: 32px;">
+            <img id="pending-user-avatar" src="https://via.placeholder.com/150" alt="Avatar" class="profile-avatar-large" style="margin: 0 auto 16px;">
+            <h2 id="pending-user-name" style="margin-bottom: 8px;">Welcome!</h2>
+            <p id="pending-user-email" style="color: var(--muted); margin-bottom: 16px;"></p>
+            
+            <div style="background: rgba(242, 181, 59, 0.12); border: 1px solid rgba(242, 181, 59, 0.4); border-radius: 8px; padding: 20px; margin: 20px 0; text-align: left;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span class="status-indicator warning" style="width: 10px; height: 10px; border-radius: 50%; background: #F2B53B; display: inline-block;"></span>
+                <strong style="color: #F2B53B; font-size: 15px;">Account Access Pending Administrator Approval</strong>
+              </div>
+              <p style="font-size: 13px; color: var(--text-subtle); line-height: 1.5; margin: 0;">
+                Your account request has been registered. An administrator must approve your profile and grant pillar permissions before you can enter the Aletheia platform.
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: center; margin-top: 24px;">
+              <button id="btn-pending-refresh" class="primary-btn small">Check Approval Status</button>
+              <button id="btn-pending-contact" class="primary-btn outline small" onclick="window.location.href='mailto:contactus@alythia.com?subject=Aletheia%20Account%20Access%20Request'">Contact Support</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Admin Settings View -->
       <!-- ==========================================
            VIEW 5: SYSTEM SETTINGS (ADMIN)
@@ -793,14 +829,18 @@
           <!-- Tab Content: Profiles -->
           <div id="tab-profiles" class="tab-pane active">
             <div class="admin-container" style="padding: 0; box-shadow: none;">
-              <h2>Profiles Management</h2>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="margin: 0;">Profiles & Access Management</h2>
+                <span id="pending-users-count" class="api-status badge-warning" style="display: none;">0 Pending Approvals</span>
+              </div>
               <table class="admin-table">
                 <thead>
                   <tr>
                     <th>User</th>
                     <th>Email</th>
+                    <th>Status</th>
                     <th>Role</th>
-                    <th>Permissions</th>
+                    <th>Actions & Permissions</th>
                   </tr>
                 </thead>
                 <tbody id="admin-users-tbody">
