@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "mss26-satdat-pirru"
-  }
+  },
+  "targets": {
+    "mss26-satdat-pirru": {
+      "hosting": {
+        "main": [
+          "mss26-satdat-pirru"
+        ],
+        "demo": [
+          "mss26-aletheia-demo"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
