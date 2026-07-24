@@ -981,34 +981,72 @@
       </div>
     </div>
 
-    <!-- Permissions Modal -->
+    <!-- Permissions & Access Control Modal -->
     <div id="permissions-modal" class="profile-modal hidden">
-      <div class="profile-modal-content" style="max-width: 400px;">
+      <div class="profile-modal-content" style="max-width: 480px; padding: 28px;">
         <button class="close-profile-btn" id="close-permissions-modal">&times;</button>
-        <h2>Manage Permissions</h2>
-        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;" id="perms-user-name">Loading...</p>
+        <h2 style="margin-bottom: 4px; font-size: 1.25rem;">User Access & Permissions</h2>
+        <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 20px;" id="perms-user-name">Loading user...</p>
         
+        <!-- Access Control Section -->
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--faint); font-weight: 600;">Access Status</div>
+              <div id="modal-status-container" style="margin-top: 4px;">
+                <span id="modal-status-badge" class="api-status badge-success">Approved</span>
+              </div>
+            </div>
+            <div id="modal-access-actions">
+              <button id="btn-modal-revoke" class="primary-btn outline small text-error" style="border-color: rgba(239, 68, 68, 0.4); color: #EF4444;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                Revoke Access
+              </button>
+              <button id="btn-modal-approve" class="primary-btn small" style="display: none;">
+                Approve Access
+              </button>
+            </div>
+          </div>
+          <p id="modal-status-desc" style="font-size: 12px; color: var(--muted); margin: 0; line-height: 1.4;">
+            Revoking access will immediately prevent this user from accessing the platform dashboard and satellite data.
+          </p>
+        </div>
+
+        <!-- Pillar Permissions Section -->
         <div class="permissions-form">
-          <label class="perm-row">
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--faint); font-weight: 600; margin-bottom: 10px;">Workspace & API Access</div>
+          <label class="perm-row" style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
             <input type="checkbox" id="perm-op-efficiency">
-            <span class="perm-label">Operational Efficiency</span>
+            <div>
+              <span class="perm-label" style="font-weight: 500;">Operational Efficiency</span>
+              <div style="font-size: 11px; color: var(--faint);">Methane monitoring & abatement tools</div>
+            </div>
           </label>
-          <label class="perm-row">
+          <label class="perm-row" style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
             <input type="checkbox" id="perm-asset-sec">
-            <span class="perm-label">Asset Security</span>
+            <div>
+              <span class="perm-label" style="font-weight: 500;">Asset Security</span>
+              <div style="font-size: 11px; color: var(--faint);">Infrared & thermal risk monitoring</div>
+            </div>
           </label>
-          <label class="perm-row">
+          <label class="perm-row" style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
             <input type="checkbox" id="perm-sustainability">
-            <span class="perm-label">Sustainability</span>
+            <div>
+              <span class="perm-label" style="font-weight: 500;">Sustainability</span>
+              <div style="font-size: 11px; color: var(--faint);">ESG metrics & disclosures</div>
+            </div>
           </label>
-          <label class="perm-row">
+          <label class="perm-row" style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
             <input type="checkbox" id="perm-api-mgmt">
-            <span class="perm-label">API Management</span>
+            <div>
+              <span class="perm-label" style="font-weight: 500;">API Management</span>
+              <div style="font-size: 11px; color: var(--faint);">Satellite backend proxy configuration</div>
+            </div>
           </label>
         </div>
 
-        <div class="profile-actions" style="margin-top: 2rem;">
-          <button id="btn-save-permissions" class="primary-btn full-width">Save Permissions</button>
+        <div class="profile-actions" style="margin-top: 24px; display: flex; gap: 10px;">
+          <button id="btn-save-permissions" class="primary-btn full-width">Save Changes</button>
         </div>
       </div>
     </div>

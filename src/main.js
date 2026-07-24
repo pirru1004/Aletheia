@@ -2056,9 +2056,8 @@ async function loadAdminUsers() {
         </td>
         <td>
           <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-            ${status !== 'approved' ? `<button class="primary-btn small btn-approve-user" data-uid="${data.uid}">Approve Access</button>` : `<button class="btn-ghost small text-error btn-toggle-status" data-uid="${data.uid}" data-status="rejected">Revoke</button>`}
-            ${status === 'rejected' ? `<button class="primary-btn outline small btn-toggle-status" data-uid="${data.uid}" data-status="approved">Re-Approve</button>` : ''}
-            <button class="primary-btn outline small btn-manage-perms" data-uid="${data.uid}">Permissions</button>
+            ${status === 'pending' ? `<button class="primary-btn small btn-approve-user" data-uid="${data.uid}">Approve</button>` : ''}
+            <button class="primary-btn outline small btn-manage-perms" data-uid="${data.uid}">Manage Access & Permissions</button>
           </div>
         </td>
       `;
@@ -2074,7 +2073,7 @@ async function loadAdminUsers() {
       }
     }
 
-    // Add listeners to 'Approve Access' buttons
+    // Add listeners to quick 'Approve' buttons in table
     document.querySelectorAll('.btn-approve-user').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const uid = e.target.getAttribute('data-uid');
@@ -2097,22 +2096,6 @@ async function loadAdminUsers() {
       });
     });
 
-    // Add listeners to Revoke / Re-approve status toggle buttons
-    document.querySelectorAll('.btn-toggle-status').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        const uid = e.target.getAttribute('data-uid');
-        const newStatus = e.target.getAttribute('data-status');
-        const userRef = doc(db, 'users', uid);
-        try {
-          await updateDoc(userRef, { status: newStatus });
-          loadAdminUsers();
-        } catch (err) {
-          console.error("Failed to update status:", err);
-          alert("Error updating user status.");
-        }
-      });
-    });
-
     // Add listeners to role selects
     document.querySelectorAll('.role-select').forEach(select => {
       select.addEventListener('change', async (e) => {
@@ -2131,7 +2114,7 @@ async function loadAdminUsers() {
       });
     });
 
-    // Add listeners to 'Manage Permissions' buttons
+    // Add listeners to 'Manage Access & Permissions' buttons
     document.querySelectorAll('.btn-manage-perms').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const uid = e.target.getAttribute('data-uid');
@@ -2141,13 +2124,18 @@ async function loadAdminUsers() {
         if(userSnap.exists()) {
           const data = userSnap.data();
           const perms = data.permissions || {};
-          
-          document.getElementById('perms-user-name').textContent = 'Editing: ' + (data.displayName || data.email || 'User');
+          const status = data.status || 'approved';
+          window.currentEditingStatus = status;
+
+          document.getElementById('perms-user-name').textContent = `${data.displayName || 'User'} (${data.email || 'No email'})`;
           document.getElementById('perm-op-efficiency').checked = !!perms.operationalEfficiency;
           document.getElementById('perm-asset-sec').checked = !!perms.assetSecurity;
           document.getElementById('perm-sustainability').checked = !!perms.sustainability;
           document.getElementById('perm-api-mgmt').checked = !!perms.apiManagement;
           
+          // Update Modal Access Status UI
+          updateModalAccessStatusUI(status);
+
           document.getElementById('permissions-modal').classList.remove('hidden');
         }
       });
@@ -2155,9 +2143,85 @@ async function loadAdminUsers() {
 
   } catch (error) {
     console.error("Error loading users:", error);
-    tbody.innerHTML = '<tr><td colspan="4">Error loading users. Is Firestore enabled?</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5">Error loading users. Is Firestore enabled?</td></tr>';
   }
 }
+
+function updateModalAccessStatusUI(status) {
+  const badgeEl = document.getElementById('modal-status-badge');
+  const btnRevoke = document.getElementById('btn-modal-revoke');
+  const btnApprove = document.getElementById('btn-modal-approve');
+  const descEl = document.getElementById('modal-status-desc');
+
+  if (status === 'approved') {
+    if (badgeEl) {
+      badgeEl.className = 'api-status badge-success';
+      badgeEl.textContent = 'Access Approved';
+    }
+    if (btnRevoke) btnRevoke.style.display = 'inline-flex';
+    if (btnApprove) btnApprove.style.display = 'none';
+    if (descEl) descEl.textContent = 'This user currently has active platform access. Click Revoke Access to immediately block user access.';
+  } else if (status === 'pending') {
+    if (badgeEl) {
+      badgeEl.className = 'api-status badge-warning';
+      badgeEl.textContent = 'Pending Approval';
+    }
+    if (btnRevoke) btnRevoke.style.display = 'none';
+    if (btnApprove) btnApprove.style.display = 'inline-flex';
+    if (descEl) descEl.textContent = 'This user is awaiting administrator authorization before they can enter the platform.';
+  } else {
+    if (badgeEl) {
+      badgeEl.className = 'api-status text-error';
+      badgeEl.style.cssText = 'border: 1px solid currentColor; padding: 2px 8px; border-radius: 12px; font-size: 11px;';
+      badgeEl.textContent = 'Access Revoked';
+    }
+    if (btnRevoke) btnRevoke.style.display = 'none';
+    if (btnApprove) btnApprove.style.display = 'inline-flex';
+    if (btnApprove) btnApprove.textContent = 'Re-Approve Access';
+    if (descEl) descEl.textContent = 'Access for this user is currently revoked. Click Re-Approve Access to restore user entry.';
+  }
+}
+
+document.getElementById('btn-modal-revoke')?.addEventListener('click', async () => {
+  if (!window.currentEditingUid) return;
+  if (confirm("Are you sure you want to revoke platform access for this user? They will be immediately blocked.")) {
+    const userRef = doc(db, 'users', window.currentEditingUid);
+    try {
+      await updateDoc(userRef, { status: 'rejected' });
+      window.currentEditingStatus = 'rejected';
+      updateModalAccessStatusUI('rejected');
+      loadAdminUsers();
+    } catch (err) {
+      console.error("Failed to revoke access:", err);
+      alert("Error revoking access.");
+    }
+  }
+});
+
+document.getElementById('btn-modal-approve')?.addEventListener('click', async () => {
+  if (!window.currentEditingUid) return;
+  const userRef = doc(db, 'users', window.currentEditingUid);
+  try {
+    await updateDoc(userRef, {
+      status: 'approved',
+      permissions: {
+        operationalEfficiency: true,
+        assetSecurity: true,
+        sustainability: true,
+        apiManagement: false
+      }
+    });
+    window.currentEditingStatus = 'approved';
+    updateModalAccessStatusUI('approved');
+    document.getElementById('perm-op-efficiency').checked = true;
+    document.getElementById('perm-asset-sec').checked = true;
+    document.getElementById('perm-sustainability').checked = true;
+    loadAdminUsers();
+  } catch (err) {
+    console.error("Failed to approve access:", err);
+    alert("Error approving access.");
+  }
+});
 
 function renderPillarsDashboard() {
   // Operational Efficiency Pillar
