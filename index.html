@@ -813,16 +813,35 @@
           <!-- Tab Content: API Connections -->
           <div id="tab-api" class="tab-pane">
             <div class="api-grid">
-              <!-- Mock Card: Planet Labs -->
+              <!-- Sentinel Hub / Copernicus Data Space -->
+              <div class="api-card">
+                <div class="api-card-header">
+                  <h3 class="api-name">Copernicus / Sentinel Hub (CDSE)</h3>
+                  <span class="api-status badge-success">Connected</span>
+                </div>
+                <p class="api-desc">Sentinel-2 (10m Multispectral) & Sentinel-5P (TROPOMI Methane, NO₂, CO) processing API.</p>
+                <div class="api-details">
+                  <p><strong>Endpoint:</strong> sh.dataspace.copernicus.eu/api/v1/process</p>
+                  <p><strong>Auth:</strong> Client ID & Secret (.env)</p>
+                  <p><strong>Last Sync:</strong> Active (Live Proxy)</p>
+                </div>
+                <div class="api-actions">
+                  <button class="primary-btn outline small">Configure Keys</button>
+                  <button class="btn-ghost small">View Status</button>
+                </div>
+              </div>
+
+              <!-- Planet Labs -->
               <div class="api-card">
                 <div class="api-card-header">
                   <h3 class="api-name">Planet Labs</h3>
                   <span class="api-status badge-success">Connected</span>
                 </div>
-                <p class="api-desc">High-frequency, high-resolution global satellite imagery daily.</p>
+                <p class="api-desc">High-frequency, high-resolution (3m PlanetScope) global satellite imagery daily.</p>
                 <div class="api-details">
-                  <p><strong>Endpoint:</strong> api.planet.com/data/v1</p>
-                  <p><strong>Last Sync:</strong> Just now</p>
+                  <p><strong>Endpoint:</strong> tiles.planet.com/basemaps/v1</p>
+                  <p><strong>Auth:</strong> API Key (.env)</p>
+                  <p><strong>Last Sync:</strong> Active (Live Proxy)</p>
                 </div>
                 <div class="api-actions">
                   <button class="primary-btn outline small">Configure</button>
@@ -830,37 +849,71 @@
                 </div>
               </div>
 
-              <!-- Mock Card: Airbus -->
+              <!-- NASA FIRMS -->
+              <div class="api-card">
+                <div class="api-card-header">
+                  <h3 class="api-name">NASA FIRMS (Fire / Thermal Monitoring)</h3>
+                  <span class="api-status badge-success">Connected</span>
+                </div>
+                <p class="api-desc">VIIRS & MODIS near-real-time thermal hotspot and gas flaring detection layers.</p>
+                <div class="api-details">
+                  <p><strong>Endpoint:</strong> firms.modaps.eosdis.nasa.gov/mapserver/wms</p>
+                  <p><strong>Auth:</strong> MAP Key (.env)</p>
+                  <p><strong>Last Sync:</strong> Active (Live Proxy)</p>
+                </div>
+                <div class="api-actions">
+                  <button class="primary-btn outline small">Configure</button>
+                  <button class="btn-ghost small">View Status</button>
+                </div>
+              </div>
+
+              <!-- Firebase Platform -->
+              <div class="api-card">
+                <div class="api-card-header">
+                  <h3 class="api-name">Firebase Platform</h3>
+                  <span class="api-status badge-success">Connected</span>
+                </div>
+                <p class="api-desc">Web app hosting, Firebase Authentication, and Cloud Firestore database.</p>
+                <div class="api-details">
+                  <p><strong>Project:</strong> mss26-satdat-pirru</p>
+                  <p><strong>Hosting URL:</strong> mss26-satdat-pirru.web.app</p>
+                  <p><strong>Last Sync:</strong> Synchronized</p>
+                </div>
+                <div class="api-actions">
+                  <button class="primary-btn outline small">Configure</button>
+                  <button class="btn-ghost small">Console</button>
+                </div>
+              </div>
+
+              <!-- Airbus Intelligence -->
               <div class="api-card">
                 <div class="api-card-header">
                   <h3 class="api-name">Airbus Intelligence</h3>
-                  <span class="api-status badge-success">Connected</span>
+                  <span class="api-status badge-warning">Not Configured</span>
                 </div>
-                <p class="api-desc">Access to Pléiades Neo and SPOT satellite constellations.</p>
+                <p class="api-desc">Access to Pléiades Neo and SPOT 0.3m optical satellite constellations.</p>
                 <div class="api-details">
                   <p><strong>Endpoint:</strong> api.oneatlas.airbus.com</p>
-                  <p><strong>Last Sync:</strong> 2 hours ago</p>
+                  <p><strong>Auth:</strong> Pending OAuth Credentials</p>
                 </div>
                 <div class="api-actions">
-                  <button class="primary-btn outline small">Configure</button>
-                  <button class="btn-ghost small text-error">Disconnect</button>
+                  <button class="primary-btn outline small">Connect API</button>
                 </div>
               </div>
 
-              <!-- Mock Card: AWS S3 -->
+              <!-- AWS S3 -->
               <div class="api-card">
                 <div class="api-card-header">
-                  <h3 class="api-name">AWS S3 (Internal Storage)</h3>
-                  <span class="api-status badge-warning">Sync Pending</span>
+                  <h3 class="api-name">AWS S3 (Analytical Raster Storage)</h3>
+                  <span class="api-status badge-warning">Not Configured</span>
                 </div>
-                <p class="api-desc">Internal object storage bucket for processed analytical products.</p>
+                <p class="api-desc">Internal object storage bucket for processed analytical GeoTIFF products.</p>
                 <div class="api-details">
                   <p><strong>Bucket:</strong> s3://aletheia-analytics-prod</p>
-                  <p><strong>Last Sync:</strong> Waiting for trigger...</p>
+                  <p><strong>Auth:</strong> Pending IAM Credentials</p>
                 </div>
                 <div class="api-actions">
-                  <button class="primary-btn outline small">Configure</button>
-                  <button class="primary-btn outline small">Force Sync</button>
+                  <button class="primary-btn outline small">Connect Bucket</button>
                 </div>
               </div>
             </div>
