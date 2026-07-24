@@ -1,0 +1,98 @@
+# Aletheia — End-to-End System Architecture
+
+This document presents the visual architecture map of **Aletheia**, showing how data flows across the **4 Core Layers**: Data, Backend, Intelligence (AI/Colab), and Frontend.
+
+---
+
+## 1. Visual Architecture Diagram
+
+```mermaid
+flowchart TD
+    %% Define Styles
+    classDef dataLayer fill:#1f2937,stroke:#3b82f6,stroke-width:2px,color:#fff
+    classDef backendLayer fill:#1f2937,stroke:#10b981,stroke-width:2px,color:#fff
+    classDef aiLayer fill:#1f2937,stroke:#8b5cf6,stroke-width:2px,color:#fff
+    classDef frontLayer fill:#1f2937,stroke:#f59e0b,stroke-width:2px,color:#fff
+
+    subgraph L1["1. Data Ingestion Layer (Raw Sensors)"]
+        S2["Copernicus Sentinel-2<br/>(10m Multispectral / NDWI / Plumes)"]:::dataLayer
+        S5P["Copernicus Sentinel-5P<br/>(TROPOMI CH4 / NO2 / CO)"]:::dataLayer
+        PL["Planet Labs Basemaps<br/>(3m Daily Optical)"]:::dataLayer
+        FIRMS["NASA FIRMS<br/>(VIIRS / MODIS Thermal Hotspots)"]:::dataLayer
+    end
+
+    subgraph L2["2. Backend & Security Proxy Layer"]
+        FUNC["Firebase Cloud Functions / Express Proxy<br/>(server/index.js & functions/index.js)"]:::backendLayer
+        AUTH["Firebase Authentication<br/>(Google Sign-In & OAuth)"]:::backendLayer
+        DB[("Cloud Firestore DB<br/>(Users & Roles & Permissions)")]:::backendLayer
+        ENV[".env Key Vault<br/>(SH_CLIENT_SECRET, PLANET_API_KEY)"]:::backendLayer
+    end
+
+    subgraph L3["3. AI & Intelligence Layer (Model Processing)"]
+        COLAB_BATCH["Google Colab - Batch Pipeline<br/>(Aletheia.ipynb)<br/>• Extracts CH4 excess % & flaring BCM<br/>• Writes facilities.json"]:::aiLayer
+        COLAB_LIVE["Google Colab - Live Inference<br/>(FastAPI + ngrok Tunnel / PyTorch)<br/>• Real-time plume segmentation<br/>• InSAR deformation & thermal anomaly alerts"]:::aiLayer
+    end
+
+    subgraph L4["4. Frontend & User Interface Layer"]
+        VITE["Vite Single Page App<br/>(HTML5 / CSS3 / JS)"]:::frontLayer
+        LEAFLET["Leaflet.js Map Engine<br/>(Dynamic Layers: S2 Water, NDVI, NDWI)"]:::frontLayer
+        CHARTS["Chart.js Engine<br/>(Trajectory & Excess Emission Forecasts)"]:::frontLayer
+        
+        subgraph SITES["Dual Firebase Deployment Sites"]
+            PROD["Production Site<br/>(mss26-satdat-pirru.web.app)"]:::frontLayer
+            DEMO["Demo / Sandbox Site<br/>(mss26-aletheia-demo.web.app)"]:::frontLayer
+        end
+    end
+
+    %% Data Connections
+    S2 -->|WMS / Tile Streams| FUNC
+    S5P -->|WMS / STAC Catalog| FUNC
+    PL -->|XYZ Tiles| FUNC
+    FIRMS -->|WMS Thermal Hotspots| FUNC
+
+    ENV -->|Injects API Keys| FUNC
+    FUNC -->|Proxied Secure Streams| LEAFLET
+
+    %% Intelligence Connections
+    S2 & S5P -.->|Raw Satellite Rasters| COLAB_BATCH
+    S2 & S5P -.->|Raw Satellite Rasters| COLAB_LIVE
+    COLAB_BATCH -->|Outputs JSON Dataset| VITE
+    COLAB_LIVE <-->|FastAPI JSON Endpoint / Firestore Sync| FUNC
+
+    %% Auth & User Permissions
+    AUTH <-->|Identity Verification| VITE
+    DB <-->|Role-Based Access Control| VITE
+
+    %% UI Components
+    VITE --> LEAFLET
+    VITE --> CHARTS
+    VITE --> PROD & DEMO
+```
+
+---
+
+## 2. Layer-by-Layer Technical Breakdown
+
+| Layer | Official Layer Name | Technologies Used | Key Responsibilities |
+| :--- | :--- | :--- | :--- |
+| **Layer 1** | **Data Ingestion Layer** | • Sentinel-2 & Sentinel-5P (Copernicus CDSE)<br>• PlanetScope (Planet Labs)<br>• VIIRS & MODIS (NASA FIRMS) | Provider of raw satellite tiles, atmospheric spectra, and thermal hotspot imagery. |
+| **Layer 2** | **Backend Proxy & Security Layer** | • Node.js / Express Proxy (`server/index.js`)<br>• Firebase Cloud Functions (`functions/index.js`)<br>• Firebase Auth (Google Sign-In)<br>• Cloud Firestore Database | Secret key protection (`.env`), CORS management, secure WMS stream proxying, user role verification (Admin/User). |
+| **Layer 3** | **AI & Intelligence Layer** | • **Google Colab Batch** (`Aletheia.ipynb`)<br>• **Google Colab Live** (FastAPI + `ngrok` / PyTorch)<br>• Scikit-learn, OpenCV, GDAL, SentinelHub Python SDK | High-performance model execution: methane concentration excess, flaring volumes, thermal anomaly detection, outfall plume segmentation. |
+| **Layer 4** | **Frontend & UI Presentation Layer** | • Vite / HTML5 / Vanilla CSS<br>• Leaflet.js (Map & Satellite Layers)<br>• Chart.js (Trajectory Graphs)<br>• Firebase Hosting (`main` & `demo`) | Interactive map exploration, facility reporting cards, dynamic metric charts, and multi-pillar visualization (*Sustainability*, *Operational Efficiency*, *Asset Security*). |
+
+---
+
+## 3. How Data Flows During a User Interaction
+
+```
+[ User Clicks "Analyze Facility" ]
+             │
+             ├───> 1. Frontend requests proxied imagery ──────> Node/Firebase Proxy ──> Satellite APIs (Sentinel/Planet)
+             │
+             ├───> 2. Frontend reads pre-computed metrics ────> facilities.json (Generated by Colab Batch Pipeline)
+             │
+             └───> 3. Frontend triggers live AI inference ────> FastAPI / ngrok Tunnel ──> Google Colab GPU (PyTorch Model)
+                                                                                                  │
+                                                                                                  ▼
+[ Real-Time Heatmap / Plume Result ] <───────────────────────────────────────────────── Returns Insights JSON
+```
