@@ -13,8 +13,8 @@ FILL IN EVERY [BRACKET] BEFORE PUBLISHING. Checklist of brackets used:
   [LEGAL FORM]           - e.g. SAS, SARL, association, or "student project,
                             not yet incorporated"
   [REGISTERED ADDRESS]   - postal address
-  [CONTACT EMAIL]        - e.g. contact@aletheia.example
-  [PRIVACY EMAIL]        - e.g. privacy@aletheia.example (can be the same)
+  contactus@alythia.com        - e.g. contact@aletheia.example
+  contactus@alythia.com        - e.g. privacy@aletheia.example (can be the same)
   [WEBSITE URL]          - e.g. https://aletheia.example
   [EFFECTIVE DATE]       - date these go live
   [JURISDICTION]         - country/courts governing disputes (France assumed)
@@ -28,7 +28,7 @@ more reason to incorporate before any commercial use.
 
 # Aletheia — Legal
 
-*Effective date: [EFFECTIVE DATE]. Operated by [ENTITY NAME] ([LEGAL FORM]), [REGISTERED ADDRESS]. Contact: [CONTACT EMAIL].*
+*Effective date: [EFFECTIVE DATE]. Operated by [ENTITY NAME] ([LEGAL FORM]), [REGISTERED ADDRESS]. Contact: contactus@alythia.com.*
 
 These pages cover (1) Terms of Use, (2) Privacy Policy, and (3) Disclaimer. They apply to the Aletheia website and platform at [WEBSITE URL] (the "Service").
 
@@ -84,7 +84,7 @@ These Terms are governed by the laws of [JURISDICTION] (France assumed), and dis
 We may update these Terms; the "Last updated" date will change and material changes will be signalled on the Service. Continued use after changes means acceptance.
 
 ## 1.14 Contact
-Questions about these Terms: [CONTACT EMAIL].
+Questions about these Terms: contactus@alythia.com.
 
 ---
 
@@ -95,7 +95,7 @@ Questions about these Terms: [CONTACT EMAIL].
 [ENTITY NAME] respects your privacy and complies with the EU General Data Protection Regulation (GDPR) and applicable French law. This policy explains what personal data we process and your rights.
 
 ## 2.1 Data controller
-The data controller is [ENTITY NAME], [REGISTERED ADDRESS]. For any privacy matter, contact [PRIVACY EMAIL].
+The data controller is [ENTITY NAME], [REGISTERED ADDRESS]. For any privacy matter, contact contactus@alythia.com.
 
 ## 2.2 What we collect
 - **Information you give us** via forms: name, email address, company/organisation, job title, country, and the content of your message or feedback.
@@ -125,7 +125,7 @@ Some providers (e.g. Google) may process data outside the European Economic Area
 We keep personal data only as long as necessary for the purposes above: enquiry and feedback data for as long as needed to handle your request and a reasonable follow-up period, then deletion or anonymisation; account data for the life of the account. [Adjust periods once finalised.]
 
 ## 2.8 Your rights
-Under the GDPR you may: access your data; rectify it; erase it; restrict or object to processing; obtain portability; and withdraw consent at any time. To exercise these, contact [PRIVACY EMAIL]. You also have the right to lodge a complaint with the French supervisory authority, the **CNIL** (www.cnil.fr), or your local EU data-protection authority.
+Under the GDPR you may: access your data; rectify it; erase it; restrict or object to processing; obtain portability; and withdraw consent at any time. To exercise these, contact contactus@alythia.com. You also have the right to lodge a complaint with the French supervisory authority, the **CNIL** (www.cnil.fr), or your local EU data-protection authority.
 
 ## 2.9 Security
 We apply reasonable technical and organisational measures to protect personal data. No method of transmission or storage is fully secure, and we cannot guarantee absolute security.
@@ -137,7 +137,7 @@ The Service is not directed to children under 16 and we do not knowingly collect
 We may update this policy; the "Last updated" date will change and material changes will be signalled on the Service.
 
 ## 2.12 Contact
-Privacy questions or requests: [PRIVACY EMAIL].
+Privacy questions or requests: contactus@alythia.com.
 
 ---
 
@@ -167,4 +167,4 @@ The Service and Outputs are provided "as is" and "as available", without warrant
 The Service may link to third-party sites we do not control and for whose content we are not responsible.
 
 ## 3.8 Contact
-Questions about this Disclaimer: [CONTACT EMAIL].
+Questions about this Disclaimer: contactus@alythia.com.

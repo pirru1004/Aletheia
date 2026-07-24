@@ -1,0 +1,650 @@
+diff --git a/index.html b/index.html
+index 9ae7cb2..0ba6900 100644
+--- a/index.html
++++ b/index.html
+@@ -455,7 +455,7 @@
+                 <label class="layer-toggle">
+                   <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                   <input type="checkbox" id="toggle-planet">
+-                  <span><span class="lyr-num">[LYR-01]</span> Planet Satellite Imagery</span>
++                  <span><span class="lyr-num">[LYR-01]</span> Planet Satellite Imagery (Base)</span>
+                 </label>
+                 <div class="slider-group">
+                   <input type="range" id="planet-opacity" min="0" max="100" value="100">
+@@ -466,65 +466,54 @@
+                 <label class="layer-toggle">
+                   <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+                   <input type="checkbox" id="toggle-copernicus">
+-                  <span><span class="lyr-num">[LYR-04]</span> Copernicus Sentinel-2 (Optical)</span>
++                  <span><span class="lyr-num">[LYR-02]</span> Copernicus Sentinel-2 (Optical)</span>
+                 </label>
+                 <div class="slider-group">
+                   <input type="range" id="copernicus-opacity" min="0" max="100" value="100">
+                 </div>
+               </div>
+ 
+-              <div class="layer-group dynamic-layer" data-pillars="sustainability,operational" data-layer-id="firmsLayer">
+-                <label class="layer-toggle">
+-                  <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+-                  <input type="checkbox" id="toggle-vnf">
+-                  <span><span class="lyr-num">[LYR-02]</span> VIIRS Gas Flaring (VNF)</span>
+-                </label>
+-                <div class="slider-group">
+-                  <input type="range" id="vnf-opacity" min="0" max="100" value="100">
+-                </div>
+-              </div>
+-
+-              <div class="layer-group dynamic-layer" data-pillars="asset" data-layer-id="sarLayer">
++              <div class="layer-group dynamic-layer" data-pillars="sustainability" data-layer-id="s2WaterLayer">
+                 <label class="layer-toggle">
+                   <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+-                  <input type="checkbox" id="toggle-sar">
+-                  <span><span class="lyr-num">[LYR-03]</span> Sentinel-1 SAR (Oil Spills)</span>
++                  <input type="checkbox" id="toggle-s2-water">
++                  <span><span class="lyr-num">[LYR-03]</span> ZLD & Outfall Monitor (Turbidity)</span>
+                 </label>
+                 <div class="slider-group">
+-                  <input type="range" id="sar-opacity" min="0" max="100" value="100">
++                  <input type="range" id="s2-water-opacity" min="0" max="100" value="100">
+                 </div>
+               </div>
+ 
+-              <div class="layer-group dynamic-layer" data-pillars="sustainability,operational" data-layer-id="methaneLayer">
++              <div class="layer-group dynamic-layer" data-pillars="sustainability,operational" data-layer-id="ndviLayer">
+                 <label class="layer-toggle">
+                   <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+-                  <input type="checkbox" id="toggle-tropomi">
+-                  <span><span class="lyr-num">[LYR-04]</span> TROPOMI Methane (AI Localized)</span>
++                  <input type="checkbox" id="toggle-ndvi">
++                  <span><span class="lyr-num">[LYR-04]</span> Greenbelt Health (NDVI)</span>
+                 </label>
+                 <div class="slider-group">
+-                  <input type="range" id="tropomi-opacity" min="0" max="100" value="100">
++                  <input type="range" id="ndvi-opacity" min="0" max="100" value="100">
+                 </div>
+               </div>
+ 
+-              <div class="layer-group dynamic-layer" data-pillars="sustainability,operational" data-layer-id="tropomiLayer">
++              <div class="layer-group dynamic-layer" data-pillars="sustainability,asset" data-layer-id="ndwiLayer">
+                 <label class="layer-toggle">
+                   <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+-                  <input type="checkbox" id="toggle-s5p">
+-                  <span><span class="lyr-num">[LYR-05]</span> Sentinel-5 TROPOMI (WMS Global)</span>
++                  <input type="checkbox" id="toggle-ndwi">
++                  <span><span class="lyr-num">[LYR-05]</span> Water Security / Reservoirs (NDWI)</span>
+                 </label>
+                 <div class="slider-group">
+-                  <input type="range" id="s5p-opacity" min="0" max="100" value="70">
++                  <input type="range" id="ndwi-opacity" min="0" max="100" value="100">
+                 </div>
+               </div>
+ 
+-              <div class="layer-group dynamic-layer" data-pillars="sustainability" data-layer-id="s2WaterLayer">
++              <div class="layer-group dynamic-layer" data-pillars="asset" data-layer-id="sarLayer">
+                 <label class="layer-toggle">
+                   <span class="drag-handle" title="Drag to reorder">&#8942;&#8942;</span>
+-                  <input type="checkbox" id="toggle-s2-water">
+-                  <span><span class="lyr-num">[LYR-06]</span> Sentinel-2 Water Quality (CHL)</span>
++                  <input type="checkbox" id="toggle-sar">
++                  <span><span class="lyr-num">[LYR-06]</span> Sentinel-1 SAR (Monsoon / Flood)</span>
+                 </label>
+                 <div class="slider-group">
+-                  <input type="range" id="s2-water-opacity" min="0" max="100" value="100">
++                  <input type="range" id="sar-opacity" min="0" max="100" value="100">
+                 </div>
+               </div>
+             </div>
+diff --git a/pipeline/facilities.json b/pipeline/facilities.json
+index fd207af..df80890 100644
+--- a/pipeline/facilities.json
++++ b/pipeline/facilities.json
+@@ -1,260 +1,114 @@
+ [
+   {
+-    "name": "Groundbirch",
+-    "operator": "Shell plc",
+-    "region": "Montney, Canada",
++    "name": "Cuddalore Site",
++    "operator": "Chemplast Sanmar",
++    "region": "Tamil Nadu, India",
+     "method": "facility",
+-    "is_reference_site": true,
++    "is_reference_site": false,
+     "snapshot": {
+-      "lat": 55.962807,
+-      "lon": -121.077735,
+-      "methane_site_ppb": 1862.95,
+-      "methane_bkgd_ppb": 1864.99,
+-      "methane_excess_pct": -0.109,
+-      "no2_mol_m2": 1.1528536208611025e-05,
+-      "co_mol_m2": 0.02796838491574994
++      "lat": 11.645926,
++      "lon": 79.738381,
++      "methane_site_ppb": 0,
++      "methane_bkgd_ppb": 0,
++      "methane_excess_pct": 0,
++      "no2_mol_m2": null,
++      "co_mol_m2": null
+     },
+-    "methane_excess_pct": -0.109,
+-    "flaring_bcm_yr": 0.0,
+-    "quantification_published": false,
+-    "quantification_magnitude": null,
+-    "quantification_source": null,
+-    "quantification_method": null,
+-    "quantification_note": {
+-      "en": "No detectable enhancement above local background — consistent with a well-managed or idle site.",
+-      "es": "No hay aumento detectable sobre el fondo local — consistente con un sitio bien administrado o inactivo.",
+-      "fr": "Aucune augmentation détectable au-dessus du bruit de fond local — cohérent avec un site bien géré ou inactif."
+-    },
+-    "trajectory": [
+-      {
+-        "month": "2025-05",
+-        "methane_ppb": 1875.04
+-      },
+-      {
+-        "month": "2025-06",
+-        "methane_ppb": 1839.25
+-      },
+-      {
+-        "month": "2025-07",
+-        "methane_ppb": 1855.54
+-      },
+-      {
+-        "month": "2025-08",
+-        "methane_ppb": 1871.21
+-      },
+-      {
+-        "month": "2025-09",
+-        "methane_ppb": 1861.21
+-      },
+-      {
+-        "month": "2025-10",
+-        "methane_ppb": 1901.32
+-      },
+-      {
+-        "month": "2025-11",
+-        "methane_ppb": null
+-      },
+-      {
+-        "month": "2025-12",
+-        "methane_ppb": null
+-      },
+-      {
+-        "month": "2026-01",
+-        "methane_ppb": null
+-      },
+-      {
+-        "month": "2026-02",
+-        "methane_ppb": 1900.01
+-      },
+-      {
+-        "month": "2026-03",
+-        "methane_ppb": 1865.24
+-      },
+-      {
+-        "month": "2026-05",
+-        "methane_ppb": 1862.5
+-      }
+-    ],
+     "verdict": "performant",
+-    "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
+-    "generated": "2026-06-11",
++    "source": "Aletheia Zero Liquid Discharge (ZLD) Monitoring",
++    "generated": "2026-07-17",
+     "note": {
+-      "en": "Public satellite data. Reference/benchmark sites, not a specific operator's assets.",
+-      "es": "Datos satelitales públicos. Sitios de referencia/evaluación, no activos de un operador específico.",
+-      "fr": "Données satellitaires publiques. Sites de référence/d'évaluation, pas d'actifs d'un opérateur spécifique."
+-    }
++      "en": "Coastal PVC facility with marine terminal and desalination plant. Key anchor for ZLD receiving-water verification."
++    },
++    "trajectory": [],
++    "quantification_published": false
+   },
+   {
+-    "name": "Korpezhe",
+-    "operator": "State (Turkmengaz)",
+-    "region": "W. Turkmenistan",
++    "name": "Mettur Plant",
++    "operator": "Chemplast Sanmar",
++    "region": "Tamil Nadu, India",
+     "method": "facility",
+-    "is_reference_site": true,
++    "is_reference_site": false,
+     "snapshot": {
+-      "lat": 38.499,
+-      "lon": 54.199,
+-      "methane_site_ppb": 1972.22,
+-      "methane_bkgd_ppb": 1960.0,
+-      "methane_excess_pct": 0.624,
+-      "no2_mol_m2": 1.686045977798825e-05,
+-      "co_mol_m2": 0.03188264804535826
++      "lat": 11.8028,
++      "lon": 77.8016,
++      "methane_site_ppb": 0,
++      "methane_bkgd_ppb": 0,
++      "methane_excess_pct": 0
+     },
+-    "methane_excess_pct": 0.624,
+-    "flaring_bcm_yr": 0.0093,
+-    "quantification_published": true,
+-    "quantification_magnitude": {
+-      "en": "≈120 ± 27 kt CH₄ over 11 months (compressor station) · 10–43 t/h",
+-      "es": "≈120 ± 27 kt CH₄ en 11 meses (estación compresora) · 10–43 t/h",
+-      "fr": "≈120 ± 27 kt CH₄ sur 11 mois (station de compression) · 10–43 t/h"
++    "verdict": "progress",
++    "source": "Aletheia Reservoir & Greenbelt Monitoring",
++    "generated": "2026-07-17",
++    "note": {
++      "en": "Inland facility. Premium paste PVC, caustic soda, coal power plant. Relies on Kaveri river (Stanley Reservoir)."
+     },
+-    "quantification_source": "Varon et al. 2019, GHGSat-D + TROPOMI",
+-    "quantification_method": "point-source instruments",
+-    "quantification_note": {
+-      "en": "Magnitude cited from published literature (point-source instruments). Our pipeline performs TROPOMI screening only.",
+-      "es": "Magnitud citada de la literatura publicada (instrumentos de fuente puntual). Nuestro sistema solo realiza el análisis con TROPOMI.",
+-      "fr": "Ampleur citée d'après la littérature publiée (instruments à source ponctuelle). Notre système effectue uniquement l'analyse TROPOMI."
++    "trajectory": [],
++    "quantification_published": false
++  },
++  {
++    "name": "Karaikal Terminal",
++    "operator": "Chemplast Sanmar",
++    "region": "Puducherry, India",
++    "method": "facility",
++    "is_reference_site": false,
++    "snapshot": {
++      "lat": 10.8754,
++      "lon": 79.8380,
++      "methane_site_ppb": 0,
++      "methane_bkgd_ppb": 0,
++      "methane_excess_pct": 0
+     },
+-    "trajectory": [
+-      {
+-        "month": "2025-05",
+-        "methane_ppb": 1970.4
+-      },
+-      {
+-        "month": "2025-06",
+-        "methane_ppb": 1968.79
+-      },
+-      {
+-        "month": "2025-07",
+-        "methane_ppb": 1990.75
+-      },
+-      {
+-        "month": "2025-08",
+-        "methane_ppb": 2000.84
+-      },
+-      {
+-        "month": "2025-09",
+-        "methane_ppb": 2014.04
+-      },
+-      {
+-        "month": "2025-10",
+-        "methane_ppb": 1996.91
+-      },
+-      {
+-        "month": "2025-11",
+-        "methane_ppb": 2002.79
+-      },
+-      {
+-        "month": "2025-12",
+-        "methane_ppb": 2013.87
+-      },
+-      {
+-        "month": "2026-01",
+-        "methane_ppb": 1967.31
+-      },
+-      {
+-        "month": "2026-02",
+-        "methane_ppb": 1963.88
+-      },
+-      {
+-        "month": "2026-03",
+-        "methane_ppb": 1977.27
+-      },
+-      {
+-        "month": "2026-05",
+-        "methane_ppb": 1977.92
+-      }
+-    ],
+-    "verdict": "progress",
+-    "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
+-    "generated": "2026-06-11",
++    "verdict": "performant",
++    "source": "Aletheia Marine Vessel & Hazard Monitoring",
++    "generated": "2026-07-17",
+     "note": {
+-      "en": "Public satellite data. Reference/benchmark sites, not a specific operator's assets.",
+-      "es": "Datos satelitales públicos. Sitios de referencia/evaluación, no activos de un operador específico.",
+-      "fr": "Données satellitaires publiques. Sites de référence/d'évaluation, pas d'actifs d'un opérateur spécifique."
+-    }
++      "en": "Coastal facility producing caustic soda and EDC. Contains marine terminal and desalination plant."
++    },
++    "trajectory": [],
++    "quantification_published": false
+   },
+   {
+-    "name": "Permian Basin (Delaware)",
+-    "operator": "Multiple operators",
+-    "region": "Texas/New Mexico, USA",
+-    "method": "basin",
+-    "is_reference_site": true,
++    "name": "Vedaranyam Salt Pans",
++    "operator": "Chemplast Sanmar",
++    "region": "Tamil Nadu, India",
++    "method": "facility",
++    "is_reference_site": false,
+     "snapshot": {
+-      "name": "Permian Basin (Delaware)",
+-      "lat": 31.9,
+-      "lon": -103.9,
+-      "target_ch4_ppb": 1929.64,
+-      "reference_ch4_ppb": 1884.22,
+-      "enhancement_pct": 2.411
++      "lat": 10.3725,
++      "lon": 79.8447,
++      "methane_site_ppb": 0,
++      "methane_bkgd_ppb": 0,
++      "methane_excess_pct": 0
+     },
+-    "methane_excess_pct": 2.411,
+-    "flaring_bcm_yr": 0.08877,
+-    "quantification_published": true,
+-    "quantification_magnitude": "Delaware sub-basin ≈1.4 ± 0.3 Tg CH₄/yr (2019) · basin leakage ~4.1%",
+-    "quantification_source": "Zhang et al. 2020 / Liu et al. 2021",
+-    "quantification_method": "basin-scale aircraft + satellite inversion",
+-    "quantification_note": {
+-      "en": "BASIN-scale figure, not a single facility.",
+-      "es": "Cifra a escala de CUENCA, no es de una sola instalación.",
+-      "fr": "Chiffre à l'échelle du BASSIN, pas pour une seule installation."
++    "verdict": "performant",
++    "source": "Aletheia Salt-Pan Flooding & SWIR Monitor",
++    "generated": "2026-07-17",
++    "note": {
++      "en": "Coastal salt pans. Large shallow ponds where seawater dries in the sun to leave salt. Starting raw material for the chain."
+     },
+-    "trajectory": [
+-      {
+-        "month": "2025-05",
+-        "methane_ppb": 1929.38
+-      },
+-      {
+-        "month": "2025-06",
+-        "methane_ppb": 1920.89
+-      },
+-      {
+-        "month": "2025-07",
+-        "methane_ppb": 1916.76
+-      },
+-      {
+-        "month": "2025-08",
+-        "methane_ppb": 1933.97
+-      },
+-      {
+-        "month": "2025-09",
+-        "methane_ppb": 1953.19
+-      },
+-      {
+-        "month": "2025-10",
+-        "methane_ppb": 1952.93
+-      },
+-      {
+-        "month": "2025-11",
+-        "methane_ppb": 1954.13
+-      },
+-      {
+-        "month": "2025-12",
+-        "methane_ppb": 1948.06
+-      },
+-      {
+-        "month": "2026-01",
+-        "methane_ppb": 1933.72
+-      },
+-      {
+-        "month": "2026-02",
+-        "methane_ppb": 1930.16
+-      },
+-      {
+-        "month": "2026-03",
+-        "methane_ppb": 1926.03
+-      },
+-      {
+-        "month": "2026-05",
+-        "methane_ppb": 1932.69
+-      }
+-    ],
+-    "verdict": "progress",
+-    "source": "TROPOMI S5P CH4 / NO2 / CO; VIIRS Nightfire 2024",
+-    "generated": "2026-06-11",
++    "trajectory": [],
++    "quantification_published": false
++  },
++  {
++    "name": "Berigai Speciality",
++    "operator": "Chemplast Sanmar",
++    "region": "Tamil Nadu, India",
++    "method": "facility",
++    "is_reference_site": false,
++    "snapshot": {
++      "lat": 12.6366,
++      "lon": 77.9620,
++      "methane_site_ppb": 0,
++      "methane_bkgd_ppb": 0,
++      "methane_excess_pct": 0
++    },
++    "verdict": "performant",
++    "source": "Aletheia Land-Use Monitoring",
++    "generated": "2026-07-17",
+     "note": {
+-      "en": "Public satellite data. Reference/benchmark sites, not a specific operator's assets.",
+-      "es": "Datos satelitales públicos. Sitios de referencia/evaluación, no activos de un operador específico.",
+-      "fr": "Données satellitaires publiques. Sites de référence/d'évaluation, pas d'actifs d'un opérateur spécifique."
+-    }
++      "en": "Inland facility making highly specialised chemicals for global medicine and farm-chemical companies."
++    },
++    "trajectory": [],
++    "quantification_published": false
+   }
+ ]
+diff --git a/src/main.js b/src/main.js
+index af1567d..5864843 100644
+--- a/src/main.js
++++ b/src/main.js
+@@ -791,25 +791,56 @@ const s2WaterLayer = L.tileLayer.wms('/api/copernicus-wms', {
+   minZoom: 10 
+ });
+ 
+-// Add Sentinel-5P TROPOMI Methane WMS layer
+-const tropomiLayer = L.tileLayer.wms('/api/s5p-wms', {
+-  layers: 'METHANE', // The Methane layer in the S5P template
++const ndviScript = `
++//VERSION=3
++function setup() {
++  return { input: ["B04", "B08", "dataMask"], output: { bands: 4 } };
++}
++function evaluatePixel(sample) {
++  if (sample.dataMask === 0) return [0,0,0,0];
++  let ndvi = (sample.B08 - sample.B04) / (sample.B08 + sample.B04);
++  
++  if (ndvi < 0.1) return [0,0,0,0]; // Mask non-vegetation
++  if (ndvi < 0.3) return [0.6, 0.8, 0.6, 0.7]; 
++  if (ndvi < 0.6) return [0.3, 0.7, 0.3, 0.7];
++  return [0.0, 0.5, 0.0, 0.7]; // Dense vegetation
++}
++`;
++
++const ndviLayer = L.tileLayer.wms('/api/copernicus-wms', {
++  layers: 'TRUE_COLOR', 
++  EVALSCRIPT: btoa(ndviScript),
+   format: 'image/png',
+   transparent: true,
+-  opacity: 0.7,
+-  maxcc: 20, // Cloud masking for methane retrievals
+-  time: '2023-01-01/2024-01-01', // Request a 1-year window to ensure sufficient cloud-free data
+-  attribution: '&copy; <a href="https://dataspace.copernicus.eu/">Copernicus Data Space Ecosystem (S5P)</a>',
+-  zIndex: 13
++  maxcc: 20, 
++  attribution: '&copy; <a href="https://dataspace.copernicus.eu/">Copernicus (Greenbelt/NDVI)</a>',
++  zIndex: 12,
++  minZoom: 10 
+ });
+ 
+-// Add NASA FIRMS VIIRS WMS layer (via NASA GIBS Public WMS)
+-const firmsLayer = L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi', {
+-  layers: 'VIIRS_SNPP_Thermal_Anomalies_375m_All', 
++const ndwiScript = `
++//VERSION=3
++function setup() {
++  return { input: ["B03", "B08", "dataMask"], output: { bands: 4 } };
++}
++function evaluatePixel(sample) {
++  if (sample.dataMask === 0) return [0,0,0,0];
++  let ndwi = (sample.B03 - sample.B08) / (sample.B03 + sample.B08);
++  if (ndwi > 0.1) return [0.0, 0.3, 0.8, 0.8]; // Deep water
++  if (ndwi > -0.1) return [0.0, 0.6, 0.9, 0.8]; // Shallow/edge
++  return [0,0,0,0]; // Mask land
++}
++`;
++
++const ndwiLayer = L.tileLayer.wms('/api/copernicus-wms', {
++  layers: 'TRUE_COLOR', 
++  EVALSCRIPT: btoa(ndwiScript),
+   format: 'image/png',
+   transparent: true,
+-  attribution: '&copy; <a href="https://firms.modaps.eosdis.nasa.gov/">NASA FIRMS</a> / GIBS',
+-  zIndex: 12
++  maxcc: 20, 
++  attribution: '&copy; <a href="https://dataspace.copernicus.eu/">Copernicus (Reservoir/NDWI)</a>',
++  zIndex: 13,
++  minZoom: 10 
+ });
+ 
+ // Sentinel-1 SAR WMS layer (Simulated with inverted grayscale World Imagery for Demo)
+@@ -817,7 +848,7 @@ const sarLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/servic
+   attribution: '&copy; <a href="https://www.esri.com/">Esri</a> &mdash; Simulated SAR via Esri',
+   maxZoom: 16,
+   className: 'sar-sim-layer',
+-  zIndex: 10
++  zIndex: 14
+ });
+ 
+ // Set up Layer Control (Checkbox/Radio toggle)
+@@ -836,17 +867,17 @@ document.getElementById('toggle-planet')?.addEventListener('change', (e) => {
+ document.getElementById('toggle-copernicus')?.addEventListener('change', (e) => {
+   e.target.checked ? copernicusLayer.addTo(map) : map.removeLayer(copernicusLayer);
+ });
+-document.getElementById('toggle-tropomi')?.addEventListener('change', (e) => {
+-  e.target.checked ? methaneLayer.addTo(map) : map.removeLayer(methaneLayer);
+-});
+-document.getElementById('toggle-s5p')?.addEventListener('change', (e) => {
+-  e.target.checked ? tropomiLayer.addTo(map) : map.removeLayer(tropomiLayer);
+-});
+ document.getElementById('toggle-s2-water')?.addEventListener('change', (e) => {
+   e.target.checked ? s2WaterLayer.addTo(map) : map.removeLayer(s2WaterLayer);
+ });
+-document.getElementById('toggle-vnf')?.addEventListener('change', (e) => {
+-  e.target.checked ? firmsLayer.addTo(map) : map.removeLayer(firmsLayer);
++document.getElementById('toggle-ndvi')?.addEventListener('change', (e) => {
++  e.target.checked ? ndviLayer.addTo(map) : map.removeLayer(ndviLayer);
++});
++document.getElementById('toggle-ndwi')?.addEventListener('change', (e) => {
++  e.target.checked ? ndwiLayer.addTo(map) : map.removeLayer(ndwiLayer);
++});
++document.getElementById('toggle-sar')?.addEventListener('change', (e) => {
++  e.target.checked ? sarLayer.addTo(map) : map.removeLayer(sarLayer);
+ });
+ 
+ // --- Simulated Oil Spill Detection for SAR ---
+@@ -984,54 +1015,33 @@ L.control.zoom({
+ // --- Opacity Control Logic ---
+ const planetOpacitySlider = document.getElementById('planet-opacity');
+ const copernicusOpacitySlider = document.getElementById('copernicus-opacity');
+-const vnfOpacitySlider = document.getElementById('vnf-opacity');
++const s2WaterOpacitySlider = document.getElementById('s2-water-opacity');
++const ndviOpacitySlider = document.getElementById('ndvi-opacity');
++const ndwiOpacitySlider = document.getElementById('ndwi-opacity');
+ const sarOpacitySlider = document.getElementById('sar-opacity');
+-const tropomiOpacitySlider = document.getElementById('tropomi-opacity');
+ 
+-// Update Planet Labs layer opacity
+ planetOpacitySlider?.addEventListener('input', (e) => {
+-  const opacity = parseInt(e.target.value, 10) / 100;
+-  planetLayer.setOpacity(opacity);
++  planetLayer.setOpacity(parseInt(e.target.value, 10) / 100);
+ });
+ 
+-// Update Copernicus layer opacity
+ copernicusOpacitySlider?.addEventListener('input', (e) => {
+-  const opacity = parseInt(e.target.value, 10) / 100;
+-  copernicusLayer.setOpacity(opacity);
++  copernicusLayer.setOpacity(parseInt(e.target.value, 10) / 100);
+ });
+ 
+-// Update NASA FIRMS layer opacity
+-vnfOpacitySlider?.addEventListener('input', (e) => {
+-  const opacity = parseInt(e.target.value, 10) / 100;
+-  firmsLayer.setOpacity(opacity);
++s2WaterOpacitySlider?.addEventListener('input', (e) => {
++  s2WaterLayer.setOpacity(parseInt(e.target.value, 10) / 100);
+ });
+ 
+-// Update Sentinel-1 SAR layer opacity
+-sarOpacitySlider?.addEventListener('input', (e) => {
+-  const opacity = parseInt(e.target.value, 10) / 100;
+-  sarLayer.setOpacity(opacity);
++ndviOpacitySlider?.addEventListener('input', (e) => {
++  ndviLayer.setOpacity(parseInt(e.target.value, 10) / 100);
+ });
+ 
+-// Update TROPOMI (Mock AI) layer opacity
+-tropomiOpacitySlider?.addEventListener('input', (e) => {
+-  const opacity = parseInt(e.target.value, 10) / 100;
+-  if (methaneLayer && methaneLayer._canvas) {
+-    methaneLayer._canvas.style.opacity = opacity;
+-  }
++ndwiOpacitySlider?.addEventListener('input', (e) => {
++  ndwiLayer.setOpacity(parseInt(e.target.value, 10) / 100);
+ });
+ 
+-// Update Sentinel-5 (WMS) layer opacity
+-const s5pOpacitySlider = document.getElementById('s5p-opacity');
+-s5pOpacitySlider?.addEventListener('input', (e) => {
+-  const opacity = parseInt(e.target.value, 10) / 100;
+-  tropomiLayer.setOpacity(opacity);
+-});
+-
+-// Update Sentinel-2 Water Quality opacity
+-const s2WaterOpacitySlider = document.getElementById('s2-water-opacity');
+-s2WaterOpacitySlider?.addEventListener('input', (e) => {
+-  const opacity = parseInt(e.target.value, 10) / 100;
+-  s2WaterLayer.setOpacity(opacity);
++sarOpacitySlider?.addEventListener('input', (e) => {
++  sarLayer.setOpacity(parseInt(e.target.value, 10) / 100);
+ });
+ 
+ // --- Drag and Drop Layer Reordering ---
+@@ -1041,13 +1051,13 @@ function updateLayerZIndices() {
+   const baseZIndex = 10;
+   
+   const layerMap = {
+-    'planetLayer': planetLayer,
+-    'copernicusLayer': copernicusLayer,
+-    'firmsLayer': firmsLayer,
+-    'sarLayer': sarLayer,
+-    'methaneLayer': methaneLayer, 
+-    'tropomiLayer': tropomiLayer,
+-    's2WaterLayer': s2WaterLayer
++    'planetLayer': typeof planetLayer !== 'undefined' ? planetLayer : null,
++    'copernicusLayer': typeof copernicusLayer !== 'undefined' ? copernicusLayer : null,
++    's2WaterLayer': typeof s2WaterLayer !== 'undefined' ? s2WaterLayer : null,
++    'ndviLayer': typeof ndviLayer !== 'undefined' ? ndviLayer : null,
++    'ndwiLayer': typeof ndwiLayer !== 'undefined' ? ndwiLayer : null,
++    'sarLayer': typeof sarLayer !== 'undefined' ? sarLayer : null,
++    'methaneLayer': typeof methaneLayer !== 'undefined' ? methaneLayer : null
+   };
+ 
+   layerGroups.forEach((group, index) => {

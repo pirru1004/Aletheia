@@ -11,8 +11,8 @@
 const FOOTER_LINKS = {
   // CONTACT — mailto placeholders for now; will be replaced by Google Form URLs
   // this afternoon. Keep each as a single value so the swap is one line.
-  contact:  'mailto:[CONTACT EMAIL]?subject=Aletheia%20enquiry',
-  feedback: 'mailto:[FEEDBACK EMAIL]?subject=Aletheia%20site%20feedback',
+  contact:  'mailto:contactus@alythia.com?subject=Aletheia%20enquiry',
+  feedback: 'mailto:contactus@alythia.com?subject=Aletheia%20site%20feedback',
   bookDemo: '#demo',   // real scheduler trigger: demo_scheduler.js binds a[href="#demo"]
 
   // SOCIAL — real URLs provided later; empty = rendered present but non-navigating.
