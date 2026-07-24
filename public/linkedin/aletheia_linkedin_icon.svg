@@ -1,0 +1,23 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" fill="#0C1116"/>
+  <circle cx="400" cy="400" r="360" fill="#161B22" stroke="rgba(134, 59, 255, 0.3)" stroke-width="4"/>
+  
+  <g transform="translate(160, 160) scale(1.4)">
+    <style>
+      line { stroke: #FFFFFF; stroke-width: 4.5; stroke-linecap: round; fill: none; }
+      circle { fill: #863BFF; }
+      .beam { stroke: #863BFF; stroke-width: 6; }
+      .ray { stroke: rgba(255, 255, 255, 0.45); stroke-width: 3.5; }
+    </style>
+
+    <line class="ray" x1="50" y1="140" x2="170" y2="175"/>
+    <line class="ray" x1="40" y1="175" x2="170" y2="175"/>
+    <line class="ray" x1="50" y1="210" x2="170" y2="175"/>
+
+    <line x1="150" y1="240" x2="200" y2="110"/>
+    <line x1="200" y1="110" x2="250" y2="240"/>
+
+    <line class="beam" x1="170" y1="175" x2="310" y2="175"/>
+    <circle cx="170" cy="175" r="8"/>
+  </g>
+</svg>
