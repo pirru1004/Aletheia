@@ -1,0 +1,19 @@
+<svg width="800" height="800" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="800" fill="#0B0E14"/>
+  <g transform="translate(100, 290) scale(1.1)" fill="none" stroke="#FFFFFF" stroke-linecap="round">
+    <!-- 3 converging incoming rays -->
+    <line x1="10" y1="85" x2="236" y2="110" stroke-width="5" opacity="0.9"/>
+    <line x1="-10" y1="110" x2="236" y2="110" stroke-width="5"/>
+    <line x1="10" y1="135" x2="236" y2="110" stroke-width="5" opacity="0.9"/>
+
+    <!-- Prism A structure -->
+    <line x1="214" y1="162" x2="260" y2="48" stroke-width="6"/>
+    <line x1="260" y1="48" x2="306" y2="162" stroke-width="6"/>
+
+    <!-- Emerging single truth beam -->
+    <line x1="236" y1="110" x2="550" y2="110" stroke-width="6"/>
+
+    <!-- Focal dot -->
+    <circle cx="236" cy="110" r="8" fill="#FFFFFF" stroke="none"/>
+  </g>
+</svg>

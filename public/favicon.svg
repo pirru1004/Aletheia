@@ -1,15 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="14" fill="#0C1116"/>
-  <!-- Converging light rays -->
-  <line x1="8" y1="20" x2="28" y2="28" stroke="#863BFF" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-  <line x1="6" y1="28" x2="28" y2="28" stroke="#863BFF" stroke-width="3" stroke-linecap="round"/>
-  <line x1="8" y1="36" x2="28" y2="28" stroke="#863BFF" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 30 520 150" width="64" height="64">
+  <rect x="70" y="30" width="520" height="150" fill="#0B0E14"/>
+  <g fill="none" stroke="#FFFFFF" stroke-linecap="round">
+    <!-- 3 converging incoming rays -->
+    <line x1="90" y1="85" x2="316" y2="110" stroke-width="4.5" opacity="0.9"/>
+    <line x1="75" y1="110" x2="316" y2="110" stroke-width="4.5"/>
+    <line x1="90" y1="135" x2="316" y2="110" stroke-width="4.5" opacity="0.9"/>
 
-  <!-- Prism A structure -->
-  <line x1="22" y1="44" x2="34" y2="16" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
-  <line x1="34" y1="16" x2="46" y2="44" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Prism A structure -->
+    <line x1="294" y1="162" x2="340" y2="48" stroke-width="5"/>
+    <line x1="340" y1="48" x2="386" y2="162" stroke-width="5"/>
 
-  <!-- Emitted truth beam -->
-  <line x1="28" y1="28" x2="58" y2="28" stroke="#863BFF" stroke-width="4.5" stroke-linecap="round"/>
-  <circle cx="28" cy="28" r="4.5" fill="#863BFF"/>
+    <!-- Emerging single truth beam -->
+    <line x1="316" y1="110" x2="570" y2="110" stroke-width="5"/>
+  </g>
+  <!-- Focal dot -->
+  <circle cx="316" cy="110" r="7.5" fill="#FFFFFF"/>
 </svg>
