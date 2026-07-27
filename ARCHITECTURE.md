@@ -1,6 +1,6 @@
-# Aletheia — End-to-End System Architecture
+# Alythia — End-to-End System Architecture
 
-This document presents the visual architecture map of **Aletheia**, showing how data flows across the **4 Core Layers**: Data, Backend, Intelligence (AI/Colab), and Frontend.
+This document presents the visual architecture map of **Alythia**, showing how data flows across the **4 Core Layers**: Data, Backend, Intelligence (AI/Colab), and Frontend.
 
 ---
 
@@ -29,7 +29,7 @@ flowchart TD
     end
 
     subgraph L3["3. AI & Intelligence Layer (Model Processing)"]
-        COLAB_BATCH["Google Colab - Batch Pipeline<br/>(Aletheia.ipynb)<br/>• Extracts CH4 excess % & flaring BCM<br/>• Writes facilities.json"]:::aiLayer
+        COLAB_BATCH["Google Colab - Batch Pipeline<br/>(Alythia.ipynb)<br/>• Extracts CH4 excess % & flaring BCM<br/>• Writes facilities.json"]:::aiLayer
         COLAB_LIVE["Google Colab - Live Inference<br/>(FastAPI + ngrok Tunnel / PyTorch)<br/>• Real-time plume segmentation<br/>• InSAR deformation & thermal anomaly alerts"]:::aiLayer
     end
 
@@ -77,7 +77,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | **Layer 1** | **Data Ingestion Layer** | • Sentinel-2 & Sentinel-5P (Copernicus CDSE)<br>• PlanetScope (Planet Labs)<br>• VIIRS & MODIS (NASA FIRMS) | Provider of raw satellite tiles, atmospheric spectra, and thermal hotspot imagery. |
 | **Layer 2** | **Backend Proxy & Security Layer** | • Node.js / Express Proxy (`server/index.js`)<br>• Firebase Cloud Functions (`functions/index.js`)<br>• Firebase Auth (Google Sign-In)<br>• Cloud Firestore Database | Secret key protection (`.env`), CORS management, secure WMS stream proxying, user role verification (Admin/User). |
-| **Layer 3** | **AI & Intelligence Layer** | • **Google Colab Batch** (`Aletheia.ipynb`)<br>• **Google Colab Live** (FastAPI + `ngrok` / PyTorch)<br>• Scikit-learn, OpenCV, GDAL, SentinelHub Python SDK | High-performance model execution: methane concentration excess, flaring volumes, thermal anomaly detection, outfall plume segmentation. |
+| **Layer 3** | **AI & Intelligence Layer** | • **Google Colab Batch** (`Alythia.ipynb`)<br>• **Google Colab Live** (FastAPI + `ngrok` / PyTorch)<br>• Scikit-learn, OpenCV, GDAL, SentinelHub Python SDK | High-performance model execution: methane concentration excess, flaring volumes, thermal anomaly detection, outfall plume segmentation. |
 | **Layer 4** | **Frontend & UI Presentation Layer** | • Vite / HTML5 / Vanilla CSS<br>• Leaflet.js (Map & Satellite Layers)<br>• Chart.js (Trajectory Graphs)<br>• Firebase Hosting (`main` & `demo`) | Interactive map exploration, facility reporting cards, dynamic metric charts, and multi-pillar visualization (*Sustainability*, *Operational Efficiency*, *Asset Security*). |
 
 ---

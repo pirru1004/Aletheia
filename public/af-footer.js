@@ -1,5 +1,5 @@
 /* ============================================================================
- * af-footer.js — Aletheia public site footer (namespace: af-)
+ * af-footer.js — Alythia public site footer (namespace: af-)
  * ----------------------------------------------------------------------------
  * Self-contained, no external deps. Renders a <footer> into every element
  * carrying the [data-af-footer] attribute. Injected synchronously at parse
@@ -11,8 +11,8 @@
 const FOOTER_LINKS = {
   // CONTACT — mailto placeholders for now; will be replaced by Google Form URLs
   // this afternoon. Keep each as a single value so the swap is one line.
-  contact:  'mailto:contactus@alythia.com?subject=Aletheia%20enquiry',
-  feedback: 'mailto:contactus@alythia.com?subject=Aletheia%20site%20feedback',
+  contact:  'mailto:contactus@alythia.com?subject=Alythia%20enquiry',
+  feedback: 'mailto:contactus@alythia.com?subject=Alythia%20site%20feedback',
   bookDemo: '#demo',   // real scheduler trigger: demo_scheduler.js binds a[href="#demo"]
 
   // SOCIAL — real URLs provided later; empty = rendered present but non-navigating.
@@ -31,7 +31,7 @@ const FOOTER_LINKS = {
 };
 
 // Bottom line.
-const FOOTER_ENTITY = 'Aletheia Inc.';
+const FOOTER_ENTITY = 'Alythia Inc.';
 const FOOTER_YEAR = '2026';
 
 (function () {
@@ -97,8 +97,8 @@ const FOOTER_YEAR = '2026';
 
     <div class="af-bottom">
       <div style="display:flex; align-items:center; gap: 16px;">
-        <span class="af-mark">ALETHEIA</span>
-        <span class="af-copy">&copy; ${FOOTER_YEAR} Aletheia — ${FOOTER_ENTITY}</span>
+        <span class="af-mark">ALYTHIA</span>
+        <span class="af-copy">&copy; ${FOOTER_YEAR} Alythia — ${FOOTER_ENTITY}</span>
       </div>
       ${withLang ? langBlock() : ''}
     </div>

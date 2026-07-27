@@ -8,7 +8,7 @@ reasonable starting points for an ISU student venture based in France
 launch or investor due-diligence. Your university may offer a legal clinic.
 
 FILL IN EVERY [BRACKET] BEFORE PUBLISHING. Checklist of brackets used:
-  [ENTITY NAME]          - legal name (or "the Aletheia project team" if
+  [ENTITY NAME]          - legal name (or "the Alythia project team" if
                             not yet incorporated - see note below)
   [LEGAL FORM]           - e.g. SAS, SARL, association, or "student project,
                             not yet incorporated"
@@ -20,17 +20,17 @@ FILL IN EVERY [BRACKET] BEFORE PUBLISHING. Checklist of brackets used:
   [JURISDICTION]         - country/courts governing disputes (France assumed)
 
 NOTE ON LIABILITY: limitation-of-liability clauses are strongest when a
-real legal entity stands behind them. If Aletheia is not yet incorporated,
+real legal entity stands behind them. If Alythia is not yet incorporated,
 these still set expectations, but they protect individuals far less - one
 more reason to incorporate before any commercial use.
 ========================================================================
 -->
 
-# Aletheia — Legal
+# Alythia — Legal
 
 *Effective date: [EFFECTIVE DATE]. Operated by [ENTITY NAME] ([LEGAL FORM]), [REGISTERED ADDRESS]. Contact: contactus@alythia.com.*
 
-These pages cover (1) Terms of Use, (2) Privacy Policy, and (3) Disclaimer. They apply to the Aletheia website and platform at [WEBSITE URL] (the "Service").
+These pages cover (1) Terms of Use, (2) Privacy Policy, and (3) Disclaimer. They apply to the Alythia website and platform at [WEBSITE URL] (the "Service").
 
 ---
 
@@ -42,7 +42,7 @@ These pages cover (1) Terms of Use, (2) Privacy Policy, and (3) Disclaimer. They
 By accessing or using the Service, you agree to these Terms of Use. If you do not agree, do not use the Service. If you use the Service on behalf of an organisation, you confirm you are authorised to bind that organisation.
 
 ## 1.2 Definitions
-"Aletheia", "we", "us" means [ENTITY NAME]. "Service" means the Aletheia website, platform, dashboards, and any associated outputs. "Outputs" means the screening-grade indicators, charts, estimates, and analyses the Service produces. "You" means the user.
+"Alythia", "we", "us" means [ENTITY NAME]. "Service" means the Alythia website, platform, dashboards, and any associated outputs. "Outputs" means the screening-grade indicators, charts, estimates, and analyses the Service produces. "You" means the user.
 
 ## 1.3 Eligibility and accounts
 The Service is intended for professional and research use. Where the Service requires authentication, you are responsible for the security of your credentials and for activity under your account. Provide accurate information and keep it current.
@@ -57,7 +57,7 @@ We grant you a limited, non-exclusive, non-transferable, revocable right to acce
 - interfere with, overload, or attempt to gain unauthorised access to the Service or its infrastructure.
 
 ## 1.5 Intellectual property
-The Service, its design, code, text, and original Outputs are owned by [ENTITY NAME] or its licensors and are protected by intellectual-property laws. These Terms grant no ownership. The "Aletheia" name and logo may not be used without permission.
+The Service, its design, code, text, and original Outputs are owned by [ENTITY NAME] or its licensors and are protected by intellectual-property laws. These Terms grant no ownership. The "Alythia" name and logo may not be used without permission.
 
 ## 1.6 Third-party and source data
 The Service incorporates third-party and public satellite data, including (without limitation) Copernicus Sentinel data (© European Union / ESA / Copernicus), NASA/NOAA VIIRS Nightfire products (Earth Observation Group, Colorado School of Mines), and other public sources. Such data is subject to its providers' own licences and attribution requirements, which you agree to respect. We do not own third-party source data and make no warranty about it.
@@ -146,13 +146,13 @@ Privacy questions or requests: contactus@alythia.com.
 **Last updated: [EFFECTIVE DATE]**
 
 ## 3.1 Screening-grade, indicative outputs
-Aletheia produces **screening-grade, indicative** indicators derived from public satellite data. Outputs identify where to look; they are **not** verified measurements, certified emissions figures, audited reports, or leak/flow rates unless explicitly stated and sourced. Satellite observations carry inherent uncertainty from sensor resolution, atmospheric conditions, cloud cover, retrieval limitations, and attribution at coarse pixel scales. Concentration enhancements are expressed relative to a stated background or reference and are **not** intensity figures (e.g. percentage of throughput) unless explicitly labelled as such.
+Alythia produces **screening-grade, indicative** indicators derived from public satellite data. Outputs identify where to look; they are **not** verified measurements, certified emissions figures, audited reports, or leak/flow rates unless explicitly stated and sourced. Satellite observations carry inherent uncertainty from sensor resolution, atmospheric conditions, cloud cover, retrieval limitations, and attribution at coarse pixel scales. Concentration enhancements are expressed relative to a stated background or reference and are **not** intensity figures (e.g. percentage of throughput) unless explicitly labelled as such.
 
 ## 3.2 Observational, not accusatory
 Outputs are **observations measured against a reference baseline**, not assertions of fact about, or allegations of wrongdoing, non-compliance, negligence, or illegality by, any company, operator, government, or individual. Any facility or operator names shown are public reference sites used to demonstrate the methodology, drawn from public information; their inclusion does **not** imply any breach of law or obligation. Nothing in the Outputs should be read or republished as such an allegation.
 
 ## 3.3 Not professional advice
-The Service does not provide legal, regulatory, compliance, financial, investment, environmental, engineering, or other professional advice, and is not a substitute for it. Statutory and regulatory filings require independent verification and sign-off by a qualified, authorised person; Aletheia is never the filer of record and any draft it assembles is compliant only as of its generation date.
+The Service does not provide legal, regulatory, compliance, financial, investment, environmental, engineering, or other professional advice, and is not a substitute for it. Statutory and regulatory filings require independent verification and sign-off by a qualified, authorised person; Alythia is never the filer of record and any draft it assembles is compliant only as of its generation date.
 
 ## 3.4 No reliance / decisions at your own risk
 Any decision you make in reliance on the Outputs is made at your own risk and on your own judgement. To the maximum extent permitted by law, [ENTITY NAME] and its team accept **no responsibility or liability** for any loss, damage, or consequence arising from decisions or actions taken on the basis of the Outputs.

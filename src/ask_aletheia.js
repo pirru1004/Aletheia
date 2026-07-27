@@ -307,7 +307,7 @@ async function answerLLM(question, f, scenario) {
 // `ids` lets a second, INDEPENDENT instance (e.g. the Operational Efficiency
 // dashboard) bind to its own duplicated drawer markup. Defaults preserve the
 // original Sustainability IDs verbatim, so existing callers are unaffected.
-export function initAskAletheia({ getContext, ids = {} }) {
+export function initAskAlythia({ getContext, ids = {} }) {
   const id = {
     toggle: 'askToggle', body: 'askBody', log: 'askLog', seeds: 'askSeeds',
     form: 'askForm', input: 'askInput', mode: 'askMode', grounding: 'askGrounding',
@@ -401,3 +401,5 @@ export function initAskAletheia({ getContext, ids = {} }) {
   refresh();
   return { refresh };
 }
+
+export const initAskAletheia = initAskAlythia;

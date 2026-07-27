@@ -1,18 +1,18 @@
-# Aletheia — Technical API & Pipeline Documentation
+# Alythia — Technical API & Pipeline Documentation
 
-This document provides a comprehensive breakdown of all API endpoints, backend proxy services, satellite data ingestion pipelines, authentication flows, and security protocols engineered into the **Aletheia** platform.
+This document provides a comprehensive breakdown of all API endpoints, backend proxy services, satellite data ingestion pipelines, authentication flows, and security protocols engineered into the **Alythia** platform.
 
 ---
 
 ## 1. Executive Architectural Overview
 
-The Aletheia platform ingests multi-spectral imagery, thermal anomaly detections, and atmospheric pollution metrics from multiple commercial and governmental satellite networks:
+The Alythia platform ingests multi-spectral imagery, thermal anomaly detections, and atmospheric pollution metrics from multiple commercial and governmental satellite networks:
 * **Copernicus Data Space Ecosystem (CDSE) / Sentinel Hub**: Sentinel-2 (MSI) & Sentinel-5P (TROPOMI)
 * **Planet Labs**: PlanetScope high-resolution monthly basemaps
 * **NASA FIRMS**: VIIRS & MODIS active fire / thermal anomaly tracking
 
 ### Why a Proxy Architecture?
-Directly making requests from the browser to third-party satellite providers exposes private API keys and client secrets in the browser's Network tab. To prevent credential leakage, Aletheia employs a **Secure Backend Proxy Architecture**:
+Directly making requests from the browser to third-party satellite providers exposes private API keys and client secrets in the browser's Network tab. To prevent credential leakage, Alythia employs a **Secure Backend Proxy Architecture**:
 
 ```mermaid
 sequenceDiagram
@@ -127,7 +127,7 @@ All sensitive API keys and secrets are declared in `.env` (for local development
 
 ## 4. User Access Authorization & Security Model
 
-Aletheia combines **Firebase Authentication (Google Sign-In)** with **Firestore Role-Based Access Control (RBAC)**:
+Alythia combines **Firebase Authentication (Google Sign-In)** with **Firestore Role-Based Access Control (RBAC)**:
 
 ### User Onboarding Flow
 1. **Google OAuth Sign-In**: User authenticates with Google via Firebase Auth.

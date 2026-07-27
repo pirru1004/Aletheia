@@ -7,7 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
 import Chart from 'chart.js/auto';
 import { facilities, statusFor, headlineFor, matrixStateFor } from './facilities_adapter.js';
-import { initAskAletheia } from './ask_aletheia.js';
+import { initAskAlythia } from './ask_aletheia.js';
 import { openAssetDashboard } from './asset_security.js';
 import { assetSiteByNearest, assetSites } from './asset_security_adapter.js';
 import { initOperationalEfficiency, selectOperationalFacility } from './operational_efficiency.js';
@@ -49,7 +49,7 @@ function navigateTo(viewId) {
     }
   }
 
-  // "Ask Aletheia" is grounded on ONE selected facility, so it only belongs to an
+  // "Ask Alythia" is grounded on ONE selected facility, so it only belongs to an
   // OPEN facility dashboard/report (opened by clicking a pin in ANY pillar), never
   // to the bare site map, the launchpad or any public view. Any view change clears
   // the grounding, which hides the launcher and closes the drawer (see the
@@ -57,7 +57,7 @@ function navigateTo(viewId) {
   clearGrounding();
 }
 
-// --- Ask Aletheia launcher visibility ---------------------------------------
+// --- Ask Alythia launcher visibility ---------------------------------------
 // showAskChat(): a facility dashboard just opened (a pin was clicked and the
 // report is grounded on it) -> reveal the launcher (unless the drawer is already
 // open). hideAskChat(): leaving the facility -> close the drawer and hide it.
@@ -127,7 +127,7 @@ function setMapMode(mode) {
   if (title) {
     title.textContent = mode === 'asset' ? 'Asset Security — Site Map'
       : mode === 'operational' ? 'Operational Efficiency — Site Map'
-      : 'Aletheia Compliance Map';
+      : 'Alythia Compliance Map';
   }
   // Filter the layer management panel items based on the active pillar
   document.querySelectorAll('.dynamic-layer').forEach(layerGroup => {
@@ -332,7 +332,7 @@ const panel = document.getElementById('compliance-panel');
 const closeBtn = document.getElementById('cp-close');
 
 // Status -> hex, mirroring the desaturated verdict colours (shared token set,
-// ALETHEIA_HANDOFF §4: --good / --watch). Used for map pins and the report badge.
+// ALYTHIA_HANDOFF §4: --good / --watch). Used for map pins and the report badge.
 const STATUS_COLOR = { green: '#3F7E5E', amber: '#B5863C' };
 
 let selectedFacility = facilities[0] || null;
@@ -670,7 +670,7 @@ document.getElementById('btn-close-report')?.addEventListener('click', () => {
 });
 
 // Deeper verdict fills for the markers so they stay legible on the light Positron
-// basemap, each ringed by a subtle white halo (ALETHEIA_HANDOFF §4 / map request).
+// basemap, each ringed by a subtle white halo (ALYTHIA_HANDOFF §4 / map request).
 const PIN_COLOR = { green: '#2E5C45', amber: '#7A5A1E' };
 
 // The shared map carries two distinct pin sets, one per pillar:
@@ -934,7 +934,7 @@ const sarPopupContent = `
 
     <!-- AI Evidence panel -->
     <div style="background: rgba(15, 23, 42, 0.8); border-left: 3px solid #3B82F6; padding: 12px; margin-bottom: 14px; border-radius: 0 4px 4px 0;">
-      <h4 style="margin: 0 0 6px 0; font-size: 11px; color: #3B82F6; text-transform: uppercase; letter-spacing: 1px;">Aletheia AI Evidence</h4>
+      <h4 style="margin: 0 0 6px 0; font-size: 11px; color: #3B82F6; text-transform: uppercase; letter-spacing: 1px;">Alythia AI Evidence</h4>
       <p style="margin: 0; font-size: 12px; color: #CBD5E1; line-height: 1.5;">
         Dark formation exhibits low backscatter characteristic of sea surface smoothing by oil films. Morphological analysis rules out natural biogenic slicks. Wind speed (4.2 m/s) confirms optimal SAR detection conditions.
       </p>
@@ -1040,7 +1040,7 @@ const methaneLayer = L.heatLayer(buildHeatData(mapMode), {
 // NOTE: the previous "TROPOMI Methane (Multi-Year Avg)" heat layer was removed.
 // It synthesised plume geometry from a mock per-facility tonnage that no longer
 // exists in facilities.json, and presenting an invented plume as TROPOMI output
-// would violate the honesty rules (ALETHEIA_HANDOFF A4.5 — never fabricate).
+// would violate the honesty rules (ALYTHIA_HANDOFF A4.5 — never fabricate).
 // A real gridded TROPOMI overlay can be added later when the pipeline emits one.
 
 
@@ -1208,10 +1208,10 @@ if (layerList) {
 
 
 /* ===========================================================================
-   ALETHEIA ANALYSIS REPORT — data-driven render
+   ALYTHIA ANALYSIS REPORT — data-driven render
    Replaces the original hardcoded-mock IIFE. Everything below paints the
    currently selected facility (view-model from facilities_adapter.js) into the
-   report modal, applying the ALETHEIA_HANDOFF section A4 honesty rules:
+   report modal, applying the ALYTHIA_HANDOFF section A4 honesty rules:
      - headline is concentration excess, never "intensity vs disclosure"
      - 2x2 matrix cell is derived from the data (clean sites render green)
      - no Reported/disclosure series or basis-vs-target panels (none exist yet)
@@ -1241,7 +1241,7 @@ let trajChart = null;
 
 /* ===========================================================================
    PROJECTION + AI-ACTION LEVERS + USER GOAL  (illustrative scenario layer)
-   Honesty rules (ALETHEIA_HANDOFF A4): everything here is a SCENARIO drawn on
+   Honesty rules (ALYTHIA_HANDOFF A4): everything here is a SCENARIO drawn on
    top of the OBSERVED ppb record, never a prediction and never a claim about
    what the operator emits or disclosed.
      - The status-quo projection is an illustrative extrapolation of the trend.
@@ -1261,7 +1261,7 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 let currentTrajFacility = null;
 const activeLevers = new Set();
 let userGoal = null;        // { pct:Number, year:Number } once the user plots one
-let askApi = null;          // "Ask Aletheia" chat handle (assigned at init)
+let askApi = null;          // "Ask Alythia" chat handle (assigned at init)
 
 // Abatement levers — illustrative efficacy RANGES with real source tags.
 // efficacy = fractional reduction of the addressable excess (device capture eff.).
@@ -1674,7 +1674,7 @@ function renderReport(f) {
   // --- published-quantification callout (cited) ---
   renderQuantCallout(f);
 
-  // --- keep "Ask Aletheia" grounded on the current facility ---
+  // --- keep "Ask Alythia" grounded on the current facility ---
   askApi?.refresh();
 
   // --- provenance footer ---
@@ -1742,11 +1742,11 @@ document.querySelectorAll('.hz-opt').forEach(btn =>
     if (currentTrajFacility) renderTrajectory(currentTrajFacility);
   }));
 
-// --- "Ask Aletheia": grounded, read-only chat. It reads its grounding from the
+// --- "Ask Alythia": grounded, read-only chat. It reads its grounding from the
 // SHARED source (ask_grounding.js), so any pillar that opens a facility dashboard
 // grounds this one drawer. getGroundingContext() returns the LIVE facility
 // view-model + on-page scenario for whatever pillar is currently in focus. ---
-askApi = initAskAletheia({ getContext: getGroundingContext });
+askApi = initAskAlythia({ getContext: getGroundingContext });
 
 // Let any pillar's setGrounding()/clearGrounding() re-paint the drawer, and toggle
 // the launcher: visible only while a real facility is grounded.
@@ -1767,8 +1767,8 @@ function susAskContext() {
   };
 }
 
-// Ask Aletheia drawer: floating launcher <-> right-docked overlay panel.
-// initAskAletheia is untouched — we only drive open/close + the launcher visibility,
+// Ask Alythia drawer: floating launcher <-> right-docked overlay panel.
+// initAskAlythia is untouched — we only drive open/close + the launcher visibility,
 // and let the existing #askToggle handler reveal + greet the body on first open.
 const askFab = document.getElementById('askFab');
 const askCloseBtn = document.getElementById('askClose');

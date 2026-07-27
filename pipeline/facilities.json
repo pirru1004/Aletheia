@@ -273,7 +273,7 @@
       "co_mol_m2": null
     },
     "verdict": "performant",
-    "source": "Aletheia Zero Liquid Discharge (ZLD) Monitoring",
+    "source": "Alythia Zero Liquid Discharge (ZLD) Monitoring",
     "generated": "2026-07-17",
     "note": {
       "en": "Coastal PVC facility with marine terminal and desalination plant. Key anchor for ZLD receiving-water verification."
@@ -295,7 +295,7 @@
       "methane_excess_pct": 0
     },
     "verdict": "progress",
-    "source": "Aletheia Reservoir & Greenbelt Monitoring",
+    "source": "Alythia Reservoir & Greenbelt Monitoring",
     "generated": "2026-07-17",
     "note": {
       "en": "Inland facility. Premium paste PVC, caustic soda, coal power plant. Relies on Kaveri river (Stanley Reservoir)."
@@ -317,7 +317,7 @@
       "methane_excess_pct": 0
     },
     "verdict": "performant",
-    "source": "Aletheia Marine Vessel & Hazard Monitoring",
+    "source": "Alythia Marine Vessel & Hazard Monitoring",
     "generated": "2026-07-17",
     "note": {
       "en": "Coastal facility producing caustic soda and EDC. Contains marine terminal and desalination plant."
@@ -339,7 +339,7 @@
       "methane_excess_pct": 0
     },
     "verdict": "performant",
-    "source": "Aletheia Salt-Pan Flooding & SWIR Monitor",
+    "source": "Alythia Salt-Pan Flooding & SWIR Monitor",
     "generated": "2026-07-17",
     "note": {
       "en": "Coastal salt pans. Large shallow ponds where seawater dries in the sun to leave salt. Starting raw material for the chain."
@@ -361,7 +361,7 @@
       "methane_excess_pct": 0
     },
     "verdict": "performant",
-    "source": "Aletheia Land-Use Monitoring",
+    "source": "Alythia Land-Use Monitoring",
     "generated": "2026-07-17",
     "note": {
       "en": "Inland facility making highly specialised chemicals for global medicine and farm-chemical companies."
