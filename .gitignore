@@ -26,3 +26,7 @@ dist-ssr
 # Environment Variables
 .env
 .env.*
+
+# Internal Proprietary Documentation
+API_DOCUMENTATION.md
+ARCHITECTURE.md
