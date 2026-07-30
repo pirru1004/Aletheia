@@ -694,7 +694,9 @@ facilities.forEach(f => {
   const marker = L.circleMarker([f.lat, f.lon], {
     radius: 9, color: '#FFFFFF', weight: 3, fillColor: fill, fillOpacity: 1, className: 'aoi-pin'
   });
-  marker.bindTooltip(`<b>${f.name}</b><br>${f.basisLabel}`);
+  if (!window.matchMedia("(max-width: 768px)").matches) {
+    marker.bindTooltip(`<b>${f.name}</b><br>${f.basisLabel}`);
+  }
   marker.on('click', () => {
     map.setView([f.lat, f.lon], f.isBasin ? 7 : 10, { animate: true });
     selectFacility(f);
@@ -712,7 +714,9 @@ assetSites.forEach(site => {
   const marker = L.circleMarker([site.lat, site.lon], {
     radius: 9, color: '#FFFFFF', weight: 3, fillColor: fill, fillOpacity: 1, className: 'aoi-pin'
   });
-  marker.bindTooltip(`<b>${site.name}</b><br>${site.basin}`);
+  if (!window.matchMedia("(max-width: 768px)").matches) {
+    marker.bindTooltip(`<b>${site.name}</b><br>${site.basin}`);
+  }
   marker.on('click', () => {
     map.setView([site.lat, site.lon], 12, { animate: true });
     openAssetWorkflow(site);
@@ -730,7 +734,9 @@ facilities.forEach(f => {
   const marker = L.circleMarker([f.lat, f.lon], {
     radius: 9, color: '#FFFFFF', weight: 3, fillColor: fill, fillOpacity: 1, className: 'aoi-pin'
   });
-  marker.bindTooltip(`<b>${f.name}</b><br>${f.basisLabel}`);
+  if (!window.matchMedia("(max-width: 768px)").matches) {
+    marker.bindTooltip(`<b>${f.name}</b><br>${f.basisLabel}`);
+  }
   marker.on('click', () => {
     map.setView([f.lat, f.lon], f.isBasin ? 7 : 10, { animate: true });
     selectOperationalFacility(f);

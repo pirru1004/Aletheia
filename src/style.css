@@ -2413,3 +2413,93 @@ html, body {
   background: rgba(0, 102, 204, 0.1);
   border-left: 3px solid #0066cc;
 }
+/* =========================================================================
+   MOBILE ADAPTATION (Touch-First UI)
+   ========================================================================= */
+@media (max-width: 768px) {
+  /* 1. Intro Slides: Vertical Stack */
+  #main-slider {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: 100vh !important;
+    width: 100vw !important;
+  }
+  .lslide {
+    width: 100vw !important;
+    min-width: 100vw !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    flex-shrink: 0;
+  }
+
+  /* 2. Side Panel -> Bottom Sheet */
+  .side-panel {
+    top: auto !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: 60vh !important;
+    border-left: none !important;
+    border-top: 1px solid var(--border-color) !important;
+    border-radius: 20px 20px 0 0 !important;
+    transform: translateY(0); /* visible state */
+    z-index: 9999 !important;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5) !important;
+  }
+  .side-panel.hidden {
+    transform: translateY(100%) !important; /* slide down off screen */
+  }
+
+  /* 3. Dashboard Layout & Map */
+  #dashboard-layout {
+    flex-direction: column !important;
+  }
+  #map {
+    height: 100% !important; /* Takes full background, bottom sheet sits over it */
+    width: 100vw !important;
+  }
+
+  /* 4. Ask Alythia Drawer -> Full Screen */
+  .ask-drawer {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    transform: translateX(100%);
+    border-left: none !important;
+    z-index: 10000 !important;
+  }
+  .ask-drawer[aria-hidden="false"] {
+    transform: translateX(0) !important;
+  }
+
+  /* 5. Typography Scaling */
+  h1 { font-size: 2.2rem !important; }
+  h2 { font-size: 1.6rem !important; }
+  h3 { font-size: 1.2rem !important; }
+  
+  /* 6. Floating panels / controls adjustments */
+  .floating-panel {
+    width: 90vw !important;
+    left: 5vw !important;
+    bottom: 5vh !important;
+    top: auto !important;
+    max-height: 80vh !important;
+  }
+  #floating-layer-panel {
+    top: 10px !important;
+    left: 10px !important;
+    width: 90vw !important;
+    bottom: auto !important;
+    z-index: 1000 !important;
+  }
+  
+  /* Prevent chart squishing */
+  .chart-container {
+    min-height: 250px !important;
+  }
+}
